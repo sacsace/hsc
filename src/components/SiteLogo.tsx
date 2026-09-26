@@ -18,6 +18,7 @@ export function SiteLogo({
       width={1718}
       height={343}
       priority={priority}
+      loading={priority ? "eager" : "lazy"}
       sizes="(max-width: 768px) 200px, 260px"
       className={`h-8 w-auto max-w-[min(56vw,240px)] object-contain object-left md:h-9 md:max-w-[260px] ${className}`}
     />

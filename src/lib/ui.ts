@@ -9,6 +9,7 @@ export type UiCopy = {
     company: string;
     history: string;
     performance: string;
+    clients: string;
     team: string;
     gallery: string;
     contact: string;
@@ -65,7 +66,9 @@ export type UiCopy = {
   clientsLabel: string;
   clientsTitle: string;
   clientsLead: string;
+  clientsEmpty: string;
   viewMore: string;
+  viewMoreClients: string;
   contactCta: string;
   contactForm: {
     name: string;
@@ -86,6 +89,8 @@ export type UiCopy = {
   footerTagline: string;
   footerRights: string;
   developedBy: string;
+  footerAdmin: string;
+  footerMvs: string;
   heroImageAlt: string;
   slidePrev: string;
   slideNext: string;
@@ -99,6 +104,7 @@ export const ui: Record<Locale, UiCopy> = {
       company: "회사정보",
       history: "연혁",
       performance: "실적",
+      clients: "고객사",
       team: "팀원",
       gallery: "갤러리",
       contact: "문의",
@@ -155,7 +161,9 @@ export const ui: Record<Locale, UiCopy> = {
     clientsLabel: "고객사",
     clientsTitle: "고객사",
     clientsLead: "함께 성장해 온 주요 고객사입니다.",
+    clientsEmpty: "등록된 고객사가 없습니다.",
     viewMore: "자세히 보기",
+    viewMoreClients: "고객사 더보기",
     contactCta: "문의 남기기",
     contactForm: {
       name: "이름",
@@ -176,6 +184,8 @@ export const ui: Record<Locale, UiCopy> = {
     footerTagline: "산업용 컴프레서 판매·수리·유지보수 Total Air Solution.",
     footerRights: "All rights reserved.",
     developedBy: "개발",
+    footerAdmin: "Admin",
+    footerMvs: "업무 시스템 MVS",
     heroImageAlt: "Hankook Service Center 파트너십",
     slidePrev: "이전 슬라이드",
     slideNext: "다음 슬라이드",
@@ -187,6 +197,7 @@ export const ui: Record<Locale, UiCopy> = {
       company: "Company",
       history: "History",
       performance: "Performance",
+      clients: "Clients",
       team: "Team",
       gallery: "Gallery",
       contact: "Contact",
@@ -245,7 +256,9 @@ export const ui: Record<Locale, UiCopy> = {
     clientsLabel: "Clients",
     clientsTitle: "Clients",
     clientsLead: "Partners we have worked with.",
+    clientsEmpty: "No clients listed yet.",
     viewMore: "View more",
+    viewMoreClients: "View all clients",
     contactCta: "Contact us",
     contactForm: {
       name: "Name",
@@ -266,6 +279,8 @@ export const ui: Record<Locale, UiCopy> = {
     footerTagline: "Industrial compressor sales, repair, and maintenance Total Air Solution.",
     footerRights: "All rights reserved.",
     developedBy: "Developed by",
+    footerAdmin: "Admin",
+    footerMvs: "MVS Work System",
     heroImageAlt: "Hankook Service Center partnership",
     slidePrev: "Previous slide",
     slideNext: "Next slide",

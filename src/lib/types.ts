@@ -1,7 +1,7 @@
 export type Locale = "ko" | "en";
 
-export type HistoryItem = { date: string; detail: string };
-export type PerformanceItem = { date: string; detail: string; client: string };
+export type HistoryItem = { id?: string; date: string; detail: string };
+export type PerformanceItem = { id?: string; date: string; detail: string; client: string };
 export type CertificateItem = { title: string; image: string };
 export type GalleryItem = {
   id: string;

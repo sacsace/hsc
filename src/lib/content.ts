@@ -1,6 +1,6 @@
 import { promises as fs } from "fs";
-import path from "path";
 import { sortPerformances, type SiteContent } from "@/lib/types";
+import { ensureRuntimeContentFile, contentFilePath } from "@/lib/storage";
 
 export type {
   Locale,
@@ -16,9 +16,8 @@ export type {
 
 export { dateSortKey, sortPerformances } from "@/lib/types";
 
-const contentPath = path.join(process.cwd(), "data", "content.json");
-
 export async function getContent(): Promise<SiteContent> {
+  const contentPath = await ensureRuntimeContentFile();
   const raw = await fs.readFile(contentPath, "utf-8");
   const content = JSON.parse(raw) as SiteContent;
 
@@ -156,6 +155,12 @@ export async function getContent(): Promise<SiteContent> {
         })),
       };
     }
+    localeData.history = (localeData.history || []).map((item, index) =>
+      item.id ? item : { ...item, id: `h-${locale}-${index}` },
+    );
+    localeData.performances = (localeData.performances || []).map((item, index) =>
+      item.id ? item : { ...item, id: `p-${locale}-${index}` },
+    );
     localeData.performances = sortPerformances(localeData.performances, true);
   }
 
@@ -166,5 +171,7 @@ export async function saveContent(content: SiteContent): Promise<void> {
   for (const locale of ["ko", "en"] as const) {
     content[locale].performances = sortPerformances(content[locale].performances, true);
   }
+  const contentPath = contentFilePath();
+  await ensureRuntimeContentFile();
   await fs.writeFile(contentPath, JSON.stringify(content, null, 2), "utf-8");
 }

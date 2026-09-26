@@ -16,13 +16,13 @@ function initials(name: string) {
 function MemberPhoto({ member, className }: { member: TeamMember; className?: string }) {
   if (member.photo) {
     return (
-      <div className={`relative overflow-hidden bg-[var(--bg)] ${className ?? ""}`}>
+      <div className={`relative overflow-hidden rounded-md bg-[var(--bg)] ${className ?? ""}`}>
         <Image
           src={member.photo}
           alt={member.name}
           fill
           className="object-cover"
-          sizes="(max-width: 768px) 100vw, 320px"
+          sizes="(max-width: 768px) 40vw, 180px"
         />
       </div>
     );
@@ -30,7 +30,7 @@ function MemberPhoto({ member, className }: { member: TeamMember; className?: st
 
   return (
     <div
-      className={`flex items-center justify-center bg-[var(--navy-deep)] font-display text-2xl font-semibold tracking-wide text-white/90 ${className ?? ""}`}
+      className={`flex items-center justify-center rounded-md bg-[var(--navy-deep)] font-display text-xl font-semibold tracking-wide text-white/90 ${className ?? ""}`}
       aria-hidden
     >
       {initials(member.name)}
@@ -66,23 +66,23 @@ function TeamSections() {
             ) : null}
 
             {hasCeo && ceo ? (
-              <article className="grid gap-8 border-b border-[var(--line)] pb-14 md:grid-cols-[240px_1fr] md:items-start lg:grid-cols-[280px_1fr]">
+              <article className="grid gap-6 border-b border-[var(--line)] pb-14 md:grid-cols-[168px_1fr] md:items-start lg:grid-cols-[168px_1fr]">
                 <MemberPhoto
                   member={ceo}
-                  className="aspect-[4/5] w-full max-w-[280px] md:max-w-none"
+                  className="aspect-[4/5] w-full max-w-[168px]"
                 />
                 <div>
-                  <p className="text-xs font-semibold tracking-[0.12em] text-[var(--steel)]">
+                  <p className="text-xs font-medium tracking-[0.12em] text-[var(--steel)]">
                     {t.teamCeoLabel}
                   </p>
-                  <h2 className="mt-2 font-display text-2xl font-bold tracking-tight md:text-3xl">
+                  <h2 className="mt-2 font-display text-xl font-medium tracking-tight md:text-2xl">
                     {ceo.name}
                   </h2>
                   {ceo.role ? (
-                    <p className="mt-2 text-base font-medium text-[var(--navy)]">{ceo.role}</p>
+                    <p className="mt-2 text-sm font-normal text-[var(--navy)]">{ceo.role}</p>
                   ) : null}
                   {ceo.bio ? (
-                    <p className="mt-5 max-w-2xl text-[1.02rem] leading-relaxed text-[var(--muted)] whitespace-pre-line">
+                    <p className="mt-4 max-w-2xl text-[0.95rem] font-normal leading-relaxed text-[var(--muted)] whitespace-pre-line text-justify">
                       {ceo.bio}
                     </p>
                   ) : null}
@@ -93,25 +93,25 @@ function TeamSections() {
             {members.length > 0 ? (
               <div>
                 {hasCeo ? (
-                  <h2 className="font-display text-xl font-bold tracking-tight md:text-2xl">
+                  <h2 className="font-display text-lg font-medium tracking-tight md:text-xl">
                     {t.teamMembersLabel}
                   </h2>
                 ) : null}
                 <div
-                  className={`grid gap-8 sm:grid-cols-2 lg:grid-cols-3 ${hasCeo ? "mt-8" : ""}`}
+                  className={`grid gap-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 ${hasCeo ? "mt-6" : ""}`}
                 >
                   {members.map((member, index) => (
-                    <article key={`${member.name}-${index}`} className="space-y-4">
+                    <article key={`${member.name}-${index}`} className="max-w-[168px] space-y-3">
                       <MemberPhoto member={member} className="aspect-[4/5] w-full" />
                       <div>
-                        <h3 className="font-display text-lg font-semibold tracking-tight">
+                        <h3 className="font-display text-base font-medium tracking-tight">
                           {member.name}
                         </h3>
                         {member.role ? (
-                          <p className="mt-1 text-sm font-medium text-[var(--navy)]">{member.role}</p>
+                          <p className="mt-1 text-sm font-normal text-[var(--navy)]">{member.role}</p>
                         ) : null}
                         {member.bio ? (
-                          <p className="mt-2 text-sm leading-relaxed text-[var(--muted)] whitespace-pre-line">
+                          <p className="mt-1.5 text-xs font-normal leading-relaxed text-[var(--muted)] whitespace-pre-line">
                             {member.bio}
                           </p>
                         ) : null}
@@ -130,9 +130,15 @@ function TeamSections() {
   );
 }
 
-export function TeamPage({ content }: { content: SiteContent }) {
+export function TeamPage({
+  content,
+  initialLocale,
+}: {
+  content: SiteContent;
+  initialLocale?: "ko" | "en";
+}) {
   return (
-    <LanguageProvider siteContent={content}>
+    <LanguageProvider siteContent={content} initialLocale={initialLocale}>
       <TeamSections />
     </LanguageProvider>
   );

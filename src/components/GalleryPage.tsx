@@ -37,9 +37,15 @@ function GallerySections() {
   );
 }
 
-export function GalleryPage({ content }: { content: SiteContent }) {
+export function GalleryPage({
+  content,
+  initialLocale,
+}: {
+  content: SiteContent;
+  initialLocale?: "ko" | "en";
+}) {
   return (
-    <LanguageProvider siteContent={content}>
+    <LanguageProvider siteContent={content} initialLocale={initialLocale}>
       <GallerySections />
     </LanguageProvider>
   );

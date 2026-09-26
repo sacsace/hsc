@@ -3,6 +3,7 @@ import { promises as fs } from "fs";
 import path from "path";
 import { NextResponse } from "next/server";
 import { isAuthenticated } from "@/lib/auth";
+import { ensureUploadsDir, uploadsDir } from "@/lib/storage";
 
 export const runtime = "nodejs";
 
@@ -39,10 +40,10 @@ export async function POST(request: Request) {
           : "gif";
 
   const name = `${Date.now()}-${randomBytes(4).toString("hex")}.${ext}`;
-  const dir = path.join(process.cwd(), "public", "gallery");
-  await fs.mkdir(dir, { recursive: true });
+  await ensureUploadsDir();
   const buffer = Buffer.from(await file.arrayBuffer());
-  await fs.writeFile(path.join(dir, name), buffer);
+  await fs.writeFile(path.join(uploadsDir(), name), buffer);
 
-  return NextResponse.json({ url: `/gallery/${name}` });
+  // Served by /uploads/[...path] from the persistent data volume
+  return NextResponse.json({ url: `/uploads/${name}` });
 }

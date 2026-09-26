@@ -57,11 +57,11 @@ function HomeSections() {
               <p className="section-label">{t.aboutPageLabel}</p>
               <h2 className="section-title">{greeting?.title || t.aboutPageTitle}</h2>
               {greetingLead ? (
-                <p className="mt-3 max-w-xl font-display text-lg font-semibold leading-snug text-[var(--navy)]">
+                <p className="mt-3 max-w-xl text-justify text-[0.98rem] font-normal leading-relaxed text-[var(--ink)]">
                   {greetingLead}
                 </p>
               ) : null}
-              <p className="mt-4 max-w-2xl text-[1.02rem] leading-relaxed text-[var(--muted)] line-clamp-4">
+              <p className="mt-4 max-w-2xl text-justify text-[0.95rem] font-normal leading-relaxed text-[var(--muted)] line-clamp-4">
                 {greetingPreview}
               </p>
               <SectionLink href="/about" label={t.viewMore} />
@@ -132,30 +132,41 @@ function HomeSections() {
             <p className="section-lead">{clients?.lead || t.clientsLead}</p>
 
             {clientItems.length ? (
-              <div className="mt-8 grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                {clientItems.map((client) => (
-                  <div
-                    key={client.id}
-                    className="flex min-h-[88px] items-center justify-center border border-[var(--line)] bg-[#f5f7f9] px-4 py-5 text-center"
-                  >
-                    {client.logo ? (
-                      <div className="relative h-10 w-full">
-                        <Image
-                          src={client.logo}
-                          alt={client.name}
-                          fill
-                          className="object-contain"
-                          sizes="200px"
-                        />
+              <>
+                <div className="mt-8 grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                  {clientItems.slice(0, 8).map((client) => (
+                    <div
+                      key={client.id}
+                      className="flex min-h-[100px] flex-col items-center justify-center gap-2 rounded-md border border-[var(--line)] bg-[#f5f7f9] px-4 py-4 text-center"
+                    >
+                      <div className="relative flex h-10 w-full items-center justify-center">
+                        {client.logo ? (
+                          <Image
+                            src={client.logo}
+                            alt={client.name}
+                            fill
+                            className="object-contain"
+                            sizes="200px"
+                          />
+                        ) : (
+                          <div className="h-full w-full rounded-md bg-white" aria-hidden />
+                        )}
                       </div>
-                    ) : (
-                      <p className="text-sm font-semibold tracking-wide text-[var(--ink)]">
-                        {client.name}
+                      <p className="text-sm font-medium tracking-wide text-[var(--ink)]">
+                        {client.name || "—"}
                       </p>
-                    )}
-                  </div>
-                ))}
-              </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-8 flex justify-center">
+                  <a
+                    href="/clients"
+                    className="inline-flex items-center justify-center rounded-md border border-[var(--navy)] px-5 py-2.5 text-sm font-semibold text-[var(--navy)] transition-colors hover:bg-[var(--navy)] hover:!text-white"
+                  >
+                    {t.viewMoreClients}
+                  </a>
+                </div>
+              </>
             ) : (
               <p className="mt-6 text-sm text-[var(--muted)]">{t.clientsLead}</p>
             )}
@@ -255,9 +266,15 @@ function HomeSections() {
   );
 }
 
-export function HomePage({ content }: { content: SiteContent }) {
+export function HomePage({
+  content,
+  initialLocale,
+}: {
+  content: SiteContent;
+  initialLocale?: "ko" | "en";
+}) {
   return (
-    <LanguageProvider siteContent={content}>
+    <LanguageProvider siteContent={content} initialLocale={initialLocale}>
       <HomeSections />
     </LanguageProvider>
   );

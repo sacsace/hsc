@@ -1,17 +1,16 @@
 import { randomBytes } from "crypto";
 import { promises as fs } from "fs";
-import path from "path";
 import { NextResponse } from "next/server";
 import { isAuthenticated } from "@/lib/auth";
 import type { Inquiry } from "@/lib/inquiry";
+import { ensureRuntimeInquiriesFile, inquiriesFilePath } from "@/lib/storage";
 
 export const runtime = "nodejs";
 
-const inquiriesPath = path.join(process.cwd(), "data", "inquiries.json");
-
 async function readInquiries(): Promise<Inquiry[]> {
   try {
-    const raw = await fs.readFile(inquiriesPath, "utf-8");
+    const filePath = await ensureRuntimeInquiriesFile();
+    const raw = await fs.readFile(filePath, "utf-8");
     return JSON.parse(raw) as Inquiry[];
   } catch {
     return [];
@@ -19,8 +18,8 @@ async function readInquiries(): Promise<Inquiry[]> {
 }
 
 async function writeInquiries(items: Inquiry[]) {
-  await fs.mkdir(path.dirname(inquiriesPath), { recursive: true });
-  await fs.writeFile(inquiriesPath, JSON.stringify(items, null, 2), "utf-8");
+  const filePath = await ensureRuntimeInquiriesFile();
+  await fs.writeFile(filePath, JSON.stringify(items, null, 2), "utf-8");
 }
 
 export async function GET() {

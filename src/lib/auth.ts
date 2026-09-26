@@ -1,15 +1,12 @@
 import { createHmac, timingSafeEqual } from "crypto";
 import { cookies } from "next/headers";
+import { verifyAdminPassword } from "@/lib/admin-password";
 
 const COOKIE_NAME = "hsc_admin_session";
 const MAX_AGE = 60 * 60 * 24 * 7; // 7 days
 
 function getSecret() {
   return process.env.ADMIN_SECRET || process.env.ADMIN_PASSWORD || "hankook-admin-change-me";
-}
-
-export function getAdminPassword() {
-  return process.env.ADMIN_PASSWORD || "admin1234";
 }
 
 function sign(value: string) {
@@ -39,6 +36,10 @@ export function verifySessionToken(token: string | undefined): boolean {
 export async function isAuthenticated() {
   const jar = await cookies();
   return verifySessionToken(jar.get(COOKIE_NAME)?.value);
+}
+
+export async function checkAdminPassword(password: string) {
+  return verifyAdminPassword(password);
 }
 
 export function sessionCookieOptions(token: string) {

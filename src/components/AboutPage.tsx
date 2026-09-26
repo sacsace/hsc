@@ -48,13 +48,13 @@ function AboutSections() {
               <p className="section-label">{t.aboutLabel}</p>
               <h2 className="section-title">{greeting.title}</h2>
               {lead ? (
-                <p className="mt-4 max-w-xl font-display text-lg font-semibold leading-snug text-[var(--navy)] md:text-xl">
+                <p className="mt-4 max-w-xl text-justify text-[0.98rem] font-normal leading-relaxed text-[var(--ink)] md:text-[1.02rem]">
                   {lead}
                 </p>
               ) : null}
-              <div className="mt-6 space-y-4 text-[1.02rem] leading-relaxed text-[var(--muted)]">
+              <div className="mt-5 max-w-xl space-y-3.5 text-justify text-[0.95rem] font-normal leading-relaxed text-[var(--muted)] md:text-[0.98rem]">
                 {body.map((paragraph) => (
-                  <p key={paragraph.slice(0, 24)} className="whitespace-pre-line">
+                  <p key={paragraph.slice(0, 24)} className="whitespace-pre-line text-justify">
                     {paragraph}
                   </p>
                 ))}
@@ -176,9 +176,15 @@ function AboutSections() {
   );
 }
 
-export function AboutPage({ content }: { content: SiteContent }) {
+export function AboutPage({
+  content,
+  initialLocale,
+}: {
+  content: SiteContent;
+  initialLocale?: "ko" | "en";
+}) {
   return (
-    <LanguageProvider siteContent={content}>
+    <LanguageProvider siteContent={content} initialLocale={initialLocale}>
       <AboutSections />
     </LanguageProvider>
   );

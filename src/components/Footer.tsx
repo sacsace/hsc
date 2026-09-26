@@ -3,6 +3,8 @@
 import { useLanguage } from "@/components/LanguageProvider";
 import { SiteLogo } from "@/components/SiteLogo";
 
+const MVS_URL = process.env.NEXT_PUBLIC_MVS_URL || "https://www.mvsystem.in";
+
 export function Footer() {
   const { content, t } = useLanguage();
 
@@ -13,6 +15,22 @@ export function Footer() {
           <div>
             <SiteLogo tone="light" className="!h-8 md:!h-9" />
             <p className="mt-3 max-w-md text-sm leading-relaxed text-white/65">{t.footerTagline}</p>
+            <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 text-sm">
+              <a
+                href="/admin"
+                className="font-medium text-white/75 underline decoration-white/25 underline-offset-4 transition-colors hover:text-white hover:decoration-white/60"
+              >
+                {t.footerAdmin}
+              </a>
+              <a
+                href={MVS_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-white/75 underline decoration-white/25 underline-offset-4 transition-colors hover:text-white hover:decoration-white/60"
+              >
+                {t.footerMvs}
+              </a>
+            </div>
           </div>
           <div className="text-sm text-white/65 md:text-right">
             <p>Bangalore, Karnataka, India</p>

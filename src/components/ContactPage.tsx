@@ -74,9 +74,15 @@ function ContactSections() {
   );
 }
 
-export function ContactPage({ content }: { content: SiteContent }) {
+export function ContactPage({
+  content,
+  initialLocale,
+}: {
+  content: SiteContent;
+  initialLocale?: "ko" | "en";
+}) {
   return (
-    <LanguageProvider siteContent={content}>
+    <LanguageProvider siteContent={content} initialLocale={initialLocale}>
       <ContactSections />
     </LanguageProvider>
   );

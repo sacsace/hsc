@@ -1,14 +1,17 @@
+import type { Metadata } from "next";
 import { getContent } from "@/lib/content";
 import { AboutPage } from "@/components/AboutPage";
+import { getRequestLocale } from "@/lib/locale";
+import { buildPageMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
-  title: "회사 소개 | Hankook Service Center",
-  description: "Hankook Service Center 대표 인사말, 회사 개요, 연혁 및 인증 안내",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getRequestLocale();
+  return buildPageMetadata("about", locale, "/about");
+}
 
 export default async function Page() {
-  const content = await getContent();
-  return <AboutPage content={content} />;
+  const [content, locale] = await Promise.all([getContent(), getRequestLocale()]);
+  return <AboutPage content={content} initialLocale={locale} />;
 }

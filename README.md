@@ -14,18 +14,43 @@ npm run dev
 - Site: [http://localhost:3500](http://localhost:3500)
 - Admin: [http://localhost:3500/admin](http://localhost:3500/admin)
 
-Default admin password: `admin1234` (change in `.env.local`)
+Default admin password: `admin1234` (change in admin **보안** menu or `.env.local`)
 
 ## Environment
 
 ```env
+NEXT_PUBLIC_SITE_URL=https://hksc.in
+NEXT_PUBLIC_MVS_URL=https://www.mvsystem.in
 ADMIN_PASSWORD=admin1234
 ADMIN_SECRET=your-random-secret
+# Optional override for persistent storage (defaults to ./data locally,
+# or RAILWAY_VOLUME_MOUNT_PATH on Railway)
+# DATA_DIR=/data
 ```
 
-## Content
+After changing the password in the admin UI, it is stored in `data/admin.json` (not committed to git).
 
-Editable JSON lives in `data/content.json`. The admin UI reads/writes this file via `/api/content`.
+## Content & uploads (persistence)
+
+Editable JSON lives under the data directory (`content.json`, `inquiries.json`).  
+Admin image uploads are stored in `data/uploads/` and served at `/uploads/...`.
+
+**Railway (required for production):** redeploy wipes the container filesystem. Attach a **Volume** so CMS edits and uploaded images survive:
+
+1. Railway project → service → **Volumes** → Add Volume
+2. Mount path: `/data` (do **not** use `/app/data` — that hides the seeded `content.json` in the image)
+3. Redeploy
+
+Railway sets `RAILWAY_VOLUME_MOUNT_PATH=/data` automatically. The app then reads/writes:
+
+- `/data/content.json` — CMS content
+- `/data/inquiries.json` — contact inquiries
+- `/data/admin.json` — admin password hash
+- `/data/uploads/*` — uploaded images
+
+On first boot with an empty volume, `content.json` is copied from the image seed.
+
+Static brand assets (logo, favicon, hero videos under `public/images`, `public/videos`) stay in git and are fine without a volume.
 
 ## Stack
 
