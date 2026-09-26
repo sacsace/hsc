@@ -26,9 +26,22 @@ ADMIN_SECRET=your-random-secret
 # Optional override for persistent storage (defaults to ./data locally,
 # or RAILWAY_VOLUME_MOUNT_PATH on Railway)
 # DATA_DIR=/data
+
+# Optional Google SMTP fallback (prefer Admin → 메일 설정 UI)
+# SMTP_ENABLED=true
+# SMTP_HOST=smtp.gmail.com
+# SMTP_PORT=465
+# SMTP_SECURE=true
+# SMTP_USER=you@gmail.com
+# SMTP_PASS=your-16-char-app-password
+# SMTP_FROM_NAME=Hankook Service Center
+# SMTP_FROM_EMAIL=you@gmail.com
+# MAIL_TO=hyun.hs@hksc.in
 ```
 
 After changing the password in the admin UI, it is stored in `data/admin.json` (not committed to git).
+
+**Inquiry email:** open Admin → **메일 설정**, enable sending, enter Gmail + [App Password](https://myaccount.google.com/apppasswords), set recipient, then **테스트 메일 보내기**. Settings are saved in `data/mail.json` (gitignored / volume).
 
 ## Content & uploads (persistence)
 
@@ -46,6 +59,7 @@ Railway sets `RAILWAY_VOLUME_MOUNT_PATH=/data` automatically. The app then reads
 - `/data/content.json` — CMS content
 - `/data/inquiries.json` — contact inquiries
 - `/data/admin.json` — admin password hash
+- `/data/mail.json` — Google SMTP settings
 - `/data/uploads/*` — uploaded images
 
 On first boot with an empty volume, `content.json` is copied from the image seed.

@@ -11,6 +11,7 @@ export type AdminSectionId =
   | "gallery"
   | "affiliate"
   | "inquiries"
+  | "mail"
   | "security";
 
 type MenuItem = { id: AdminSectionId; label: string; desc: string };
@@ -26,6 +27,7 @@ const menuKo: MenuItem[] = [
   { id: "gallery", label: "갤러리", desc: "사진 관리" },
   { id: "affiliate", label: "관계사", desc: "한국 관계사" },
   { id: "inquiries", label: "문의 내역", desc: "접수된 문의" },
+  { id: "mail", label: "메일 설정", desc: "Google SMTP" },
   { id: "security", label: "보안", desc: "비밀번호 변경" },
 ];
 
@@ -40,6 +42,7 @@ const menuEn: MenuItem[] = [
   { id: "gallery", label: "Gallery", desc: "Photo management" },
   { id: "affiliate", label: "Affiliate", desc: "Korea affiliate" },
   { id: "inquiries", label: "Inquiries", desc: "Received messages" },
+  { id: "mail", label: "Mail", desc: "Google SMTP" },
   { id: "security", label: "Security", desc: "Change password" },
 ];
 
@@ -216,6 +219,28 @@ export function adminUi(locale: Locale) {
     inquiriesCompany: en ? "Company" : "회사",
     inquiriesMessage: en ? "Message" : "내용",
     inquiriesDate: en ? "Date" : "일시",
+
+    mailTitle: en ? "Mail settings" : "메일 설정",
+    mailHint: en
+      ? "Use a Google account App Password (SMTP). When enabled, new inquiries are emailed to the recipient."
+      : "Google 계정 앱 비밀번호(SMTP)를 사용합니다. 활성화하면 새 문의가 수신 메일로 발송됩니다.",
+    mailEnabled: en ? "Enable inquiry email" : "문의 메일 발송 사용",
+    mailHost: en ? "SMTP host" : "SMTP 호스트",
+    mailPort: en ? "Port" : "포트",
+    mailSecure: en ? "Use SSL (465)" : "SSL 사용 (465)",
+    mailUser: en ? "Gmail address" : "Gmail 주소",
+    mailPass: en ? "App password" : "앱 비밀번호",
+    mailPassKeep: en ? "Leave blank to keep the current password" : "비워 두면 기존 비밀번호 유지",
+    mailFromName: en ? "From name" : "발신자 이름",
+    mailFromEmail: en ? "From email (optional)" : "발신 이메일 (선택)",
+    mailTo: en ? "Recipient email" : "수신 이메일",
+    mailSave: en ? "Save mail settings" : "메일 설정 저장",
+    mailTest: en ? "Send test email" : "테스트 메일 보내기",
+    mailSaved: en ? "Mail settings saved." : "메일 설정이 저장되었습니다.",
+    mailTestOk: en ? "Test email sent." : "테스트 메일을 보냈습니다.",
+    mailGuide: en
+      ? "Google Account → Security → 2-Step Verification → App passwords"
+      : "Google 계정 → 보안 → 2단계 인증 → 앱 비밀번호에서 16자리 비밀번호를 발급하세요.",
   };
 }
 

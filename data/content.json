@@ -2,7 +2,7 @@
   "ko": {
     "hero": {
       "brand": "Hankook Service Center",
-      "headline": "Total Air Solution",
+      "headline": "Total Air Solution Service",
       "subheadline": "에어 컴프레서 판매·수리·유지보수 인도에서 신뢰할 수 있는 산업용 에어 솔루션을 제공합니다.",
       "ctaLabel": "문의하기",
       "ctaHref": "/contact",
@@ -113,11 +113,6 @@
         "date": "2022.08",
         "detail": "Kluber Lubrication India 컴프레서 오일 판매 계약",
         "id": "h-ko-9"
-      },
-      {
-        "date": "2",
-        "detail": "",
-        "id": "h-ko-10"
       }
     ],
     "performances": [

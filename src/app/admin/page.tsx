@@ -6,6 +6,7 @@ import type {
   CertificateItem,
   ClientItem,
   GalleryItem,
+  HeroSlide,
   HistoryItem,
   Locale,
   LocaleContent,
@@ -30,6 +31,24 @@ function AdminSymbol({ className = "" }: { className?: string }) {
     />
   );
 }
+
+/** Keep top-level hero copy and slide overlays in sync for the homepage. */
+function syncHeroText(
+  hero: LocaleContent["hero"],
+  patch: Partial<Pick<LocaleContent["hero"], "brand" | "headline" | "subheadline" | "ctaLabel" | "ctaHref">>,
+) {
+  const next = { ...hero, ...patch };
+  const slides = (next.slides || []).map((slide: HeroSlide) => ({
+    ...slide,
+    ...(patch.brand !== undefined ? { brand: patch.brand, label: patch.brand } : {}),
+    ...(patch.headline !== undefined ? { headline: patch.headline } : {}),
+    ...(patch.subheadline !== undefined ? { subheadline: patch.subheadline } : {}),
+    ...(patch.ctaLabel !== undefined ? { ctaLabel: patch.ctaLabel } : {}),
+    ...(patch.ctaHref !== undefined ? { ctaHref: patch.ctaHref } : {}),
+  }));
+  return { ...next, slides };
+}
+
 export default function AdminPage() {
   const [authed, setAuthed] = useState(false);
   const [checking, setChecking] = useState(true);
@@ -296,6 +315,7 @@ export default function AdminPage() {
                       : t.editing(activeMenu.label)}
               </p>
               {section !== "inquiries" &&
+                section !== "mail" &&
                 section !== "security" &&
                 (["ko", "en"] as const).map((code) => (
                   <button
@@ -324,6 +344,12 @@ export default function AdminPage() {
               <InquiriesPanel ui={t} />
             </div>
           </div>
+        ) : section === "mail" ? (
+          <div className="flex-1 overflow-x-auto px-3 py-5 sm:px-4 md:px-6 md:py-6 lg:px-8">
+            <div className="w-full min-w-0 max-w-xl">
+              <MailPanel ui={t} />
+            </div>
+          </div>
         ) : section === "security" ? (
           <div className="flex-1 overflow-x-auto px-3 py-5 sm:px-4 md:px-6 md:py-6 lg:px-8">
             <div className="w-full min-w-0 max-w-xl">
@@ -335,14 +361,21 @@ export default function AdminPage() {
           <div className="flex-1 overflow-x-auto px-3 py-5 sm:px-4 md:px-6 md:py-6 lg:px-8">
             <div className="w-full min-w-0">
               {section === "hero" && (
-                <Panel title={t.hero}>
+                <Panel
+                  title={t.hero}
+                  hint={
+                    editLocale === "ko"
+                      ? "수정하면 약 1초 후 자동 저장되며, 홈 히어로 슬라이드 문구에 바로 반영됩니다."
+                      : "Edits auto-save after about 1 second and update the home hero slides."
+                  }
+                >
                   <Field
                     label={t.brand}
                     value={localeContent.hero.brand}
                     onChange={(v) =>
                       updateLocale({
                         ...localeContent,
-                        hero: { ...localeContent.hero, brand: v },
+                        hero: syncHeroText(localeContent.hero, { brand: v }),
                       })
                     }
                   />
@@ -352,7 +385,7 @@ export default function AdminPage() {
                     onChange={(v) =>
                       updateLocale({
                         ...localeContent,
-                        hero: { ...localeContent.hero, headline: v },
+                        hero: syncHeroText(localeContent.hero, { headline: v }),
                       })
                     }
                   />
@@ -362,7 +395,7 @@ export default function AdminPage() {
                     onChange={(v) =>
                       updateLocale({
                         ...localeContent,
-                        hero: { ...localeContent.hero, subheadline: v },
+                        hero: syncHeroText(localeContent.hero, { subheadline: v }),
                       })
                     }
                   />
@@ -372,7 +405,7 @@ export default function AdminPage() {
                     onChange={(v) =>
                       updateLocale({
                         ...localeContent,
-                        hero: { ...localeContent.hero, ctaLabel: v },
+                        hero: syncHeroText(localeContent.hero, { ctaLabel: v }),
                       })
                     }
                   />
@@ -910,6 +943,233 @@ function PerformanceEditor({
         />
       )}
     </>
+  );
+}
+
+function MailPanel({ ui }: { ui: AdminUi }) {
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [testing, setTesting] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [enabled, setEnabled] = useState(false);
+  const [host, setHost] = useState("smtp.gmail.com");
+  const [port, setPort] = useState("465");
+  const [secure, setSecure] = useState(true);
+  const [user, setUser] = useState("");
+  const [pass, setPass] = useState("");
+  const [hasPassword, setHasPassword] = useState(false);
+  const [fromName, setFromName] = useState("Hankook Service Center");
+  const [fromEmail, setFromEmail] = useState("");
+  const [to, setTo] = useState("");
+
+  useEffect(() => {
+    void (async () => {
+      setLoading(true);
+      const res = await fetch("/api/mail");
+      setLoading(false);
+      if (!res.ok) return;
+      const data = await res.json();
+      setEnabled(Boolean(data.enabled));
+      setHost(data.host || "smtp.gmail.com");
+      setPort(String(data.port || 465));
+      setSecure(Boolean(data.secure));
+      setUser(data.user || "");
+      setHasPassword(Boolean(data.hasPassword));
+      setFromName(data.fromName || "Hankook Service Center");
+      setFromEmail(data.fromEmail || "");
+      setTo(data.to || "");
+    })();
+  }, []);
+
+  async function onSave(e: FormEvent) {
+    e.preventDefault();
+    setSaving(true);
+    setMessage("");
+    setError("");
+    const res = await fetch("/api/mail", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        enabled,
+        host,
+        port: Number(port) || 465,
+        secure,
+        user,
+        pass,
+        fromName,
+        fromEmail,
+        to,
+      }),
+    });
+    setSaving(false);
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      setError(data.error || "저장 실패");
+      return;
+    }
+    setPass("");
+    setHasPassword(Boolean(data.settings?.hasPassword));
+    setMessage(ui.mailSaved);
+  }
+
+  async function onTest() {
+    setTesting(true);
+    setMessage("");
+    setError("");
+    const res = await fetch("/api/mail", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "test" }),
+    });
+    setTesting(false);
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      setError(data.error || "테스트 발송 실패");
+      return;
+    }
+    setMessage(ui.mailTestOk);
+  }
+
+  if (loading) {
+    return <p className="text-sm text-[var(--muted)]">{ui.loading}</p>;
+  }
+
+  return (
+    <form onSubmit={onSave}>
+      <Panel title={ui.mailTitle} hint={ui.mailHint}>
+        <p className="rounded-md border border-[var(--line)] bg-[#f8fafb] px-3 py-2 text-xs leading-relaxed text-[var(--muted)]">
+          {ui.mailGuide}
+        </p>
+
+        <label className="flex items-center gap-2 text-sm font-medium text-[var(--ink)]">
+          <input
+            type="checkbox"
+            checked={enabled}
+            onChange={(e) => setEnabled(e.target.checked)}
+            className="h-4 w-4"
+          />
+          {ui.mailEnabled}
+        </label>
+
+        <label className="block min-w-0 text-sm font-medium text-[var(--ink)]">
+          {ui.mailHost}
+          <input
+            type="text"
+            value={host}
+            onChange={(e) => setHost(e.target.value)}
+            className="mt-1.5 w-full border border-[var(--line)] px-3 py-2 outline-none focus:border-[var(--navy)]"
+            placeholder="smtp.gmail.com"
+            required
+          />
+        </label>
+
+        <div className="grid gap-3 sm:grid-cols-2">
+          <label className="block min-w-0 text-sm font-medium text-[var(--ink)]">
+            {ui.mailPort}
+            <input
+              type="number"
+              value={port}
+              onChange={(e) => {
+                setPort(e.target.value);
+                if (e.target.value === "465") setSecure(true);
+                if (e.target.value === "587") setSecure(false);
+              }}
+              className="mt-1.5 w-full border border-[var(--line)] px-3 py-2 outline-none focus:border-[var(--navy)]"
+              required
+            />
+          </label>
+          <label className="flex items-end gap-2 pb-2 text-sm font-medium text-[var(--ink)]">
+            <input
+              type="checkbox"
+              checked={secure}
+              onChange={(e) => setSecure(e.target.checked)}
+              className="h-4 w-4"
+            />
+            {ui.mailSecure}
+          </label>
+        </div>
+
+        <label className="block min-w-0 text-sm font-medium text-[var(--ink)]">
+          {ui.mailUser}
+          <input
+            type="email"
+            value={user}
+            onChange={(e) => setUser(e.target.value)}
+            className="mt-1.5 w-full border border-[var(--line)] px-3 py-2 outline-none focus:border-[var(--navy)]"
+            placeholder="you@gmail.com"
+            required={enabled}
+          />
+        </label>
+
+        <label className="block min-w-0 text-sm font-medium text-[var(--ink)]">
+          {ui.mailPass}
+          <input
+            type="password"
+            value={pass}
+            onChange={(e) => setPass(e.target.value)}
+            className="mt-1.5 w-full border border-[var(--line)] px-3 py-2 outline-none focus:border-[var(--navy)]"
+            placeholder={hasPassword ? "••••••••••••••••" : "xxxx xxxx xxxx xxxx"}
+            autoComplete="new-password"
+          />
+          <span className="mt-1 block text-xs font-normal text-[var(--muted)]">{ui.mailPassKeep}</span>
+        </label>
+
+        <label className="block min-w-0 text-sm font-medium text-[var(--ink)]">
+          {ui.mailFromName}
+          <input
+            type="text"
+            value={fromName}
+            onChange={(e) => setFromName(e.target.value)}
+            className="mt-1.5 w-full border border-[var(--line)] px-3 py-2 outline-none focus:border-[var(--navy)]"
+          />
+        </label>
+
+        <label className="block min-w-0 text-sm font-medium text-[var(--ink)]">
+          {ui.mailFromEmail}
+          <input
+            type="email"
+            value={fromEmail}
+            onChange={(e) => setFromEmail(e.target.value)}
+            className="mt-1.5 w-full border border-[var(--line)] px-3 py-2 outline-none focus:border-[var(--navy)]"
+            placeholder={user || "you@gmail.com"}
+          />
+        </label>
+
+        <label className="block min-w-0 text-sm font-medium text-[var(--ink)]">
+          {ui.mailTo}
+          <input
+            type="email"
+            value={to}
+            onChange={(e) => setTo(e.target.value)}
+            className="mt-1.5 w-full border border-[var(--line)] px-3 py-2 outline-none focus:border-[var(--navy)]"
+            placeholder="hyun.hs@hksc.in"
+            required={enabled}
+          />
+        </label>
+
+        {error ? <p className="text-sm text-red-600">{error}</p> : null}
+        {message ? <p className="text-sm text-emerald-700">{message}</p> : null}
+
+        <div className="flex flex-wrap gap-2 pt-1">
+          <button
+            type="submit"
+            disabled={saving}
+            className="bg-[var(--navy)] px-4 py-2.5 text-sm font-medium text-white hover:opacity-90 disabled:opacity-60"
+          >
+            {saving ? ui.saving : ui.mailSave}
+          </button>
+          <button
+            type="button"
+            onClick={() => void onTest()}
+            disabled={testing || saving}
+            className="border border-[var(--line)] bg-white px-4 py-2.5 text-sm text-[var(--ink)] hover:bg-[#f5f7f9] disabled:opacity-60"
+          >
+            {testing ? ui.saving : ui.mailTest}
+          </button>
+        </div>
+      </Panel>
+    </form>
   );
 }
 

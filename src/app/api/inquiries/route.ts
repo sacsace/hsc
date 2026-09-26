@@ -3,7 +3,8 @@ import { promises as fs } from "fs";
 import { NextResponse } from "next/server";
 import { isAuthenticated } from "@/lib/auth";
 import type { Inquiry } from "@/lib/inquiry";
-import { ensureRuntimeInquiriesFile, inquiriesFilePath } from "@/lib/storage";
+import { sendInquiryEmail } from "@/lib/mail";
+import { ensureRuntimeInquiriesFile } from "@/lib/storage";
 
 export const runtime = "nodejs";
 
@@ -68,7 +69,14 @@ export async function POST(request: Request) {
   items.unshift(inquiry);
   await writeInquiries(items.slice(0, 500));
 
-  return NextResponse.json({ ok: true });
+  // Persist first; mail failure should not block the visitor confirmation.
+  const mail = await sendInquiryEmail(inquiry);
+
+  return NextResponse.json({
+    ok: true,
+    mailed: mail.ok,
+    ...(mail.ok ? {} : { mailError: mail.error }),
+  });
 }
 
 export async function DELETE(request: Request) {

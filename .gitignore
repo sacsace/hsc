@@ -38,6 +38,8 @@ yarn-error.log*
 
 # local admin password hash (created after password change)
 /data/admin.json
+/data/mail.json
+/data/inquiries.json
 
 # runtime uploads (persisted via Railway Volume in production)
 /data/uploads/

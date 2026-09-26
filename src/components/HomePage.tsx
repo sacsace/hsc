@@ -45,7 +45,15 @@ function HomeSections() {
 
       <main className="flex-1">
         <HeroSlider
-          slides={hero.slides || []}
+          slides={(hero.slides || []).map((slide) => ({
+            ...slide,
+            brand: hero.brand || slide.brand,
+            label: hero.brand || slide.label,
+            headline: hero.headline || slide.headline,
+            subheadline: hero.subheadline || slide.subheadline,
+            ctaLabel: hero.ctaLabel || slide.ctaLabel,
+            ctaHref: hero.ctaHref || slide.ctaHref,
+          }))}
           learnMoreLabel={t.learnMore}
           prevLabel={t.slidePrev}
           nextLabel={t.slideNext}
