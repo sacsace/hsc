@@ -69,6 +69,13 @@ export type UiCopy = {
   clientsEmpty: string;
   viewMore: string;
   viewMoreClients: string;
+  viewMorePerformance: string;
+  performanceEmpty: string;
+  performanceSearch: string;
+  performanceSearchPlaceholder: string;
+  performanceNoResults: string;
+  performanceTotalCount: (n: number) => string;
+  performanceResultCount: (shown: number, total: number) => string;
   contactCta: string;
   contactForm: {
     name: string;
@@ -136,6 +143,12 @@ export const ui: Record<Locale, UiCopy> = {
     performanceLabel: "실적",
     performanceTitle: "주요 실적",
     performanceLead: "판매, 오버홀, 연간 유지보수 계약 등 주요 수행 내역입니다.",
+    performanceEmpty: "등록된 실적이 없습니다.",
+    performanceSearch: "검색",
+    performanceSearchPlaceholder: "날짜, 내용, 고객사 검색",
+    performanceNoResults: "검색 결과가 없습니다.",
+    performanceTotalCount: (n) => `총 ${n}건`,
+    performanceResultCount: (shown, total) => `검색 결과 ${shown}건 / 전체 ${total}건`,
     table: {
       date: "일자",
       details: "내용",
@@ -164,6 +177,7 @@ export const ui: Record<Locale, UiCopy> = {
     clientsEmpty: "등록된 고객사가 없습니다.",
     viewMore: "자세히 보기",
     viewMoreClients: "고객사 더보기",
+    viewMorePerformance: "실적 더보기",
     contactCta: "문의 남기기",
     contactForm: {
       name: "이름",
@@ -173,7 +187,7 @@ export const ui: Record<Locale, UiCopy> = {
       message: "문의 내용",
       namePlaceholder: "홍길동",
       emailPlaceholder: "name@example.com",
-      phonePlaceholder: "010-0000-0000",
+      phonePlaceholder: "+91 98765 43210",
       companyPlaceholder: "회사명을 입력하세요",
       messagePlaceholder: "문의하실 내용을 적어 주세요.",
       submit: "문의 보내기",
@@ -231,6 +245,12 @@ export const ui: Record<Locale, UiCopy> = {
     performanceLabel: "Performance",
     performanceTitle: "Major Performance",
     performanceLead: "Selected sales, overhaul, and annual maintenance work.",
+    performanceEmpty: "No performance records yet.",
+    performanceSearch: "Search",
+    performanceSearchPlaceholder: "Search by date, detail, or client",
+    performanceNoResults: "No matching results.",
+    performanceTotalCount: (n) => `Total ${n}`,
+    performanceResultCount: (shown, total) => `${shown} of ${total} results`,
     table: {
       date: "Date",
       details: "Details",
@@ -259,6 +279,7 @@ export const ui: Record<Locale, UiCopy> = {
     clientsEmpty: "No clients listed yet.",
     viewMore: "View more",
     viewMoreClients: "View all clients",
+    viewMorePerformance: "View all performance",
     contactCta: "Contact us",
     contactForm: {
       name: "Name",
@@ -268,7 +289,7 @@ export const ui: Record<Locale, UiCopy> = {
       message: "Message",
       namePlaceholder: "Your name",
       emailPlaceholder: "name@example.com",
-      phonePlaceholder: "+91 ...",
+      phonePlaceholder: "+91 98765 43210",
       companyPlaceholder: "Company name",
       messagePlaceholder: "Tell us about your inquiry.",
       submit: "Send inquiry",

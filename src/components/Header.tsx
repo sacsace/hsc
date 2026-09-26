@@ -11,7 +11,7 @@ export function Header({ variant = "overlay" }: { variant?: "overlay" | "solid" 
 
   const links = [
     { href: "/about", label: t.nav.about },
-    { href: "/#performance", label: t.nav.performance },
+    { href: "/performance", label: t.nav.performance },
     { href: "/clients", label: t.nav.clients },
     { href: "/team", label: t.nav.team },
     { href: "/gallery", label: t.nav.gallery },

@@ -123,8 +123,8 @@ export function adminUi(locale: Locale) {
     historyEmpty: en ? "No history yet. Add one with the button above." : "등록된 연혁이 없습니다. 위 버튼으로 추가하세요.",
     performance: en ? "Performance" : "실적",
     performanceHint: en
-      ? "Add, edit, or delete items, then click Save to apply to the site."
-      : "추가·수정·삭제 후 저장을 누르면 사이트에 반영됩니다.",
+      ? "Add, edit, or delete items, then click Save. List is sorted by date (newest first)."
+      : "추가·수정·삭제 후 저장을 누르면 사이트에 반영됩니다. 날짜 기준(최신순)으로 정렬됩니다.",
     performanceList: en ? "Performance list" : "실적 목록",
     performanceAdd: en ? "+ Add performance" : "+ 실적 추가",
     performanceEmpty: en

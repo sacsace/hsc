@@ -182,6 +182,12 @@
         "id": "p-ko-9"
       },
       {
+        "id": "p-1790458452352",
+        "date": "2022.05.01",
+        "detail": "test",
+        "client": "test"
+      },
+      {
         "date": "2022.04.30",
         "detail": "GA160, GA75, GA55, GA37 오버홀",
         "client": "SHC INDIA",
@@ -257,6 +263,12 @@
           "title": "디자인 모티브",
           "image": "/images/pattern-light.png",
           "caption": "브랜드 비주얼"
+        },
+        {
+          "id": "g-1790459493075",
+          "title": "ㅁㅁㅁㅁ",
+          "image": "/uploads/1790459495672-359dc5e3.jpg",
+          "caption": "ㅁㅁㅁ"
         }
       ]
     },
@@ -272,7 +284,7 @@
         {
           "id": "c-2",
           "name": "KB Autosys",
-          "logo": ""
+          "logo": "/uploads/1790459412606-f5128ae1.jpg"
         },
         {
           "id": "c-3",

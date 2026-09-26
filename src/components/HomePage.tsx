@@ -29,7 +29,9 @@ function SectionLink({ href, label }: { href: string; label: string }) {
 function HomeSections() {
   const { content, t } = useLanguage();
   const { hero, greeting, company, history, performances, clients, team, gallery } = content;
-  const sortedPerformances = sortPerformances(performances, true).slice(0, 4);
+  const sortedPerformances = sortPerformances(performances || [], true)
+    .filter((row) => row.date?.trim() || row.detail?.trim() || row.client?.trim())
+    .slice(0, 4);
   const greetingParts = splitParagraphs(greeting?.body || "");
   const greetingLead = greetingParts[0] || "";
   const greetingPreview = greetingParts[1] || greetingParts[0] || "";
@@ -100,15 +102,15 @@ function HomeSections() {
               <table className="min-w-full text-left text-sm">
                 <thead className="bg-[var(--navy)] text-white">
                   <tr>
-                    <th className="px-4 py-3 font-semibold md:px-5">{t.table.date}</th>
-                    <th className="px-4 py-3 font-semibold md:px-5">{t.table.details}</th>
-                    <th className="px-4 py-3 font-semibold md:px-5">{t.table.client}</th>
+                    <th className="px-4 py-3 font-medium md:px-5">{t.table.date}</th>
+                    <th className="px-4 py-3 font-medium md:px-5">{t.table.details}</th>
+                    <th className="px-4 py-3 font-medium md:px-5">{t.table.client}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {sortedPerformances.map((row, i) => (
                     <tr
-                      key={`${row.date}-${row.client}-${i}`}
+                      key={row.id || `${row.date}-${row.client}-${i}`}
                       className="border-t border-[var(--line)] align-top"
                     >
                       <td className="whitespace-nowrap px-4 py-3 text-[var(--muted)] md:px-5">
@@ -120,6 +122,14 @@ function HomeSections() {
                   ))}
                 </tbody>
               </table>
+            </div>
+            <div className="mt-8 flex justify-center">
+              <a
+                href="/performance"
+                className="inline-flex items-center justify-center rounded-md border border-[var(--navy)] px-5 py-2.5 text-sm font-medium text-[var(--navy)] transition-colors hover:bg-[var(--navy)] hover:!text-white"
+              >
+                {t.viewMorePerformance}
+              </a>
             </div>
           </div>
         </section>

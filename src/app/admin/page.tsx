@@ -12,6 +12,7 @@ import type {
   SiteContent,
   TeamMember,
 } from "@/lib/types";
+import { sortPerformances } from "@/lib/types";
 import type { Inquiry } from "@/lib/inquiry";
 import { SiteLogo } from "@/components/SiteLogo";
 import { adminMenu, adminUi, type AdminSectionId, type AdminUi } from "@/lib/admin-ui";
@@ -448,9 +449,14 @@ export default function AdminPage() {
                 <PerformanceEditor
                   ui={t}
                   items={localeContent.performances}
-                  onSave={(performances) =>
-                    void persistLocaleNow({ ...localeContent, performances })
-                  }
+                  onSave={(performances) => {
+                    const current = contentRef.current;
+                    if (!current) return;
+                    void persistLocaleNow({
+                      ...current[editLocale],
+                      performances,
+                    });
+                  }}
                 />
               )}
 
@@ -715,13 +721,16 @@ function HistoryEditor({
 }
 
 function ensurePerformanceIds(items: PerformanceItem[]): PerformanceItem[] {
-  return items.map((item, index) =>
-    item.id
-      ? item
-      : {
-          ...item,
-          id: `p-${index}-${Math.random().toString(36).slice(2, 9)}`,
-        },
+  return sortPerformances(
+    items.map((item, index) =>
+      item.id
+        ? item
+        : {
+            ...item,
+            id: `p-${index}-${Math.random().toString(36).slice(2, 9)}`,
+          },
+    ),
+    true,
   );
 }
 
@@ -751,24 +760,14 @@ function PerformanceEditor({
     setRows((prev) => prev.map((item, i) => (i === index ? { ...item, ...patch } : item)));
   }
 
+  function sortByDate() {
+    setRows((prev) => sortPerformances(prev, true));
+  }
+
   function addItem() {
     setDirty(true);
     setSavedFlash(false);
     setRows((prev) => [...prev, { id: `p-${Date.now()}`, date: "", detail: "", client: "" }]);
-  }
-
-  function moveItem(index: number, direction: -1 | 1) {
-    const next = index + direction;
-    setRows((prev) => {
-      if (next < 0 || next >= prev.length) return prev;
-      setDirty(true);
-      setSavedFlash(false);
-      const copy = [...prev];
-      const tmp = copy[index];
-      copy[index] = copy[next];
-      copy[next] = tmp;
-      return copy;
-    });
   }
 
   function requestRemove(index: number) {
@@ -785,8 +784,10 @@ function PerformanceEditor({
   }
 
   async function handleSave() {
+    const sorted = sortPerformances(rows, true);
+    setRows(sorted);
     setSaving(true);
-    await onSave(rows);
+    await onSave(sorted);
     setSaving(false);
     setDirty(false);
     setSavedFlash(true);
@@ -807,7 +808,7 @@ function PerformanceEditor({
         </div>
 
         <div className="overflow-x-auto border border-[var(--line)]">
-          <div className="hidden min-w-[40rem] border-b border-[var(--line)] bg-[#f5f7f9] px-3 py-2 text-xs font-medium text-[var(--muted)] sm:grid sm:grid-cols-[8.5rem_1fr_9rem_7.5rem] sm:gap-3 sm:px-4">
+          <div className="hidden min-w-[36rem] border-b border-[var(--line)] bg-[#f5f7f9] px-3 py-2 text-xs font-medium text-[var(--muted)] sm:grid sm:grid-cols-[8.5rem_1fr_9rem_4.5rem] sm:gap-3 sm:px-4">
             <span>{ui.date}</span>
             <span>{ui.detail}</span>
             <span>{ui.performanceClient}</span>
@@ -820,7 +821,7 @@ function PerformanceEditor({
             rows.map((item, index) => (
               <div
                 key={item.id || `perf-${index}`}
-                className="grid min-w-[40rem] gap-2 border-b border-[var(--line)] px-3 py-3 last:border-b-0 sm:grid-cols-[8.5rem_1fr_9rem_7.5rem] sm:items-start sm:gap-3 sm:px-4"
+                className="grid min-w-[36rem] gap-2 border-b border-[var(--line)] px-3 py-3 last:border-b-0 sm:grid-cols-[8.5rem_1fr_9rem_4.5rem] sm:items-start sm:gap-3 sm:px-4"
               >
                 <label className="block text-sm">
                   <span className="mb-1 block text-xs font-medium text-[var(--muted)] sm:hidden">
@@ -829,6 +830,7 @@ function PerformanceEditor({
                   <input
                     value={item.date}
                     onChange={(e) => updateItem(index, { date: e.target.value })}
+                    onBlur={sortByDate}
                     placeholder="2022.11.30"
                     className="w-full border border-[var(--line)] bg-[#f8fafb] px-2.5 py-2 text-sm outline-none focus:border-[var(--navy)] focus:bg-white"
                   />
@@ -855,25 +857,7 @@ function PerformanceEditor({
                     className="w-full border border-[var(--line)] bg-[#f8fafb] px-2.5 py-2 text-sm outline-none focus:border-[var(--navy)] focus:bg-white"
                   />
                 </label>
-                <div className="flex items-center justify-end gap-1">
-                  <button
-                    type="button"
-                    onClick={() => moveItem(index, -1)}
-                    disabled={index === 0}
-                    className="border border-[var(--line)] px-2 py-1.5 text-xs disabled:opacity-30"
-                    aria-label="위로"
-                  >
-                    ↑
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => moveItem(index, 1)}
-                    disabled={index === rows.length - 1}
-                    className="border border-[var(--line)] px-2 py-1.5 text-xs disabled:opacity-30"
-                    aria-label="아래로"
-                  >
-                    ↓
-                  </button>
+                <div className="flex items-center justify-end">
                   <button
                     type="button"
                     onClick={() => requestRemove(index)}
@@ -891,9 +875,7 @@ function PerformanceEditor({
           {savedFlash && !dirty ? (
             <p className="text-sm text-emerald-700">{ui.performanceSaved}</p>
           ) : dirty ? (
-            <p className="text-sm text-[var(--muted)]">
-              {ui.editing(ui.performance)}
-            </p>
+            <p className="text-sm text-[var(--muted)]">{ui.editing(ui.performance)}</p>
           ) : null}
           <button
             type="button"

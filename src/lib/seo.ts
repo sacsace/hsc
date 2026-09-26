@@ -7,7 +7,8 @@ export type SeoPage =
   | "team"
   | "gallery"
   | "contact"
-  | "clients";
+  | "clients"
+  | "performance";
 
 type SeoCopy = {
   title: string;
@@ -77,6 +78,13 @@ const seo: Record<Locale, Record<SeoPage, SeoCopy>> = {
       ogTitle: `고객사 | ${SITE_NAME}`,
       ogDescription: "함께 성장해 온 주요 고객사를 확인하세요.",
     },
+    performance: {
+      title: `실적 | ${SITE_NAME}`,
+      description: "판매, 오버홀, 연간 유지보수 등 Hankook Service Center 주요 수행 실적.",
+      keywords: ["실적", "오버홀", "유지보수", "Hankook Service Center"],
+      ogTitle: `실적 | ${SITE_NAME}`,
+      ogDescription: "주요 수행 실적을 확인하세요.",
+    },
   },
   en: {
     home: {
@@ -130,6 +138,14 @@ const seo: Record<Locale, Record<SeoPage, SeoCopy>> = {
       keywords: ["clients", "partners", "Hankook Service Center"],
       ogTitle: `Clients | ${SITE_NAME}`,
       ogDescription: "See the partners we have worked with.",
+    },
+    performance: {
+      title: `Performance | ${SITE_NAME}`,
+      description:
+        "Major sales, overhaul, and annual maintenance work by Hankook Service Center.",
+      keywords: ["performance", "overhaul", "maintenance", "Hankook Service Center"],
+      ogTitle: `Performance | ${SITE_NAME}`,
+      ogDescription: "Browse our key project and service records.",
     },
   },
 };

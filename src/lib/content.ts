@@ -58,7 +58,7 @@ export async function getContent(): Promise<SiteContent> {
                 subheadline:
                   "산업 현장의 컴프레서 설비를 점검하고, 생산이 멈추지 않도록 신속하고 정확한 서비스를 제공합니다.",
                 ctaLabel: "실적 보기",
-                ctaHref: "#performance",
+                ctaHref: "/performance",
               },
               {
                 id: "slide-pipe",
@@ -96,7 +96,7 @@ export async function getContent(): Promise<SiteContent> {
                 subheadline:
                   "We inspect and service compressor facilities so your production stays stable and efficient.",
                 ctaLabel: "View Performance",
-                ctaHref: "#performance",
+                ctaHref: "/performance",
               },
               {
                 id: "slide-pipe",
