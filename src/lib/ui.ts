@@ -58,6 +58,13 @@ export type UiCopy = {
   teamEmpty: string;
   certLabel: string;
   certTitle: string;
+  certSearch: string;
+  certSearchPlaceholder: string;
+  certNoResults: string;
+  certTotalCount: (n: number) => string;
+  certResultCount: (shown: number, total: number) => string;
+  certViewCard: string;
+  certViewList: string;
   familyLabel: string;
   familyLead: string;
   contactLabel: string;
@@ -67,6 +74,11 @@ export type UiCopy = {
   clientsTitle: string;
   clientsLead: string;
   clientsEmpty: string;
+  clientsSearch: string;
+  clientsSearchPlaceholder: string;
+  clientsNoResults: string;
+  clientsTotalCount: (n: number) => string;
+  clientsResultCount: (shown: number, total: number) => string;
   viewMore: string;
   viewMoreClients: string;
   viewMorePerformance: string;
@@ -76,6 +88,13 @@ export type UiCopy = {
   performanceNoResults: string;
   performanceTotalCount: (n: number) => string;
   performanceResultCount: (shown: number, total: number) => string;
+  gallerySearch: string;
+  gallerySearchPlaceholder: string;
+  galleryNoResults: string;
+  galleryTotalCount: (n: number) => string;
+  galleryResultCount: (shown: number, total: number) => string;
+  galleryViewCard: string;
+  galleryViewList: string;
   contactCta: string;
   contactForm: {
     name: string;
@@ -166,6 +185,13 @@ export const ui: Record<Locale, UiCopy> = {
     teamEmpty: "팀원 정보는 준비 중입니다.",
     certLabel: "인증",
     certTitle: "인증 서류",
+    certSearch: "검색",
+    certSearchPlaceholder: "서류명 검색",
+    certNoResults: "검색 결과가 없습니다.",
+    certTotalCount: (n) => `총 ${n}건`,
+    certResultCount: (shown, total) => `검색 결과 ${shown}건 / 전체 ${total}건`,
+    certViewCard: "카드로 보기",
+    certViewList: "리스트로 보기",
     familyLabel: "관계사",
     familyLead: "한국 관계사 안내입니다.",
     contactLabel: "문의",
@@ -176,6 +202,11 @@ export const ui: Record<Locale, UiCopy> = {
     clientsLead:
       "고객의 생산 현장에 필요한 압축공기 솔루션과 책임 있는 서비스로, 안정적인 설비 운영과 지속적인 성장을 함께합니다.",
     clientsEmpty: "등록된 고객사가 없습니다.",
+    clientsSearch: "검색",
+    clientsSearchPlaceholder: "고객사명 검색",
+    clientsNoResults: "검색 결과가 없습니다.",
+    clientsTotalCount: (n) => `총 ${n}건`,
+    clientsResultCount: (shown, total) => `검색 결과 ${shown}건 / 전체 ${total}건`,
     viewMore: "자세히 보기",
     viewMoreClients: "고객사 더보기",
     viewMorePerformance: "실적 더보기",
@@ -205,6 +236,13 @@ export const ui: Record<Locale, UiCopy> = {
     slidePrev: "이전 슬라이드",
     slideNext: "다음 슬라이드",
     openInMaps: "지도에서 보기",
+    gallerySearch: "검색",
+    gallerySearchPlaceholder: "제목, 설명 검색",
+    galleryNoResults: "검색 결과가 없습니다.",
+    galleryTotalCount: (n) => `총 ${n}건`,
+    galleryResultCount: (shown, total) => `검색 결과 ${shown}건 / 전체 ${total}건`,
+    galleryViewCard: "카드로 보기",
+    galleryViewList: "리스트로 보기",
   },
   en: {
     nav: {
@@ -269,6 +307,13 @@ export const ui: Record<Locale, UiCopy> = {
     teamEmpty: "Team profiles are being prepared.",
     certLabel: "Certification",
     certTitle: "Certification Documents",
+    certSearch: "Search",
+    certSearchPlaceholder: "Search by document title",
+    certNoResults: "No matching results.",
+    certTotalCount: (n) => `Total ${n}`,
+    certResultCount: (shown, total) => `${shown} of ${total} results`,
+    certViewCard: "Card view",
+    certViewList: "List view",
     familyLabel: "Family Company",
     familyLead: "Reference affiliate in Korea.",
     contactLabel: "Contact",
@@ -279,6 +324,11 @@ export const ui: Record<Locale, UiCopy> = {
     clientsLead:
       "With compressed air solutions and responsible service for production sites, we support stable equipment operation and grow together with our clients.",
     clientsEmpty: "No clients listed yet.",
+    clientsSearch: "Search",
+    clientsSearchPlaceholder: "Search by client name",
+    clientsNoResults: "No matching results.",
+    clientsTotalCount: (n) => `Total ${n}`,
+    clientsResultCount: (shown, total) => `${shown} of ${total} results`,
     viewMore: "View more",
     viewMoreClients: "View all clients",
     viewMorePerformance: "View all performance",
@@ -308,5 +358,12 @@ export const ui: Record<Locale, UiCopy> = {
     slidePrev: "Previous slide",
     slideNext: "Next slide",
     openInMaps: "Open in Maps",
+    gallerySearch: "Search",
+    gallerySearchPlaceholder: "Search by title or caption",
+    galleryNoResults: "No matching results.",
+    galleryTotalCount: (n) => `Total ${n}`,
+    galleryResultCount: (shown, total) => `${shown} of ${total} results`,
+    galleryViewCard: "Card view",
+    galleryViewList: "List view",
   },
 };

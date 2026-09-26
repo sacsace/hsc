@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useMemo, useState } from "react";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { LanguageProvider, useLanguage } from "@/components/LanguageProvider";
@@ -31,8 +32,15 @@ function ClientCard({ client }: { client: ClientItem }) {
 
 function ClientsSections() {
   const { content, t } = useLanguage();
+  const [query, setQuery] = useState("");
   const clients = content.clients;
-  const items = clients?.items || [];
+  const allItems = clients?.items || [];
+
+  const items = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return allItems;
+    return allItems.filter((client) => (client.name || "").toLowerCase().includes(q));
+  }, [allItems, query]);
 
   return (
     <div className="site-shell bg-white">
@@ -53,14 +61,34 @@ function ClientsSections() {
 
         <section className="section bg-white">
           <div className="container">
-            {items.length ? (
+            <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-sm text-[var(--muted)]">
+                {query.trim()
+                  ? t.clientsResultCount(items.length, allItems.length)
+                  : t.clientsTotalCount(allItems.length)}
+              </p>
+              <label className="block w-full max-w-md sm:ml-auto">
+                <span className="sr-only">{t.clientsSearch}</span>
+                <input
+                  type="search"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder={t.clientsSearchPlaceholder}
+                  className="w-full border border-[var(--line)] bg-[#f8fafb] px-3 py-2.5 text-sm outline-none focus:border-[var(--navy)] focus:bg-white"
+                />
+              </label>
+            </div>
+
+            {allItems.length === 0 ? (
+              <p className="text-[var(--muted)]">{t.clientsEmpty}</p>
+            ) : items.length === 0 ? (
+              <p className="text-[var(--muted)]">{t.clientsNoResults}</p>
+            ) : (
               <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {items.map((client) => (
                   <ClientCard key={client.id} client={client} />
                 ))}
               </div>
-            ) : (
-              <p className="text-[var(--muted)]">{t.clientsEmpty}</p>
             )}
           </div>
         </section>

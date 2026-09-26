@@ -14,14 +14,14 @@ npm run dev
 - Site: [http://localhost:3500](http://localhost:3500)
 - Admin: [http://localhost:3500/admin](http://localhost:3500/admin)
 
-Default admin password: `admin1234` (change in admin **보안** menu or `.env.local`)
+Default admin password: `hankook@2026` (change in admin **보안** menu or `.env.local`)
 
 ## Environment
 
 ```env
 NEXT_PUBLIC_SITE_URL=https://hksc.in
 NEXT_PUBLIC_MVS_URL=https://www.mvsystem.in
-ADMIN_PASSWORD=admin1234
+ADMIN_PASSWORD=hankook@2026
 ADMIN_SECRET=your-random-secret
 # Optional override for persistent storage (defaults to ./data locally,
 # or RAILWAY_VOLUME_MOUNT_PATH on Railway)

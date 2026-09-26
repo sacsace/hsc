@@ -1,10 +1,14 @@
 "use client";
 
 import Image from "next/image";
+import { useMemo, useState } from "react";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { LanguageProvider, useLanguage } from "@/components/LanguageProvider";
+import { ViewModeToggle } from "@/components/ViewModeToggle";
 import type { SiteContent } from "@/lib/types";
+
+type CertViewMode = "card" | "list";
 
 function splitParagraphs(text: string) {
   return text
@@ -28,6 +32,15 @@ function AboutSections() {
   const paragraphs = splitParagraphs(greeting.body);
   const lead = paragraphs[0] || "";
   const body = paragraphs.slice(1);
+  const [certQuery, setCertQuery] = useState("");
+  const [certView, setCertView] = useState<CertViewMode>("card");
+  const allCerts = certificates || [];
+
+  const filteredCerts = useMemo(() => {
+    const q = certQuery.trim().toLowerCase();
+    if (!q) return allCerts;
+    return allCerts.filter((cert) => (cert.title || "").toLowerCase().includes(q));
+  }, [allCerts, certQuery]);
 
   return (
     <div className="site-shell bg-white">
@@ -143,29 +156,84 @@ function AboutSections() {
           </div>
         </section>
 
-        {certificates?.length ? (
+        {allCerts.length ? (
           <section id="certificates" className="section bg-[#f5f7f9]">
             <div className="container">
               <p className="section-label">{t.certLabel}</p>
               <h2 className="section-title">{t.certTitle}</h2>
-              <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:max-w-3xl">
-                {certificates.map((cert) => (
-                  <figure key={cert.title} className="border border-[var(--line)] bg-white p-3">
-                    <div className="relative aspect-[3/4] w-full overflow-hidden bg-white sm:aspect-[4/3]">
-                      <Image
-                        src={cert.image}
-                        alt={cert.title}
-                        fill
-                        className="object-contain p-2"
-                        sizes="(max-width: 640px) 100vw, 40vw"
-                      />
-                    </div>
-                    <figcaption className="mt-3 text-sm font-medium text-[var(--muted)]">
-                      {cert.title}
-                    </figcaption>
-                  </figure>
-                ))}
+
+              <div className="mt-6 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                <p className="text-sm text-[var(--muted)]">
+                  {certQuery.trim()
+                    ? t.certResultCount(filteredCerts.length, allCerts.length)
+                    : t.certTotalCount(allCerts.length)}
+                </p>
+
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
+                  <ViewModeToggle
+                    value={certView}
+                    onChange={setCertView}
+                    listLabel={t.certViewList}
+                    cardLabel={t.certViewCard}
+                  />
+
+                  <label className="block w-full max-w-md">
+                    <span className="sr-only">{t.certSearch}</span>
+                    <input
+                      type="search"
+                      value={certQuery}
+                      onChange={(e) => setCertQuery(e.target.value)}
+                      placeholder={t.certSearchPlaceholder}
+                      className="w-full border border-[var(--line)] bg-white px-3 py-2.5 text-sm outline-none focus:border-[var(--navy)]"
+                    />
+                  </label>
+                </div>
               </div>
+
+              {filteredCerts.length === 0 ? (
+                <p className="mt-8 text-[var(--muted)]">{t.certNoResults}</p>
+              ) : certView === "list" ? (
+                <div className="mt-8 divide-y divide-[var(--line)] border border-[var(--line)] bg-white">
+                  {filteredCerts.map((cert) => (
+                    <div
+                      key={cert.title}
+                      className="flex items-center gap-4 px-3 py-3 sm:gap-5 sm:px-4"
+                    >
+                      <div className="relative h-16 w-20 shrink-0 overflow-hidden bg-white sm:h-20 sm:w-24">
+                        <Image
+                          src={cert.image}
+                          alt={cert.title}
+                          fill
+                          className="object-contain p-1"
+                          sizes="96px"
+                        />
+                      </div>
+                      <p className="min-w-0 flex-1 text-sm font-medium text-[var(--ink)] sm:text-base">
+                        {cert.title}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:max-w-3xl">
+                  {filteredCerts.map((cert) => (
+                    <figure key={cert.title} className="border border-[var(--line)] bg-white p-3">
+                      <div className="relative aspect-[3/4] w-full overflow-hidden bg-white sm:aspect-[4/3]">
+                        <Image
+                          src={cert.image}
+                          alt={cert.title}
+                          fill
+                          className="object-contain p-2"
+                          sizes="(max-width: 640px) 100vw, 40vw"
+                        />
+                      </div>
+                      <figcaption className="mt-3 text-sm font-medium text-[var(--muted)]">
+                        {cert.title}
+                      </figcaption>
+                    </figure>
+                  ))}
+                </div>
+              )}
             </div>
           </section>
         ) : null}

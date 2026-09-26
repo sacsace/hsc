@@ -241,30 +241,6 @@
       "lead": "현장과 서비스 활동 사진입니다.",
       "items": [
         {
-          "id": "g1",
-          "title": "파트너십",
-          "image": "/images/hero-graphic.png",
-          "caption": "신뢰 기반의 비즈니스 파트너십"
-        },
-        {
-          "id": "g2",
-          "title": "브랜드",
-          "image": "/images/banner-blue.png",
-          "caption": "Hankook Service Center"
-        },
-        {
-          "id": "g3",
-          "title": "법인 설립",
-          "image": "/images/certificate-incorporation.png",
-          "caption": "Certificate of Incorporation"
-        },
-        {
-          "id": "g4",
-          "title": "디자인 모티브",
-          "image": "/images/pattern-light.png",
-          "caption": "브랜드 비주얼"
-        },
-        {
           "id": "g-1790459493075",
           "title": "ㅁㅁㅁㅁ",
           "image": "/uploads/1790459495672-359dc5e3.jpg",

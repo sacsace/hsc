@@ -18,7 +18,7 @@ type MenuItem = { id: AdminSectionId; label: string; desc: string };
 const menuKo: MenuItem[] = [
   { id: "hero", label: "히어로", desc: "메인 배너" },
   { id: "greeting", label: "인사말", desc: "소개 문구" },
-  { id: "company", label: "회사 정보", desc: "법인·주소" },
+  { id: "company", label: "회사 정보", desc: "법인·주소·인증" },
   { id: "history", label: "연혁", desc: "회사 히스토리" },
   { id: "performance", label: "실적", desc: "주요 수행" },
   { id: "clients", label: "고객사", desc: "고객사 목록" },
@@ -32,7 +32,7 @@ const menuKo: MenuItem[] = [
 const menuEn: MenuItem[] = [
   { id: "hero", label: "Hero", desc: "Main banner" },
   { id: "greeting", label: "Greeting", desc: "Intro message" },
-  { id: "company", label: "Company", desc: "Legal · address" },
+  { id: "company", label: "Company", desc: "Legal · address · certs" },
   { id: "history", label: "History", desc: "Company timeline" },
   { id: "performance", label: "Performance", desc: "Key projects" },
   { id: "clients", label: "Clients", desc: "Client list" },
@@ -161,6 +161,16 @@ export function adminUi(locale: Locale) {
     galleryCreate: en ? "Add photo" : "사진 등록",
     galleryEdit: en ? "Edit photo" : "사진 수정",
     galleryDeleteConfirm: en ? "Delete this photo?" : "이 사진을 삭제할까요?",
+    certificates: en ? "Certificates" : "인증 서류",
+    certificatesHint: en
+      ? "Register certificates for the About page. Save after add/edit — applied immediately."
+      : "회사소개에 표시할 인증 서류를 등록합니다. 등록·수정 후 저장하면 바로 반영됩니다.",
+    certificatesEmpty: en
+      ? "No certificates yet. Use Add to create one."
+      : "등록된 인증 서류가 없습니다. 등록 버튼으로 추가하세요.",
+    certificatesCreate: en ? "Add certificate" : "인증 서류 등록",
+    certificatesEdit: en ? "Edit certificate" : "인증 서류 수정",
+    certificatesDeleteConfirm: en ? "Delete this certificate?" : "이 인증 서류를 삭제할까요?",
     affiliate: en ? "Affiliate" : "관계사",
     affiliateName: en ? "Name" : "이름",
     affiliateTel: en ? "Phone" : "전화",

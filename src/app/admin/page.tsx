@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { FormEvent, type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import type {
+  CertificateItem,
   ClientItem,
   GalleryItem,
   HistoryItem,
@@ -405,37 +406,47 @@ export default function AdminPage() {
               )}
 
               {section === "company" && (
-                <Panel title={t.company} layout="table">
-                  {(
-                    [
-                      "legalName",
-                      "founded",
-                      "employees",
-                      "businessType",
-                      "businessItem",
-                      "branchIndia",
-                      "chennaiOffice",
-                      "chennaiMapEmbed",
-                      "cin",
-                      "pan",
-                      "tan",
-                      "email",
-                      "phone",
-                    ] as const
-                  ).map((key) => (
-                    <ListRow
-                      key={key}
-                      label={t.companyFields[key]}
-                      value={localeContent.company[key]}
-                      onChange={(v) =>
-                        updateLocale({
-                          ...localeContent,
-                          company: { ...localeContent.company, [key]: v },
-                        })
-                      }
-                    />
-                  ))}
-                </Panel>
+                <>
+                  <Panel title={t.company} layout="table">
+                    {(
+                      [
+                        "legalName",
+                        "founded",
+                        "employees",
+                        "businessType",
+                        "businessItem",
+                        "branchIndia",
+                        "chennaiOffice",
+                        "chennaiMapEmbed",
+                        "cin",
+                        "pan",
+                        "tan",
+                        "email",
+                        "phone",
+                      ] as const
+                    ).map((key) => (
+                      <ListRow
+                        key={key}
+                        label={t.companyFields[key]}
+                        value={localeContent.company[key]}
+                        onChange={(v) =>
+                          updateLocale({
+                            ...localeContent,
+                            company: { ...localeContent.company, [key]: v },
+                          })
+                        }
+                      />
+                    ))}
+                  </Panel>
+
+                  <CertificatesEditor
+                    ui={t}
+                    items={localeContent.certificates || []}
+                    onChange={(certificates) =>
+                      updateLocale({ ...localeContent, certificates })
+                    }
+                  />
+                </>
               )}
 
               {section === "history" && (
@@ -1672,6 +1683,269 @@ function TeamEditor({
         onCancel={() => setPendingDelete(null)}
       />
     )}
+    </>
+  );
+}
+
+function emptyCertificateItem(): CertificateItem {
+  return { title: "", image: "" };
+}
+
+function CertificatesEditor({
+  ui,
+  items,
+  onChange,
+}: {
+  ui: AdminUi;
+  items: CertificateItem[];
+  onChange: (items: CertificateItem[]) => void;
+}) {
+  const [mode, setMode] = useState<"list" | "create" | "edit">("list");
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [draft, setDraft] = useState<CertificateItem>(emptyCertificateItem);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+  const [pendingDelete, setPendingDelete] = useState<number | null>(null);
+
+  function openCreate() {
+    setMode("create");
+    setEditingIndex(null);
+    setDraft(emptyCertificateItem());
+    setUploadError("");
+  }
+
+  function openEdit(index: number) {
+    setMode("edit");
+    setEditingIndex(index);
+    setDraft({ ...items[index] });
+    setUploadError("");
+  }
+
+  function cancelForm() {
+    setMode("list");
+    setEditingIndex(null);
+    setDraft(emptyCertificateItem());
+    setUploadError("");
+  }
+
+  function saveForm() {
+    if (mode === "create") {
+      onChange([...items, draft]);
+    } else if (mode === "edit" && editingIndex !== null) {
+      onChange(items.map((item, i) => (i === editingIndex ? draft : item)));
+    }
+    cancelForm();
+  }
+
+  function confirmRemove() {
+    if (pendingDelete === null) return;
+    const index = pendingDelete;
+    setPendingDelete(null);
+    if (editingIndex === index) cancelForm();
+    else if (editingIndex !== null && editingIndex > index) setEditingIndex(editingIndex - 1);
+    onChange(items.filter((_, i) => i !== index));
+  }
+
+  function moveItem(index: number, direction: -1 | 1) {
+    const next = index + direction;
+    if (next < 0 || next >= items.length) return;
+    const copy = [...items];
+    const tmp = copy[index];
+    copy[index] = copy[next];
+    copy[next] = tmp;
+    onChange(copy);
+    if (editingIndex === index) setEditingIndex(next);
+    else if (editingIndex === next) setEditingIndex(index);
+  }
+
+  async function uploadImage(file: File) {
+    setUploadError("");
+    setUploading(true);
+    const body = new FormData();
+    body.append("file", file);
+    const res = await fetch("/api/upload", { method: "POST", body });
+    setUploading(false);
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      setUploadError(data.error || "업로드 실패");
+      return;
+    }
+    const data = (await res.json()) as { url: string };
+    setDraft((prev) => ({ ...prev, image: data.url }));
+  }
+
+  return (
+    <>
+      <Panel title={ui.certificates} hint={ui.certificatesHint}>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <p className="text-sm text-[var(--muted)]">{ui.total(items.length)}</p>
+          <button
+            type="button"
+            onClick={openCreate}
+            className="btn btn-primary text-sm"
+            disabled={mode !== "list"}
+          >
+            {ui.register}
+          </button>
+        </div>
+
+        <div className="overflow-x-auto border border-[var(--line)]">
+          <table className="w-full min-w-[32rem] border-collapse text-sm">
+            <thead>
+              <tr className="border-b border-[var(--line)] bg-[#f5f7f9] text-left text-xs font-semibold text-[var(--muted)]">
+                <th className="w-12 px-3 py-2.5 text-center">No</th>
+                <th className="w-20 px-3 py-2.5">{ui.image}</th>
+                <th className="px-3 py-2.5">{ui.title}</th>
+                <th className="w-40 px-3 py-2.5 text-right">{ui.manage}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="px-4 py-10 text-center text-[var(--muted)]">
+                    {ui.certificatesEmpty}
+                  </td>
+                </tr>
+              ) : (
+                items.map((item, index) => (
+                  <tr
+                    key={`${item.title}-${index}`}
+                    className={`border-b border-[var(--line)] last:border-b-0 ${
+                      editingIndex === index ? "bg-[#f0f4f8]" : "bg-white"
+                    }`}
+                  >
+                    <td className="px-3 py-2.5 text-center text-[var(--muted)]">{index + 1}</td>
+                    <td className="px-3 py-2.5">
+                      <div className="h-12 w-16 overflow-hidden border border-[var(--line)] bg-[#f8fafb]">
+                        {item.image ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={item.image} alt="" className="h-full w-full object-contain" />
+                        ) : (
+                          <div className="flex h-full items-center justify-center text-[10px] text-[var(--muted)]">
+                            {ui.none}
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                    <td className="max-w-[16rem] truncate px-3 py-2.5 font-medium text-[var(--ink)]">
+                      {item.title || ui.noTitle}
+                    </td>
+                    <td className="px-3 py-2.5">
+                      <div className="flex flex-wrap items-center justify-end gap-1">
+                        <button
+                          type="button"
+                          onClick={() => moveItem(index, -1)}
+                          disabled={index === 0 || mode !== "list"}
+                          className="border border-[var(--line)] px-1.5 py-1 text-xs disabled:opacity-30"
+                          aria-label="위로"
+                        >
+                          ↑
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => moveItem(index, 1)}
+                          disabled={index === items.length - 1 || mode !== "list"}
+                          className="border border-[var(--line)] px-1.5 py-1 text-xs disabled:opacity-30"
+                          aria-label="아래로"
+                        >
+                          ↓
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => openEdit(index)}
+                          disabled={mode !== "list"}
+                          className="border border-[var(--line)] px-2 py-1 text-xs hover:bg-[#f5f7f9] disabled:opacity-30"
+                        >
+                          {ui.edit}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setPendingDelete(index)}
+                          disabled={mode !== "list"}
+                          className="px-2 py-1 text-xs text-red-600 hover:underline disabled:opacity-30"
+                        >
+                          {ui.delete}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {mode !== "list" && (
+          <div className="border border-[var(--navy)] bg-[#f8fafb] p-4 sm:p-5">
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <h3 className="text-sm font-bold text-[var(--ink)]">
+                {mode === "create" ? ui.certificatesCreate : ui.certificatesEdit}
+              </h3>
+              <button
+                type="button"
+                onClick={cancelForm}
+                className="text-sm text-[var(--muted)] hover:underline"
+              >
+                {ui.cancel}
+              </button>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-[200px_1fr]">
+              <ImageAttach
+                label={ui.image}
+                hint={ui.photoHint}
+                value={draft.image}
+                uploading={uploading}
+                fit="contain"
+                aspect="wide"
+                onFile={(file) => void uploadImage(file)}
+                onClear={() => setDraft((prev) => ({ ...prev, image: "" }))}
+              />
+
+              <div className="grid gap-3">
+                <Field
+                  label={ui.title}
+                  value={draft.title}
+                  onChange={(v) => setDraft((prev) => ({ ...prev, title: v }))}
+                />
+                <Field
+                  label={ui.imageUrl}
+                  value={draft.image}
+                  onChange={(v) => setDraft((prev) => ({ ...prev, image: v }))}
+                />
+                {uploadError && <p className="text-sm text-red-600">{uploadError}</p>}
+                <div className="flex flex-wrap justify-end gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={cancelForm}
+                    className="btn border border-[var(--line)] bg-white text-sm"
+                  >
+                    {ui.cancel}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={saveForm}
+                    className="border border-[var(--navy)] bg-white px-4 py-2 text-sm text-[var(--navy)] hover:bg-[#f5f7f9]"
+                  >
+                    {mode === "create" ? ui.applyAdd : ui.applyEdit}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </Panel>
+
+      {pendingDelete !== null && (
+        <ConfirmDialog
+          title={ui.confirmTitle}
+          message={ui.certificatesDeleteConfirm}
+          confirmLabel={ui.confirmOk}
+          cancelLabel={ui.confirmCancel}
+          onConfirm={confirmRemove}
+          onCancel={() => setPendingDelete(null)}
+        />
+      )}
     </>
   );
 }
