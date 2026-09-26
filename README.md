@@ -2,6 +2,8 @@
 
 Simple corporate site for **Hankook Service Center Pvt. Ltd.** with an admin panel for content editing.
 
+Repository: [https://github.com/sacsace/hsc](https://github.com/sacsace/hsc)
+
 ## Quick start
 
 ```bash
@@ -9,8 +11,8 @@ npm install
 npm run dev
 ```
 
-- Site: [http://localhost:3000](http://localhost:3000)
-- Admin: [http://localhost:3000/admin](http://localhost:3000/admin)
+- Site: [http://localhost:3500](http://localhost:3500)
+- Admin: [http://localhost:3500/admin](http://localhost:3500/admin)
 
 Default admin password: `admin1234` (change in `.env.local`)
 
