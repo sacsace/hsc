@@ -146,8 +146,8 @@ export async function getContent(): Promise<SiteContent> {
         title: locale === "ko" ? "고객사" : "Clients",
         lead:
           locale === "ko"
-            ? "함께 성장해 온 주요 고객사입니다."
-            : "Partners we have worked with.",
+            ? "고객의 생산 현장에 필요한 압축공기 솔루션과 책임 있는 서비스로, 안정적인 설비 운영과 지속적인 성장을 함께합니다."
+            : "With compressed air solutions and responsible service for production sites, we support stable equipment operation and grow together with our clients.",
         items: names.map((name, i) => ({
           id: `c-${i + 1}`,
           name,

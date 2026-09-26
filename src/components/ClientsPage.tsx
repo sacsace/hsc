@@ -45,7 +45,9 @@ function ClientsSections() {
             <h1 className="section-title !mb-3 !text-white">
               {clients?.title || t.clientsTitle}
             </h1>
-            <p className="max-w-xl text-white/70">{clients?.lead || t.clientsLead}</p>
+            <p className="max-w-3xl text-pretty text-white/70 leading-relaxed">
+              {clients?.lead || t.clientsLead}
+            </p>
           </div>
         </section>
 

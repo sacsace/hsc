@@ -211,8 +211,8 @@
       "title": "팀원 소개",
       "lead": "산업용 컴프레서 판매·서비스를 책임지는 Hankook Service Center 팀입니다.",
       "ceo": {
-        "name": "Hyun H.S.",
-        "role": "대표 / Director",
+        "name": "Hoseb Hyun",
+        "role": "Managing Director",
         "bio": "인도 현지에서 산업용 컴프레서 판매·수리·유지보수 Total Air Solution을 이끌고 있습니다.",
         "photo": ""
       },
@@ -274,7 +274,7 @@
     },
     "clients": {
       "title": "고객사",
-      "lead": "함께 성장해 온 주요 고객사입니다.",
+      "lead": "고객의 생산 현장에 필요한 압축공기 솔루션과 책임 있는 서비스로, 안정적인 설비 운영과 지속적인 성장을 함께합니다.",
       "items": [
         {
           "id": "c-1",
@@ -289,7 +289,7 @@
         {
           "id": "c-3",
           "name": "Jintech",
-          "logo": ""
+          "logo": "/uploads/1790460470095-e785c571.png"
         },
         {
           "id": "c-4",
@@ -579,7 +579,7 @@
     },
     "clients": {
       "title": "Clients",
-      "lead": "Partners we have worked with.",
+      "lead": "With compressed air solutions and responsible service for production sites, we support stable equipment operation and grow together with our clients.",
       "items": [
         {
           "id": "c-1",

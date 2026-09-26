@@ -173,7 +173,8 @@ export const ui: Record<Locale, UiCopy> = {
     contactLead: "아래 양식을 작성해 주시면 빠르게 답변드리겠습니다.",
     clientsLabel: "고객사",
     clientsTitle: "고객사",
-    clientsLead: "함께 성장해 온 주요 고객사입니다.",
+    clientsLead:
+      "고객의 생산 현장에 필요한 압축공기 솔루션과 책임 있는 서비스로, 안정적인 설비 운영과 지속적인 성장을 함께합니다.",
     clientsEmpty: "등록된 고객사가 없습니다.",
     viewMore: "자세히 보기",
     viewMoreClients: "고객사 더보기",
@@ -275,7 +276,8 @@ export const ui: Record<Locale, UiCopy> = {
     contactLead: "Fill out the form below and we will get back to you soon.",
     clientsLabel: "Clients",
     clientsTitle: "Clients",
-    clientsLead: "Partners we have worked with.",
+    clientsLead:
+      "With compressed air solutions and responsible service for production sites, we support stable equipment operation and grow together with our clients.",
     clientsEmpty: "No clients listed yet.",
     viewMore: "View more",
     viewMoreClients: "View all clients",

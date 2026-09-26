@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { Archivo, Noto_Sans_KR, Source_Sans_3 } from "next/font/google";
 import { getRequestLocale } from "@/lib/locale";
 import { getSiteUrl, organizationJsonLd, serializeJsonLd } from "@/lib/seo";
@@ -47,6 +48,7 @@ export default async function RootLayout({
 }>) {
   const locale = await getRequestLocale();
   const jsonLd = organizationJsonLd(locale);
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
 
   return (
     <html
@@ -54,8 +56,9 @@ export default async function RootLayout({
       className={`${display.variable} ${body.variable} ${korean.variable} h-full`}
     >
       <head>
-        {/* textContent (not innerHTML) — < escaped for XSS safety */}
-        <script type="application/ld+json">{serializeJsonLd(jsonLd)}</script>
+        <script type="application/ld+json" nonce={nonce}>
+          {serializeJsonLd(jsonLd)}
+        </script>
       </head>
       <body className="min-h-full antialiased">{children}</body>
     </html>
