@@ -21,8 +21,15 @@ type LanguageContextValue = {
 
 const LanguageContext = createContext<LanguageContextValue | null>(null);
 
-function writeLocaleCookie(locale: Locale) {
-  document.cookie = `${LOCALE_STORAGE_KEY}=${locale};path=/;max-age=${60 * 60 * 24 * 365};samesite=lax`;
+function syncLocaleCookie(locale: Locale) {
+  void fetch("/api/locale", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ locale }),
+    credentials: "same-origin",
+  }).catch(() => {
+    // Ignore network errors; UI locale still updates via localStorage.
+  });
 }
 
 export function LanguageProvider({
@@ -41,11 +48,11 @@ export function LanguageProvider({
     const saved = window.localStorage.getItem(LOCALE_STORAGE_KEY);
     if (saved === "ko" || saved === "en") {
       setLocaleState(saved);
-      writeLocaleCookie(saved);
+      syncLocaleCookie(saved);
       return;
     }
     setLocaleState(initialLocale);
-    writeLocaleCookie(initialLocale);
+    syncLocaleCookie(initialLocale);
     window.localStorage.setItem(LOCALE_STORAGE_KEY, initialLocale);
   }, [initialLocale]);
 
@@ -56,7 +63,7 @@ export function LanguageProvider({
   const setLocale = useCallback((next: Locale) => {
     setLocaleState(next);
     window.localStorage.setItem(LOCALE_STORAGE_KEY, next);
-    writeLocaleCookie(next);
+    syncLocaleCookie(next);
   }, []);
 
   const value = useMemo<LanguageContextValue>(

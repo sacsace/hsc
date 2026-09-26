@@ -244,3 +244,8 @@ export function organizationJsonLd(locale: Locale) {
     inLanguage: locale === "ko" ? "ko" : "en",
   };
 }
+
+/** Safe JSON-LD payload for <script> text content (no HTML injection). */
+export function serializeJsonLd(data: unknown) {
+  return JSON.stringify(data).replace(/</g, "\\u003c");
+}

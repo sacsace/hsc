@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Archivo, Noto_Sans_KR, Source_Sans_3 } from "next/font/google";
 import { getRequestLocale } from "@/lib/locale";
-import { getSiteUrl, organizationJsonLd } from "@/lib/seo";
+import { getSiteUrl, organizationJsonLd, serializeJsonLd } from "@/lib/seo";
 import "./globals.css";
 
 const display = Archivo({
@@ -54,10 +54,8 @@ export default async function RootLayout({
       className={`${display.variable} ${body.variable} ${korean.variable} h-full`}
     >
       <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
+        {/* textContent (not innerHTML) — < escaped for XSS safety */}
+        <script type="application/ld+json">{serializeJsonLd(jsonLd)}</script>
       </head>
       <body className="min-h-full antialiased">{children}</body>
     </html>
