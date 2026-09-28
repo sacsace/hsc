@@ -48,23 +48,37 @@ After changing the password in the admin UI, it is stored in `data/admin.json` (
 Editable JSON lives under the data directory (`content.json`, `inquiries.json`).  
 Admin image uploads are stored in `data/uploads/` and served at `/uploads/...`.
 
-**Railway (required for production):** redeploy wipes the container filesystem. Attach a **Volume** so CMS edits and uploaded images survive:
+**Railway (required for production):** redeploy wipes the container filesystem. Attach a **Volume** so CMS edits and **new** uploaded images survive:
 
-1. Railway project → service → **Volumes** → Add Volume
-2. Mount path: `/data` (do **not** use `/app/data` — that hides the seeded `content.json` in the image)
-3. Redeploy
+1. Railway project → service → **Volumes** → Add Volume  
+2. Mount path: **`/data`** (do **not** use `/app/data` — that hides the seeded `content.json` in the image)  
+3. Redeploy  
+4. Confirm the service shows `RAILWAY_VOLUME_MOUNT_PATH=/data` (or set `DATA_DIR=/data`)
 
-Railway sets `RAILWAY_VOLUME_MOUNT_PATH=/data` automatically. The app then reads/writes:
+Railway then reads/writes:
 
-- `/data/content.json` — CMS content
-- `/data/inquiries.json` — contact inquiries
-- `/data/admin.json` — admin password hash
-- `/data/mail.json` — Google SMTP settings
-- `/data/uploads/*` — uploaded images
+- `/data/content.json` — CMS content  
+- `/data/inquiries.json` — contact inquiries  
+- `/data/admin.json` — admin password hash  
+- `/data/mail.json` — Google SMTP settings  
+- `/data/uploads/*` — uploaded images  
 
 On first boot with an empty volume, `content.json` is copied from the image seed.
 
-Static brand assets (logo, favicon, hero videos under `public/images`, `public/videos`) stay in git and are fine without a volume.
+### Why client logos disappeared after deploy
+
+Without a Volume, files written to `data/uploads/` live only on the ephemeral container disk and are deleted on every deploy. `content.json` may still list `/uploads/...` URLs → broken images.
+
+### Built-in recovery (this repo)
+
+- **`data/seed-uploads/`** — committed copies of CMS images shipped in the deploy image  
+- On each content load, missing files are copied into the runtime `uploads/` folder  
+- `/uploads/...` also falls back to `seed-uploads` if the volume file is missing  
+- Admin shows a warning banner when running on Railway without a Volume  
+
+New admin uploads still need a Volume (or they will be lost on the next deploy). After attaching `/data`, re-upload only images that were never in `seed-uploads`.
+
+Static brand assets (`public/images`, `public/videos`) stay in git and do not need a volume.
 
 ## Stack
 

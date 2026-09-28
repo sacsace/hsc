@@ -3,7 +3,7 @@ import { promises as fs } from "fs";
 import path from "path";
 import { NextResponse } from "next/server";
 import { isAuthenticated } from "@/lib/auth";
-import { ensureUploadsDir, uploadsDir } from "@/lib/storage";
+import { ensureUploadsDir, storageStatus, uploadsDir } from "@/lib/storage";
 
 export const runtime = "nodejs";
 
@@ -44,6 +44,13 @@ export async function POST(request: Request) {
   const buffer = Buffer.from(await file.arrayBuffer());
   await fs.writeFile(path.join(uploadsDir(), name), buffer);
 
-  // Served by /uploads/[...path] from the persistent data volume
-  return NextResponse.json({ url: `/uploads/${name}` });
+  const status = storageStatus();
+  // Served by /uploads/[...path] from the persistent data volume (+ seed fallback)
+  return NextResponse.json({
+    url: `/uploads/${name}`,
+    persistent: status.persistent,
+    warning: status.uploadsAtRisk
+      ? "Railway Volume(/data)이 없습니다. 재배포 시 이 이미지가 삭제될 수 있습니다."
+      : undefined,
+  });
 }

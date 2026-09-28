@@ -60,8 +60,20 @@ export default function AdminPage() {
   const [statusKey, setStatusKey] = useState<"" | "saved" | "failed">("");
   const [saving, setSaving] = useState(false);
   const [loginError, setLoginError] = useState("");
+  const [uploadsAtRisk, setUploadsAtRisk] = useState(false);
   const persistTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const contentRef = useRef<SiteContent | null>(null);
+
+  const loadStorageStatus = useCallback(async () => {
+    try {
+      const res = await fetch("/api/storage");
+      if (!res.ok) return;
+      const data = (await res.json()) as { uploadsAtRisk?: boolean };
+      setUploadsAtRisk(Boolean(data.uploadsAtRisk));
+    } catch {
+      /* ignore */
+    }
+  }, []);
 
   const load = useCallback(async () => {
     const authRes = await fetch("/api/auth");
@@ -74,8 +86,9 @@ export default function AdminPage() {
       const data = (await res.json()) as SiteContent;
       contentRef.current = data;
       setContent(data);
+      void loadStorageStatus();
     }
-  }, []);
+  }, [loadStorageStatus]);
 
   useEffect(() => {
     load();
@@ -105,6 +118,7 @@ export default function AdminPage() {
     const data = (await contentRes.json()) as SiteContent;
     contentRef.current = data;
     setContent(data);
+    void loadStorageStatus();
   }
 
   async function onLogout() {
@@ -337,6 +351,16 @@ export default function AdminPage() {
             </div>
           </div>
         </header>
+
+        {uploadsAtRisk ? (
+          <div
+            role="alert"
+            className="border-b border-amber-300 bg-amber-50 px-3 py-3 text-sm text-amber-950 sm:px-4 md:px-6 lg:px-8"
+          >
+            <p className="font-semibold">{t.storageRiskTitle}</p>
+            <p className="mt-1 text-amber-900/90">{t.storageRiskBody}</p>
+          </div>
+        ) : null}
 
         {section === "inquiries" ? (
           <div className="flex-1 overflow-x-auto px-3 py-5 sm:px-4 md:px-6 md:py-6 lg:px-8">

@@ -62,6 +62,12 @@ export function adminUi(locale: Locale) {
     saving: en ? "Saving…" : "저장 중…",
     saved: en ? "Saved · applied to the site" : "저장됨 · 사이트에 반영됨",
     saveFailed: en ? "Save failed. Please log in again." : "저장 실패. 다시 로그인해 주세요.",
+    storageRiskTitle: en
+      ? "Uploads may be lost on redeploy"
+      : "재배포 시 업로드 이미지가 사라질 수 있습니다",
+    storageRiskBody: en
+      ? "Attach a Railway Volume at /data so client logos and gallery photos persist. Seed images in the deploy image are restored automatically when missing."
+      : "Railway Volume을 /data 경로에 연결하세요. 고객사 로고·갤러리 사진이 유지됩니다. 배포 이미지에 포함된 seed 이미지는 없을 때 자동으로 복구됩니다.",
     editing: (label: string) =>
       en ? `English · ${label}` : `한국어 · ${label}`,
     loading: en ? "Loading…" : "로딩 중…",

@@ -1,6 +1,10 @@
 import { promises as fs } from "fs";
 import { sortPerformances, type SiteContent } from "@/lib/types";
-import { ensureRuntimeContentFile, contentFilePath } from "@/lib/storage";
+import {
+  ensureRuntimeContentFile,
+  ensureSeedUploads,
+  contentFilePath,
+} from "@/lib/storage";
 
 export type {
   Locale,
@@ -18,6 +22,8 @@ export { dateSortKey, sortPerformances } from "@/lib/types";
 
 export async function getContent(): Promise<SiteContent> {
   const contentPath = await ensureRuntimeContentFile();
+  // Restore bundled CMS images into the volume when missing (survives redeploy).
+  await ensureSeedUploads();
   const raw = await fs.readFile(contentPath, "utf-8");
   const content = JSON.parse(raw) as SiteContent;
 

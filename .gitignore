@@ -43,4 +43,7 @@ yarn-error.log*
 
 # runtime uploads (persisted via Railway Volume in production)
 /data/uploads/
+# committed fallback images for redeploy recovery (do not ignore)
+!/data/seed-uploads/
+!/data/seed-uploads/**
 /public/gallery/
