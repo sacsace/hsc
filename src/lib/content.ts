@@ -28,6 +28,10 @@ export async function getContent(): Promise<SiteContent> {
       localeData.company.chennaiOffice =
         "28-B, CASA Grande Futura, Singaperumal Koil Road, Sriperumbudur, Kancheepuram, Tamil Nadu - 602105, India.";
     }
+    if (!localeData.company.branchIndiaMapEmbed) {
+      localeData.company.branchIndiaMapEmbed =
+        "https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d1973.0562914194513!2d77.69682492859985!3d12.978534306050603!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTLCsDU4JzQyLjciTiA3N8KwNDEnNTAuOSJF!5e1!3m2!1sko!2sin!4v1790584743425!5m2!1sko!2sin";
+    }
     if (!localeData.company.chennaiMapEmbed) {
       localeData.company.chennaiMapEmbed =
         "https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d1973.2628005165345!2d79.93732026970514!3d12.95249630619212!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTLCsDU3JzA5LjAiTiA3OcKwNTYnMTYuNyJF!5e1!3m2!1sko!2skr!4v1790449072251!5m2!1sko!2skr";

@@ -5,6 +5,7 @@ function mapEmbedSrc(address: string) {
 export function OfficeMaps({
   bangaloreLabel,
   bangaloreAddress,
+  bangaloreMapEmbed,
   chennaiLabel,
   chennaiAddress,
   chennaiMapEmbed,
@@ -12,6 +13,7 @@ export function OfficeMaps({
 }: {
   bangaloreLabel: string;
   bangaloreAddress: string;
+  bangaloreMapEmbed?: string;
   chennaiLabel: string;
   chennaiAddress: string;
   chennaiMapEmbed?: string;
@@ -22,6 +24,7 @@ export function OfficeMaps({
       <MapCard
         label={bangaloreLabel}
         address={bangaloreAddress}
+        embedSrc={bangaloreMapEmbed}
         openLabel={openInMapsLabel}
       />
       <MapCard

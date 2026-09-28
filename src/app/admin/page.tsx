@@ -449,6 +449,7 @@ export default function AdminPage() {
                         "businessType",
                         "businessItem",
                         "branchIndia",
+                        "branchIndiaMapEmbed",
                         "chennaiOffice",
                         "chennaiMapEmbed",
                         "cin",

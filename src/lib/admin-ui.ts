@@ -188,6 +188,9 @@ export function adminUi(locale: Locale) {
       businessType: en ? "Business type" : "업종",
       businessItem: en ? "Business scope" : "사업 내용",
       branchIndia: en ? "Registration Office" : "Registration Office",
+      branchIndiaMapEmbed: en
+        ? "Registration Office map embed URL"
+        : "Registration Office 지도 embed URL",
       chennaiOffice: en ? "Chennai office" : "첸나이 사무실",
       chennaiMapEmbed: en ? "Chennai map embed URL" : "첸나이 지도 embed URL",
       cin: "CIN",

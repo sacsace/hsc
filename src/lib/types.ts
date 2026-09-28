@@ -56,6 +56,7 @@ export type LocaleContent = {
     businessItem: string;
     hqKorea: string;
     branchIndia: string;
+    branchIndiaMapEmbed: string;
     chennaiOffice: string;
     chennaiMapEmbed: string;
     cin: string;

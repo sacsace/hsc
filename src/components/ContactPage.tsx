@@ -60,6 +60,7 @@ function ContactSections() {
             <OfficeMaps
               bangaloreLabel={t.fields.branchIndia}
               bangaloreAddress={company.branchIndia}
+              bangaloreMapEmbed={company.branchIndiaMapEmbed}
               chennaiLabel={t.fields.chennaiOffice}
               chennaiAddress={company.chennaiOffice}
               chennaiMapEmbed={company.chennaiMapEmbed}
