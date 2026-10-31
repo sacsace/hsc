@@ -6,6 +6,7 @@ export const LOCALE_STORAGE_KEY = "hsc_locale";
 export type UiCopy = {
   nav: {
     about: string;
+    services: string;
     company: string;
     history: string;
     performance: string;
@@ -127,6 +128,7 @@ export const ui: Record<Locale, UiCopy> = {
   ko: {
     nav: {
       about: "회사소개",
+      services: "설비·서비스",
       company: "회사정보",
       history: "연혁",
       performance: "실적",
@@ -229,7 +231,7 @@ export const ui: Record<Locale, UiCopy> = {
     },
     footerTagline: "산업용 컴프레서 판매·수리·유지보수 Total Air Solution.",
     footerRights: "All rights reserved.",
-    developedBy: "개발",
+    developedBy: "Developed by",
     footerAdmin: "Admin",
     footerMvs: "업무 시스템 MVS",
     heroImageAlt: "Hankook Service Center 파트너십",
@@ -247,6 +249,7 @@ export const ui: Record<Locale, UiCopy> = {
   en: {
     nav: {
       about: "About",
+      services: "Services",
       company: "Company",
       history: "History",
       performance: "Performance",

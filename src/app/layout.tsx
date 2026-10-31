@@ -1,27 +1,19 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import { Archivo, Noto_Sans_KR, Source_Sans_3 } from "next/font/google";
 import { getRequestLocale } from "@/lib/locale";
 import { getSiteUrl, organizationJsonLd, serializeJsonLd } from "@/lib/seo";
+import "@fontsource/archivo/500.css";
+import "@fontsource/archivo/600.css";
+import "@fontsource/archivo/700.css";
+import "@fontsource/source-sans-3/400.css";
+import "@fontsource/source-sans-3/500.css";
+import "@fontsource/source-sans-3/600.css";
+import "@fontsource/source-sans-3/700.css";
+import "@fontsource/noto-sans-kr/400.css";
+import "@fontsource/noto-sans-kr/500.css";
+import "@fontsource/noto-sans-kr/600.css";
+import "@fontsource/noto-sans-kr/700.css";
 import "./globals.css";
-
-const display = Archivo({
-  variable: "--font-display",
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-});
-
-const body = Source_Sans_3({
-  variable: "--font-body-latin",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-
-const korean = Noto_Sans_KR({
-  variable: "--font-body-kr",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getRequestLocale();
@@ -51,10 +43,7 @@ export default async function RootLayout({
   const nonce = (await headers()).get("x-nonce") ?? undefined;
 
   return (
-    <html
-      lang={locale}
-      className={`${display.variable} ${body.variable} ${korean.variable} h-full`}
-    >
+    <html lang={locale} className="h-full">
       <head>
         <script type="application/ld+json" nonce={nonce}>
           {serializeJsonLd(jsonLd)}

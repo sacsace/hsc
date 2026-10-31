@@ -16,16 +16,24 @@ import type {
 } from "@/lib/types";
 import { sortPerformances } from "@/lib/types";
 import type { Inquiry } from "@/lib/inquiry";
+import { ServicesEditor } from "@/components/admin/ServicesEditor";
 import { SiteLogo } from "@/components/SiteLogo";
-import { adminMenu, adminUi, type AdminSectionId, type AdminUi } from "@/lib/admin-ui";
+import {
+  adminMenu,
+  adminMenuGroups,
+  adminUi,
+  type AdminSectionId,
+  type AdminUi,
+} from "@/lib/admin-ui";
+import { defaultServicesContent } from "@/lib/services-default";
 
 function AdminSymbol({ className = "" }: { className?: string }) {
   return (
     <Image
       src="/images/symbol-hsc.png"
       alt="Hankook Service Center"
-      width={96}
-      height={88}
+      width={1330}
+      height={1182}
       className={`object-contain ${className}`}
       priority
     />
@@ -227,11 +235,12 @@ export default function AdminPage() {
 
   const localeContent = content[editLocale];
   const menu = adminMenu(editLocale);
+  const menuGroups = adminMenuGroups(editLocale);
   const t = adminUi(editLocale);
   const activeMenu = menu.find((m) => m.id === section)!;
 
   return (
-    <div className="min-h-[100svh] w-full bg-[var(--bg)] lg:flex lg:items-stretch">
+    <div className="flex h-[100svh] w-full overflow-hidden bg-[var(--bg)]">
       {/* Mobile overlay */}
       {sidebarOpen && (
         <button
@@ -242,13 +251,13 @@ export default function AdminPage() {
         />
       )}
 
-      {/* Sidebar */}
+      {/* Sidebar — fixed in viewport; only its own nav scrolls if needed */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 flex w-[min(18rem,85vw)] flex-col border-r border-[var(--line)] bg-[var(--navy-deep)] text-white transition-transform duration-200 lg:static lg:w-64 lg:shrink-0 lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-40 flex h-[100svh] w-[min(18rem,85vw)] flex-col border-r border-[var(--line)] bg-[var(--navy-deep)] text-white transition-transform duration-200 lg:static lg:z-0 lg:w-64 lg:shrink-0 lg:translate-x-0 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="border-b border-white/10 px-5 py-5">
+        <div className="shrink-0 border-b border-white/10 px-5 py-5">
           <a href="/" className="mb-3 block" aria-label="Hankook Service Center">
             <SiteLogo tone="light" className="!h-8 !max-w-full md:!h-9" />
           </a>
@@ -256,29 +265,40 @@ export default function AdminPage() {
           <p className="mt-1 text-xs text-white/55">{t.contentManage}</p>
         </div>
 
-        <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
-          {menu.map((item) => {
-            const active = section === item.id;
-            return (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => {
-                  setSection(item.id);
-                  setSidebarOpen(false);
-                }}
-                className={`flex w-full flex-col rounded-sm px-3 py-2.5 text-left transition-colors ${
-                  active ? "bg-white/12 text-white" : "text-white/70 hover:bg-white/6 hover:text-white"
-                }`}
-              >
-                <span className="text-sm font-semibold">{item.label}</span>
-                <span className="text-xs text-white/45">{item.desc}</span>
-              </button>
-            );
-          })}
+        <nav className="min-h-0 flex-1 space-y-4 overflow-y-auto px-3 py-4">
+          {menuGroups.map((group) => (
+            <div key={group.id}>
+              <p className="px-3 pb-1.5 text-[0.65rem] font-semibold tracking-[0.14em] text-white/40">
+                {group.label}
+              </p>
+              <div className="space-y-1">
+                {group.items.map((item) => {
+                  const active = section === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => {
+                        setSection(item.id);
+                        setSidebarOpen(false);
+                      }}
+                      className={`flex w-full flex-col rounded-sm px-3 py-2.5 text-left transition-colors ${
+                        active
+                          ? "bg-white/12 text-white"
+                          : "text-white/70 hover:bg-white/6 hover:text-white"
+                      }`}
+                    >
+                      <span className="text-sm font-semibold">{item.label}</span>
+                      <span className="text-xs text-white/45">{item.desc}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
 
-        <div className="space-y-2 border-t border-white/10 px-4 py-4 text-sm">
+        <div className="shrink-0 space-y-2 border-t border-white/10 px-4 py-4 text-sm">
           <a href="/" className="block text-white/65 transition-colors hover:text-white">
             {t.viewSite}
           </a>
@@ -292,9 +312,9 @@ export default function AdminPage() {
         </div>
       </aside>
 
-      {/* Main */}
-      <div className="flex min-h-[100svh] min-w-0 flex-1 flex-col lg:min-h-0">
-        <header className="sticky top-0 z-20 border-b border-[var(--line)] bg-white/95 backdrop-blur">
+      {/* Main — header fixed; only body scrolls */}
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+        <header className="z-20 shrink-0 border-b border-[var(--line)] bg-white/95 backdrop-blur">
           <div className="flex flex-wrap items-center justify-between gap-3 px-3 py-3 sm:px-4 md:px-6">
             <div className="flex min-w-0 items-center gap-3">
               <button
@@ -355,34 +375,34 @@ export default function AdminPage() {
         {uploadsAtRisk ? (
           <div
             role="alert"
-            className="border-b border-amber-300 bg-amber-50 px-3 py-3 text-sm text-amber-950 sm:px-4 md:px-6 lg:px-8"
+            className="shrink-0 border-b border-amber-300 bg-amber-50 px-3 py-3 text-sm text-amber-950 sm:px-4 md:px-6 lg:px-8"
           >
             <p className="font-semibold">{t.storageRiskTitle}</p>
             <p className="mt-1 text-amber-900/90">{t.storageRiskBody}</p>
           </div>
         ) : null}
 
+        <div className="min-h-0 flex-1 overflow-y-auto overflow-x-auto">
         {section === "inquiries" ? (
-          <div className="flex-1 overflow-x-auto px-3 py-5 sm:px-4 md:px-6 md:py-6 lg:px-8">
+          <div className="px-3 py-5 sm:px-4 md:px-6 md:py-6 lg:px-8">
             <div className="w-full min-w-0">
               <InquiriesPanel ui={t} />
             </div>
           </div>
         ) : section === "mail" ? (
-          <div className="flex-1 overflow-x-auto px-3 py-5 sm:px-4 md:px-6 md:py-6 lg:px-8">
+          <div className="px-3 py-5 sm:px-4 md:px-6 md:py-6 lg:px-8">
             <div className="w-full min-w-0 max-w-xl">
               <MailPanel ui={t} />
             </div>
           </div>
         ) : section === "security" ? (
-          <div className="flex-1 overflow-x-auto px-3 py-5 sm:px-4 md:px-6 md:py-6 lg:px-8">
+          <div className="px-3 py-5 sm:px-4 md:px-6 md:py-6 lg:px-8">
             <div className="w-full min-w-0 max-w-xl">
               <PasswordPanel />
             </div>
           </div>
         ) : (
-        <div className="flex min-h-0 flex-1 flex-col">
-          <div className="flex-1 overflow-x-auto px-3 py-5 sm:px-4 md:px-6 md:py-6 lg:px-8">
+        <div className="px-3 py-5 sm:px-4 md:px-6 md:py-6 lg:px-8">
             <div className="w-full min-w-0">
               {section === "hero" && (
                 <Panel
@@ -529,6 +549,14 @@ export default function AdminPage() {
                 />
               )}
 
+              {section === "services" && (
+                <ServicesEditor
+                  ui={t}
+                  services={localeContent.services || defaultServicesContent(editLocale)}
+                  onChange={(services) => updateLocale({ ...localeContent, services })}
+                />
+              )}
+
               {section === "clients" && (
                 <ClientsEditor
                   ui={t}
@@ -599,9 +627,9 @@ export default function AdminPage() {
               )}
 
             </div>
-          </div>
         </div>
         )}
+        </div>
       </div>
     </div>
   );

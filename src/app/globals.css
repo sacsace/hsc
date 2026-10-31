@@ -13,6 +13,9 @@
   --footer: #1a222b;
   --background: var(--bg);
   --foreground: var(--ink);
+  --font-display: "Archivo", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font-body-latin: "Source Sans 3", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font-body-kr: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
 }
 
 @theme inline {
@@ -26,7 +29,7 @@
   --color-surface: var(--surface);
   --color-footer: var(--footer);
   --font-sans: var(--font-body-kr), var(--font-body-latin);
-  --font-display: var(--font-display);
+  --font-display: "Archivo", "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
 }
 
 * {
@@ -55,8 +58,11 @@ h3,
 }
 
 a {
-  color: inherit;
   text-decoration: none;
+}
+
+a:not([class*="text-"]):not([class*="!text-"]) {
+  color: inherit;
 }
 
 ::selection {

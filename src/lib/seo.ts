@@ -4,6 +4,7 @@ import type { Locale } from "@/lib/types";
 export type SeoPage =
   | "home"
   | "about"
+  | "services"
   | "team"
   | "gallery"
   | "contact"
@@ -48,6 +49,21 @@ const seo: Record<Locale, Record<SeoPage, SeoCopy>> = {
       keywords: ["회사 소개", "대표 인사말", "연혁", "Hankook Service Center"],
       ogTitle: `회사 소개 | ${SITE_NAME}`,
       ogDescription: "대표 인사말과 회사 개요, 연혁을 확인하세요.",
+    },
+    services: {
+      title: `설비와 서비스 | ${SITE_NAME}`,
+      description:
+        "에어 컴프레서, 드라이어·필터, 오일, 질소, DG·UPS 등 설비 공급과 판매·수리·오버홀·AMC 서비스 안내.",
+      keywords: [
+        "설비",
+        "서비스",
+        "에어 컴프레서",
+        "드라이어",
+        "오버홀",
+        "Hankook Service Center",
+      ],
+      ogTitle: `설비와 서비스 | ${SITE_NAME}`,
+      ogDescription: "Total Air Solution 설비와 서비스를 확인하세요.",
     },
     team: {
       title: `팀원 소개 | ${SITE_NAME}`,
@@ -109,6 +125,21 @@ const seo: Record<Locale, Record<SeoPage, SeoCopy>> = {
       keywords: ["about", "CEO message", "company history", "Hankook Service Center"],
       ogTitle: `About Us | ${SITE_NAME}`,
       ogDescription: "Learn about our CEO message, company overview, and history.",
+    },
+    services: {
+      title: `Equipment & Services | ${SITE_NAME}`,
+      description:
+        "Air compressors, dryers, filters, oils, nitrogen, DG and UPS supply, plus sales, repair, overhaul, and AMC services.",
+      keywords: [
+        "equipment",
+        "services",
+        "air compressor",
+        "dryer",
+        "overhaul",
+        "Hankook Service Center",
+      ],
+      ogTitle: `Equipment & Services | ${SITE_NAME}`,
+      ogDescription: "Explore our Total Air Solution equipment and services.",
     },
     team: {
       title: `Our Team | ${SITE_NAME}`,
@@ -187,9 +218,9 @@ export function buildPageMetadata(
       description: copy.ogDescription,
       images: [
         {
-          url: `${siteUrl}/images/logo-hsc.png`,
-          width: 1718,
-          height: 343,
+          url: `${siteUrl}/images/symbol-hsc.png`,
+          width: 1330,
+          height: 1182,
           alt: SITE_NAME,
         },
       ],
@@ -198,7 +229,7 @@ export function buildPageMetadata(
       card: "summary_large_image",
       title: copy.ogTitle,
       description: copy.ogDescription,
-      images: [`${siteUrl}/images/logo-hsc.png`],
+      images: [`${siteUrl}/images/symbol-hsc.png`],
     },
     robots: {
       index: true,
@@ -223,7 +254,7 @@ export function organizationJsonLd(locale: Locale) {
     name: SITE_NAME,
     legalName: "Hankook Service Center Private Limited",
     url: siteUrl,
-    logo: `${siteUrl}/images/logo-hsc.png`,
+    logo: `${siteUrl}/images/symbol-hsc.png`,
     description,
     email: "hyun.hs@hksc.in",
     address: [

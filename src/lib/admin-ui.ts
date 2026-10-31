@@ -6,6 +6,7 @@ export type AdminSectionId =
   | "company"
   | "history"
   | "performance"
+  | "services"
   | "clients"
   | "team"
   | "gallery"
@@ -14,40 +15,95 @@ export type AdminSectionId =
   | "mail"
   | "security";
 
-type MenuItem = { id: AdminSectionId; label: string; desc: string };
+export type MenuItem = { id: AdminSectionId; label: string; desc: string };
+export type MenuGroup = { id: string; label: string; items: MenuItem[] };
 
-const menuKo: MenuItem[] = [
-  { id: "hero", label: "히어로", desc: "메인 배너" },
-  { id: "greeting", label: "인사말", desc: "소개 문구" },
-  { id: "company", label: "회사 정보", desc: "법인·주소·인증" },
-  { id: "history", label: "연혁", desc: "회사 히스토리" },
-  { id: "performance", label: "실적", desc: "주요 수행" },
-  { id: "clients", label: "고객사", desc: "고객사 목록" },
-  { id: "team", label: "팀원", desc: "대표·팀원 소개" },
-  { id: "gallery", label: "갤러리", desc: "사진 관리" },
-  { id: "affiliate", label: "관계사", desc: "한국 관계사" },
-  { id: "inquiries", label: "문의 내역", desc: "접수된 문의" },
-  { id: "mail", label: "메일 설정", desc: "Google SMTP" },
-  { id: "security", label: "보안", desc: "비밀번호 변경" },
+const menuGroupsKo: MenuGroup[] = [
+  {
+    id: "company",
+    label: "회사 소개",
+    items: [
+      { id: "greeting", label: "인사말", desc: "소개 문구" },
+      { id: "company", label: "회사 정보", desc: "법인·주소·인증" },
+      { id: "history", label: "연혁", desc: "회사 히스토리" },
+      { id: "team", label: "팀원", desc: "대표·팀원 소개" },
+      { id: "affiliate", label: "관계사", desc: "한국 관계사" },
+    ],
+  },
+  {
+    id: "site",
+    label: "사이트",
+    items: [
+      { id: "hero", label: "히어로", desc: "메인 배너" },
+      { id: "gallery", label: "갤러리", desc: "사진 관리" },
+    ],
+  },
+  {
+    id: "business",
+    label: "사업·서비스",
+    items: [
+      { id: "services", label: "설비·서비스", desc: "제공 서비스·제품" },
+      { id: "performance", label: "실적", desc: "주요 수행" },
+      { id: "clients", label: "고객사", desc: "고객사 목록" },
+    ],
+  },
+  {
+    id: "ops",
+    label: "운영",
+    items: [
+      { id: "inquiries", label: "문의 내역", desc: "접수된 문의" },
+      { id: "mail", label: "메일 설정", desc: "Google SMTP" },
+      { id: "security", label: "보안", desc: "비밀번호 변경" },
+    ],
+  },
 ];
 
-const menuEn: MenuItem[] = [
-  { id: "hero", label: "Hero", desc: "Main banner" },
-  { id: "greeting", label: "Greeting", desc: "Intro message" },
-  { id: "company", label: "Company", desc: "Legal · address · certs" },
-  { id: "history", label: "History", desc: "Company timeline" },
-  { id: "performance", label: "Performance", desc: "Key projects" },
-  { id: "clients", label: "Clients", desc: "Client list" },
-  { id: "team", label: "Team", desc: "CEO · members" },
-  { id: "gallery", label: "Gallery", desc: "Photo management" },
-  { id: "affiliate", label: "Affiliate", desc: "Korea affiliate" },
-  { id: "inquiries", label: "Inquiries", desc: "Received messages" },
-  { id: "mail", label: "Mail", desc: "Google SMTP" },
-  { id: "security", label: "Security", desc: "Change password" },
+const menuGroupsEn: MenuGroup[] = [
+  {
+    id: "company",
+    label: "Company",
+    items: [
+      { id: "greeting", label: "Greeting", desc: "Intro message" },
+      { id: "company", label: "Company", desc: "Legal · address · certs" },
+      { id: "history", label: "History", desc: "Company timeline" },
+      { id: "team", label: "Team", desc: "CEO · members" },
+      { id: "affiliate", label: "Affiliate", desc: "Korea affiliate" },
+    ],
+  },
+  {
+    id: "site",
+    label: "Website",
+    items: [
+      { id: "hero", label: "Hero", desc: "Main banner" },
+      { id: "gallery", label: "Gallery", desc: "Photo management" },
+    ],
+  },
+  {
+    id: "business",
+    label: "Business",
+    items: [
+      { id: "services", label: "Services", desc: "Equipment & products" },
+      { id: "performance", label: "Performance", desc: "Key projects" },
+      { id: "clients", label: "Clients", desc: "Client list" },
+    ],
+  },
+  {
+    id: "ops",
+    label: "Operations",
+    items: [
+      { id: "inquiries", label: "Inquiries", desc: "Received messages" },
+      { id: "mail", label: "Mail", desc: "Google SMTP" },
+      { id: "security", label: "Security", desc: "Change password" },
+    ],
+  },
 ];
+
+export function adminMenuGroups(locale: Locale): MenuGroup[] {
+  return locale === "en" ? menuGroupsEn : menuGroupsKo;
+}
 
 export function adminMenu(locale: Locale): MenuItem[] {
-  return locale === "en" ? menuEn : menuKo;
+  return adminMenuGroups(locale).flatMap((group) => group.items);
 }
 
 export function adminUi(locale: Locale) {
@@ -78,64 +134,60 @@ export function adminUi(locale: Locale) {
     body: en ? "Body" : "본문",
     brand: en ? "Brand" : "브랜드",
     headline: en ? "Headline" : "헤드라인",
-    subheadline: en ? "Subheadline" : "서브 헤드라인",
+    subheadline: en ? "Subheadline" : "서브헤드라인",
     ctaLabel: en ? "CTA label" : "CTA 문구",
-    ctaLink: en ? "CTA link" : "CTA 링크",
+    ctaHref: en ? "CTA link" : "CTA 링크",
     videoUrl: en ? "Video URL" : "영상 URL",
-    sectionTitle: en ? "Section title" : "섹션 제목",
     intro: en ? "Intro text" : "소개 문구",
-    name: en ? "Name" : "이름",
-    role: en ? "Role" : "직책",
-    bio: en ? "Bio" : "소개",
-    date: en ? "Date" : "날짜",
-    detail: en ? "Detail" : "내용",
-    client: en ? "Client" : "고객사",
-    manage: en ? "Manage" : "관리",
+    sectionTitle: en ? "Section title" : "섹션 제목",
+    add: en ? "Add" : "추가",
     register: en ? "Add" : "등록",
     edit: en ? "Edit" : "수정",
     delete: en ? "Delete" : "삭제",
     cancel: en ? "Cancel" : "취소",
-    confirmTitle: en ? "Please confirm" : "삭제 확인",
-    confirmOk: en ? "Delete" : "삭제",
+    confirm: en ? "Confirm" : "확인",
+    confirmTitle: en ? "Please confirm" : "확인",
+    confirmOk: en ? "OK" : "확인",
     confirmCancel: en ? "Cancel" : "취소",
-    applyAdd: en ? "Save" : "저장",
-    applyEdit: en ? "Save" : "저장",
+    applyAdd: en ? "Add" : "추가 반영",
+    applyEdit: en ? "Apply edit" : "수정 반영",
     total: (n: number) => (en ? `Total ${n}` : `총 ${n}건`),
     totalPeople: (n: number) => (en ? `Total ${n}` : `총 ${n}명`),
-
+    no: "No",
+    none: en ? "None" : "없음",
+    noTitle: en ? "(No title)" : "(제목 없음)",
+    manage: en ? "Manage" : "관리",
+    date: en ? "Date" : "일자",
+    detail: en ? "Details" : "내용",
+    name: en ? "Name" : "이름",
+    role: en ? "Role" : "직책",
+    bio: en ? "Bio" : "소개",
     photo: en ? "Photo" : "사진",
-    photoHint: en ? "JPG, PNG, WEBP · click preview or button" : "JPG, PNG, WEBP · 클릭하거나 버튼으로 첨부",
-    photoAttach: en ? "Add photo" : "사진 첨부",
-    photoSelect: en ? "Select photo" : "사진 선택",
-    photoChange: en ? "Change photo" : "사진 변경",
-    photoRemove: en ? "Remove photo" : "사진 삭제",
-    photoClickHint: en ? "You can also click the preview to choose a file." : "미리보기 영역을 눌러도 파일을 선택할 수 있습니다.",
-    uploading: en ? "Uploading…" : "업로드 중…",
+    photoHint: en ? "JPG, PNG, WEBP" : "JPG, PNG, WEBP",
+    caption: en ? "Caption" : "설명",
+    image: en ? "Image" : "이미지",
+    imageUrl: en ? "Image URL" : "이미지 URL",
     logo: en ? "Logo" : "로고",
     logoHint: en ? "Optional · JPG, PNG, WEBP" : "선택 사항 · JPG, PNG, WEBP",
     logoRemove: en ? "Remove logo" : "로고 제거",
-    image: en ? "Image" : "이미지",
-    imageUrl: en ? "Image URL" : "이미지 URL",
-    caption: en ? "Caption" : "설명",
-    none: en ? "—" : "—",
-    noName: en ? "(Untitled)" : "(이름 없음)",
-    noTitle: en ? "(Untitled)" : "(제목 없음)",
 
     hero: en ? "Hero" : "히어로",
     greeting: en ? "Greeting" : "인사말",
-    company: en ? "Company info" : "회사 정보",
+    company: en ? "Company" : "회사 정보",
     history: en ? "History" : "연혁",
     historyHint: en
-      ? "Edits are saved automatically and applied to the site. Save KO and EN separately."
-      : "변경 시 자동 저장되어 사이트에 바로 반영됩니다. KO/EN은 각각 수정하세요.",
-    historyAdd: en ? "+ Add history" : "+ 연혁 추가",
-    historyEmpty: en ? "No history yet. Add one with the button above." : "등록된 연혁이 없습니다. 위 버튼으로 추가하세요.",
+      ? "Add timeline entries. Save after edit."
+      : "연혁을 등록·수정합니다. 수정 후 저장하세요.",
+    historyAdd: en ? "Add history" : "연혁 추가",
+    historyEmpty: en ? "No history yet." : "등록된 연혁이 없습니다.",
+    historySave: en ? "Save" : "저장",
+    historySaved: en ? "Saved" : "저장됨",
+    historyDeleteConfirm: en ? "Delete this history entry?" : "이 연혁을 삭제할까요?",
     performance: en ? "Performance" : "실적",
     performanceHint: en
-      ? "Add, edit, or delete items, then click Save. List is sorted by date (newest first)."
-      : "추가·수정·삭제 후 저장을 누르면 사이트에 반영됩니다. 날짜 기준(최신순)으로 정렬됩니다.",
-    performanceList: en ? "Performance list" : "실적 목록",
-    performanceAdd: en ? "+ Add performance" : "+ 실적 추가",
+      ? "Add key project records. Save after edit."
+      : "주요 실적을 등록·수정합니다. 수정 후 저장하세요.",
+    performanceAdd: en ? "Add performance" : "실적 추가",
     performanceEmpty: en
       ? "No performance records yet. Add one with the button above."
       : "등록된 실적이 없습니다. 위 버튼으로 추가하세요.",
@@ -143,6 +195,27 @@ export function adminUi(locale: Locale) {
     performanceSaved: en ? "Saved" : "저장됨",
     performanceClient: en ? "Client" : "고객사",
     performanceDeleteConfirm: en ? "Delete this performance record?" : "이 실적을 삭제할까요?",
+    services: en ? "Equipment & Services" : "설비·서비스",
+    servicesHint: en
+      ? "Edit page copy, offerings, brands, and product documents shown on /services."
+      : "제공 서비스·브랜드·제품 자료를 관리합니다. 저장하면 /services에 바로 반영됩니다.",
+    servicesPage: en ? "Page copy" : "페이지 문구",
+    servicesOfferings: en ? "Offerings" : "제공 서비스",
+    servicesBrands: en ? "Brands & products" : "브랜드·제품",
+    servicesCategories: en ? "Categories" : "설비 분류",
+    servicesAddOffering: en ? "Add offering" : "서비스 추가",
+    servicesAddBrand: en ? "Add brand" : "브랜드 추가",
+    servicesAddProduct: en ? "Add product" : "제품 추가",
+    servicesAddCategory: en ? "Add category" : "분류 추가",
+    servicesBrandName: en ? "Brand name" : "브랜드명",
+    servicesSlug: en ? "URL slug" : "URL 슬러그",
+    servicesFolder: en ? "Folder / source" : "폴더·출처",
+    servicesLead: en ? "Intro" : "소개",
+    servicesProductTitle: en ? "Document title" : "자료 제목",
+    servicesProductDesc: en ? "Description" : "설명",
+    servicesCategoryItems: en ? "Links (label|slug per line)" : "링크 (한 줄에 라벨|슬러그)",
+    servicesEmptyOfferings: en ? "No offerings yet." : "등록된 제공 서비스가 없습니다.",
+    servicesEmptyBrands: en ? "No brands yet." : "등록된 브랜드가 없습니다.",
     clients: en ? "Clients" : "고객사",
     clientsHint: en
       ? "Save after add/edit — applied to the site. If no logo, the name is shown."
@@ -218,38 +291,39 @@ export function adminUi(locale: Locale) {
 
     inquiriesTitle: en ? "Inquiries" : "문의 내역",
     inquiriesHint: en
-      ? "Messages submitted through the site contact form."
-      : "사이트 문의 양식으로 접수된 내용입니다.",
-    inquiriesEmpty: en ? "No inquiries yet." : "아직 접수된 문의가 없습니다.",
-    inquiriesLoading: en ? "Loading…" : "불러오는 중…",
+      ? "Messages submitted from the contact form."
+      : "문의 양식으로 접수된 메시지입니다.",
+    inquiriesEmpty: en ? "No inquiries yet." : "접수된 문의가 없습니다.",
+    inquiriesRefresh: en ? "Refresh" : "새로고침",
     inquiriesDelete: en ? "Delete" : "삭제",
+    inquiriesDeleteConfirm: en ? "Delete this inquiry?" : "이 문의를 삭제할까요?",
+    inquiriesLoading: en ? "Loading inquiries…" : "문의 불러오는 중…",
     inquiryDeleteConfirm: en ? "Delete this inquiry?" : "이 문의를 삭제할까요?",
-    inquiriesFrom: en ? "From" : "보낸 사람",
-    inquiriesCompany: en ? "Company" : "회사",
-    inquiriesMessage: en ? "Message" : "내용",
-    inquiriesDate: en ? "Date" : "일시",
 
     mailTitle: en ? "Mail settings" : "메일 설정",
     mailHint: en
-      ? "Use a Google account App Password (SMTP). When enabled, new inquiries are emailed to the recipient."
-      : "Google 계정 앱 비밀번호(SMTP)를 사용합니다. 활성화하면 새 문의가 수신 메일로 발송됩니다.",
-    mailEnabled: en ? "Enable inquiry email" : "문의 메일 발송 사용",
+      ? "Google SMTP for inquiry email notifications."
+      : "문의 알림용 Google SMTP 설정입니다.",
+    mailGuide: en
+      ? "Use a Google App Password (not your normal Gmail password)."
+      : "일반 Gmail 비밀번호가 아닌 Google 앱 비밀번호를 사용하세요.",
+    mailEnabled: en ? "Enable sending" : "발송 사용",
     mailHost: en ? "SMTP host" : "SMTP 호스트",
     mailPort: en ? "Port" : "포트",
-    mailSecure: en ? "Use SSL (465)" : "SSL 사용 (465)",
+    mailSecure: en ? "Use SSL/TLS" : "SSL/TLS 사용",
     mailUser: en ? "Gmail address" : "Gmail 주소",
     mailPass: en ? "App password" : "앱 비밀번호",
     mailPassKeep: en ? "Leave blank to keep the current password" : "비워 두면 기존 비밀번호 유지",
     mailFromName: en ? "From name" : "발신자 이름",
-    mailFromEmail: en ? "From email (optional)" : "발신 이메일 (선택)",
-    mailTo: en ? "Recipient email" : "수신 이메일",
+    mailFromEmail: en ? "From email" : "발신 이메일",
+    mailTo: en ? "Recipient" : "수신자",
     mailSave: en ? "Save mail settings" : "메일 설정 저장",
-    mailTest: en ? "Send test email" : "테스트 메일 보내기",
     mailSaved: en ? "Mail settings saved." : "메일 설정이 저장되었습니다.",
+    mailTest: en ? "Send test email" : "테스트 메일 보내기",
     mailTestOk: en ? "Test email sent." : "테스트 메일을 보냈습니다.",
-    mailGuide: en
+    mailAppPasswordHelp: en
       ? "Google Account → Security → 2-Step Verification → App passwords"
-      : "Google 계정 → 보안 → 2단계 인증 → 앱 비밀번호에서 16자리 비밀번호를 발급하세요.",
+      : "Google 계정 → 보안 → 2단계 인증 → 앱 비밀번호",
   };
 }
 

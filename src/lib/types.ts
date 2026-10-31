@@ -96,6 +96,60 @@ export type LocaleContent = {
     website: string;
   };
   certificates: CertificateItem[];
+  services: ServicesContent;
+};
+
+export type ServiceProductItem = {
+  id: string;
+  title: string;
+  image: string;
+  description: string;
+};
+
+export type ServiceBrandItem = {
+  id: string;
+  slug: string;
+  brand: string;
+  folder: string;
+  lead: string;
+  products: ServiceProductItem[];
+};
+
+export type ServiceOfferingItem = {
+  id: string;
+  title: string;
+  description: string;
+};
+
+export type ServiceCategoryLink = {
+  label: string;
+  slug: string;
+};
+
+export type ServiceCategoryItem = {
+  id: string;
+  title: string;
+  description: string;
+  items: ServiceCategoryLink[];
+};
+
+export type ServicesContent = {
+  label: string;
+  title: string;
+  lead: string;
+  offeringsLabel: string;
+  offeringsTitle: string;
+  offeringsLead: string;
+  equipmentLabel: string;
+  equipmentTitle: string;
+  equipmentLead: string;
+  viewDocs: string;
+  ctaTitle: string;
+  ctaLead: string;
+  ctaButton: string;
+  offerings: ServiceOfferingItem[];
+  brands: ServiceBrandItem[];
+  categories: ServiceCategoryItem[];
 };
 
 export type SiteContent = {

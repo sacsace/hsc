@@ -1,4 +1,5 @@
 import { promises as fs } from "fs";
+import { ensureServicesContent } from "@/lib/services-default";
 import { sortPerformances, type SiteContent } from "@/lib/types";
 import {
   ensureRuntimeContentFile,
@@ -165,6 +166,7 @@ export async function getContent(): Promise<SiteContent> {
         })),
       };
     }
+    localeData.services = ensureServicesContent(localeData.services, locale);
     localeData.history = (localeData.history || []).map((item, index) =>
       item.id ? item : { ...item, id: `h-${locale}-${index}` },
     );
