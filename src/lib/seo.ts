@@ -113,7 +113,7 @@ const seo: Record<Locale, Record<SeoPage, SeoCopy>> = {
     home: {
       title: `${SITE_NAME} | Total Air Solution`,
       description:
-        "Hankook Service Center Pvt. Ltd. Industrial air compressor sales, repair, and maintenance in Bangalore and Chennai, India.",
+        "Hankook Service Center Pvt. Ltd. Industrial air compressor sales, repair, and maintenance in Bengaluru and Chennai, India.",
       keywords: [
         "Hankook Service Center",
         "air compressor",
@@ -121,6 +121,7 @@ const seo: Record<Locale, Record<SeoPage, SeoCopy>> = {
         "overhaul",
         "compressed air",
         "India",
+        "Bengaluru",
         "Bangalore",
         "Chennai",
         "Atlas Copco",
@@ -151,7 +152,8 @@ const seo: Record<Locale, Record<SeoPage, SeoCopy>> = {
         "Hankook Service Center",
       ],
       ogTitle: `Equipment & Services | ${SITE_NAME}`,
-      ogDescription: "Explore our Total Air Solution equipment and services.",
+      ogDescription:
+        "Comprehensive solutions for industrial compressed air systems: equipment supply, repairs, overhauls, and annual maintenance.",
     },
     team: {
       title: `Our Team | ${SITE_NAME}`,
@@ -170,10 +172,10 @@ const seo: Record<Locale, Record<SeoPage, SeoCopy>> = {
     contact: {
       title: `Contact | ${SITE_NAME}`,
       description:
-        "Send an inquiry and find our Registration Office and Chennai office locations.",
-      keywords: ["contact", "inquiry", "Chennai", "Bangalore", "Hankook Service Center"],
+        "Send an Inquiry and find our Registration Office and Chennai office locations.",
+      keywords: ["contact", "inquiry", "Chennai", "Bengaluru", "Bangalore", "Hankook Service Center"],
       ogTitle: `Contact | ${SITE_NAME}`,
-      ogDescription: "Send an inquiry and we will get back to you soon.",
+      ogDescription: "Contact us to discuss your requirements. We’ll get back to you shortly.",
     },
     clients: {
       title: `Clients | ${SITE_NAME}`,
@@ -183,12 +185,12 @@ const seo: Record<Locale, Record<SeoPage, SeoCopy>> = {
       ogDescription: "See the partners we have worked with.",
     },
     performance: {
-      title: `Performance | ${SITE_NAME}`,
+      title: `Projects | ${SITE_NAME}`,
       description:
-        "Major sales, overhaul, and annual maintenance work by Hankook Service Center.",
-      keywords: ["performance", "overhaul", "maintenance", "Hankook Service Center"],
-      ogTitle: `Performance | ${SITE_NAME}`,
-      ogDescription: "Browse our key project and service records.",
+        "Featured projects covering equipment sales, overhauls, and annual maintenance by Hankook Service Center.",
+      keywords: ["projects", "overhaul", "maintenance", "Hankook Service Center"],
+      ogTitle: `Projects | ${SITE_NAME}`,
+      ogDescription: "Browse our featured project and service records.",
     },
   },
 };
@@ -304,7 +306,7 @@ export function organizationJsonLd(locale: Locale) {
     address: [
       {
         "@type": "PostalAddress",
-        addressLocality: "Bangalore",
+        addressLocality: "Bengaluru",
         addressRegion: "Karnataka",
         addressCountry: "IN",
       },

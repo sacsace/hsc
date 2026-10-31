@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { LanguageProvider, useLanguage } from "@/components/LanguageProvider";
+import { SafeSearchInput } from "@/components/SafeSearchInput";
 import type { ClientItem, Locale, SiteContent } from "@/lib/types";
 
 function ClientCard({ client }: { client: ClientItem }) {
@@ -69,11 +70,11 @@ function ClientsSections() {
               </p>
               <label className="block w-full max-w-md sm:ml-auto">
                 <span className="sr-only">{t.clientsSearch}</span>
-                <input
-                  type="search"
+                <SafeSearchInput
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder={t.clientsSearchPlaceholder}
+                  aria-label={t.clientsSearch}
                   className="w-full border border-[var(--line)] bg-[#f8fafb] px-3 py-2.5 text-sm outline-none focus:border-[var(--navy)] focus:bg-white"
                 />
               </label>

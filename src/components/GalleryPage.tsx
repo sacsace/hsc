@@ -5,6 +5,7 @@ import { Footer } from "@/components/Footer";
 import { GallerySection, type GalleryViewMode } from "@/components/GallerySection";
 import { Header } from "@/components/Header";
 import { LanguageProvider, useLanguage } from "@/components/LanguageProvider";
+import { SafeSearchInput } from "@/components/SafeSearchInput";
 import { ViewModeToggle } from "@/components/ViewModeToggle";
 import type { SiteContent } from "@/lib/types";
 
@@ -58,11 +59,11 @@ function GallerySections() {
 
                 <label className="block w-full max-w-md">
                   <span className="sr-only">{t.gallerySearch}</span>
-                  <input
-                    type="search"
+                  <SafeSearchInput
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder={t.gallerySearchPlaceholder}
+                    aria-label={t.gallerySearch}
                     className="w-full border border-[var(--line)] bg-[#f8fafb] px-3 py-2.5 text-sm outline-none focus:border-[var(--navy)] focus:bg-white"
                   />
                 </label>

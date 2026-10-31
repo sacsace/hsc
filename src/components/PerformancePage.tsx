@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { LanguageProvider, useLanguage } from "@/components/LanguageProvider";
+import { SafeSearchInput } from "@/components/SafeSearchInput";
 import {
   dateSortKey,
   type Locale,
@@ -102,11 +103,11 @@ function PerformanceSections() {
               </p>
               <label className="block w-full max-w-md text-sm sm:ml-auto">
                 <span className="sr-only">{t.performanceSearch}</span>
-                <input
-                  type="search"
+                <SafeSearchInput
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder={t.performanceSearchPlaceholder}
+                  aria-label={t.performanceSearch}
                   className="w-full border border-[var(--line)] bg-[#f8fafb] px-3 py-2.5 text-sm outline-none focus:border-[var(--navy)] focus:bg-white"
                 />
               </label>

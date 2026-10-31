@@ -106,7 +106,7 @@ export async function getContent(): Promise<SiteContent> {
                 headline: "Keep Operations Running",
                 subheadline:
                   "We inspect and service compressor facilities so your production stays stable and efficient.",
-                ctaLabel: "View Performance",
+                ctaLabel: "View All Projects",
                 ctaHref: "/performance",
               },
               {

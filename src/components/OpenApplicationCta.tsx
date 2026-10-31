@@ -54,7 +54,7 @@ export function OpenApplicationCta() {
           <h2 className="font-display text-xl font-semibold tracking-tight md:text-2xl">
             {t.openApplyTitle}
           </h2>
-          <p className="mt-3 overflow-x-auto whitespace-nowrap text-sm leading-relaxed text-white/70 md:text-[0.95rem]">
+          <p className="mt-3 max-w-3xl text-sm leading-relaxed break-keep text-pretty text-white/70 md:text-[0.95rem]">
             {t.openApplyLead}
           </p>
           <button

@@ -144,7 +144,7 @@
       {
         "date": "2022.08.26",
         "detail": "GA160, GA75, GA55, GA37 연간 유지보수 계약",
-        "client": "SHC",
+        "client": "SHC INDIA",
         "id": "p-ko-4"
       },
       {
@@ -168,7 +168,7 @@
       {
         "date": "2022.07.08",
         "detail": "GA75 판매",
-        "client": "Jintech",
+        "client": "Jintech Automotive",
         "id": "p-ko-8"
       },
       {
@@ -260,7 +260,7 @@
         },
         {
           "id": "c-3",
-          "name": "Jintech",
+          "name": "Jintech Automotive",
           "logo": "/uploads/1790460470095-e785c571.png"
         },
         {
@@ -276,11 +276,6 @@
         {
           "id": "c-6",
           "name": "Hando Precision",
-          "logo": ""
-        },
-        {
-          "id": "c-7",
-          "name": "SHC",
           "logo": ""
         },
         {
@@ -319,7 +314,7 @@
       "offeringsLead": "현장 가동을 안정적으로 유지하기 위한 판매·정비·공사 서비스를 제공합니다.",
       "equipmentLabel": "Equipment",
       "equipmentTitle": "취급 설비",
-      "equipmentLead": "브랜드를 선택하면 Document For Websites 폴더의 제품 사진(카탈로그 표지)과 설명을 볼 수 있습니다.",
+      "equipmentLead": "브랜드를 선택하면 설비 사진, 제품 정보, 카탈로그를 확인할 수 있습니다.",
       "viewDocs": "제품 자료 보기",
       "ctaTitle": "설비 선정이나 유지보수 상담이 필요하신가요?",
       "ctaLead": "현장 조건에 맞는 컴프레서·처리설비·유지보수 방안을 함께 검토합니다.",
@@ -743,7 +738,7 @@
           "brand": "Reliable Service",
           "headline": "Keep Operations Running",
           "subheadline": "We inspect and service compressor facilities so your production stays stable and efficient.",
-          "ctaLabel": "View Performance",
+          "ctaLabel": "View All Projects",
           "ctaHref": "#performance"
         },
         {
@@ -760,17 +755,17 @@
       ]
     },
     "greeting": {
-      "title": "CEO Message",
-      "body": "Your compressed air partner for stable production\nThank you for visiting Hankook Service Center.\nHankook Service Center provides compressed air solutions for industrial sites from air compressor sales to maintenance, repair, and overhaul.\nA stable compressed air supply is essential to protecting productivity and quality. We carefully understand each customer’s equipment and operating environment, and work to reduce unexpected downtime and improve efficiency through site-fit technical support and responsive service.\n\nWe value every commitment to our customers and continue responsible service after delivery. With technical capability and trust, we aim to be a reliable partner so you can focus on production with confidence.\nWe look forward to your continued interest and support.\nThank you."
+      "title": "Message from the CEO",
+      "body": "Your Trusted Compressed Air Partner for Reliable Production\n\nThank you for visiting Hankook Service Center.\n\nWe provide comprehensive compressed air solutions for industrial facilities, including air compressor sales, maintenance, repairs, and overhauls.\n\nA reliable compressed air supply is essential to maintaining productivity and product quality. By understanding each customer’s equipment and operating conditions, we deliver tailored technical support and responsive service to help minimize unexpected downtime and improve operational efficiency.\n\nWe honor our commitments and provide dependable after-sales support. Through technical expertise and a commitment to earning your trust, we strive to be a partner you can rely on, allowing you to focus on production with confidence.\n\nThank you for your continued trust and support."
     },
     "company": {
       "legalName": "Hankook Service Center Private Limited",
-      "founded": "November 08, 2021",
+      "founded": "November 8, 2021",
       "employees": "6",
       "businessType": "Service Industry",
-      "businessItem": "Repair and sale of industrial air compressors",
+      "businessItem": "Sales and Servicing of Industrial Air Compressors",
       "hqKorea": "166 Yeonam Yulgeum-ro, Seonghwan-eup, Seobuk-gu, Cheonan-si, Chungcheongnam-do, Korea",
-      "branchIndia": "Office 119, 24/1, Doddanekundi, Ferns City Road, Outer Ring Road, Marathahalli, Bangalore, Karnataka 560037",
+      "branchIndia": "Office 119, 24/1, Doddanekundi, Ferns City Road, Outer Ring Road, Marathahalli, Bengaluru, Karnataka 560037",
       "branchIndiaMapEmbed": "https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d1973.0562914194513!2d77.69682492859985!3d12.978534306050603!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTLCsDU4JzQyLjciTiA3N8KwNDEnNTAuOSJF!5e1!3m2!1sko!2sin!4v1790584743425!5m2!1sko!2sin",
       "cin": "U29100KA2021PTC153989",
       "pan": "AAGCH0318F",
@@ -818,79 +813,79 @@
       },
       {
         "date": "May 2022",
-        "detail": "Contract for the sale of compressor oil with Tectyl Oil & Chemicals (India) Pvt Ltd",
+        "detail": "Compressor Oil Sales Agreement with Tectyl Oil & Chemicals (India) Pvt. Ltd.",
         "id": "h-en-7"
       },
       {
         "date": "Aug 2022",
-        "detail": "Contract for the sale of compressor oil with Kluber Lubrication India",
+        "detail": "Compressor Oil Sales Agreement with Kluber Lubrication India",
         "id": "h-en-8"
       }
     ],
     "performances": [
       {
-        "date": "2022.11.30",
-        "detail": "GA75+ Overhaul",
+        "date": "Nov 30, 2022",
+        "detail": "GA75+ Air Compressor Overhaul",
         "client": "Dae Seung Autopart",
         "id": "p-en-0"
       },
       {
-        "date": "2022.11.20",
-        "detail": "GA132 Overhaul",
+        "date": "Nov 20, 2022",
+        "detail": "GA132 Air Compressor Overhaul",
         "client": "DAS",
         "id": "p-en-1"
       },
       {
-        "date": "2022.09.06",
-        "detail": "Replacement of ES-4000 Control Unit (CPC 50G)",
+        "date": "Sep 6, 2022",
+        "detail": "ES-4000 Control Unit Replacement (CPC 50G)",
         "client": "SIT",
         "id": "p-en-2"
       },
       {
-        "date": "2022.09.01",
-        "detail": "ELGI Air Compressor EN-22 Package Sales",
+        "date": "Sep 1, 2022",
+        "detail": "Sale of ELGi EN-22 Air Compressor Package",
         "client": "Kolon India",
         "id": "p-en-3"
       },
       {
-        "date": "2022.08.26",
-        "detail": "GA160, GA75, GA55, GA37 Annual Maintenance Contract",
-        "client": "SHC",
+        "date": "Aug 26, 2022",
+        "detail": "Annual Maintenance Contract for GA160, GA75, GA55, and GA37 Air Compressors",
+        "client": "SHC INDIA",
         "id": "p-en-4"
       },
       {
-        "date": "2022.08.24",
-        "detail": "GA30 Sales",
+        "date": "Aug 24, 2022",
+        "detail": "Sale of GA30 Air Compressor",
         "client": "Hando Precision",
         "id": "p-en-5"
       },
       {
-        "date": "2022.08.05",
-        "detail": "TA-100 (FS Curtis) Sales",
+        "date": "Aug 5, 2022",
+        "detail": "Sale of FS-Curtis TA-100 Air Compressor",
         "client": "Samwoo Packing",
         "id": "p-en-6"
       },
       {
-        "date": "2022.07.10",
-        "detail": "GA55, GA37 Annual Maintenance Contract",
+        "date": "Jul 10, 2022",
+        "detail": "Annual Maintenance Contract for GA55 and GA37 Air Compressors",
         "client": "Woory Automotive",
         "id": "p-en-7"
       },
       {
-        "date": "2022.07.08",
-        "detail": "GA75 Sale",
-        "client": "Jintech",
+        "date": "Jul 8, 2022",
+        "detail": "Sale of GA75 Air Compressor",
+        "client": "Jintech Automotive",
         "id": "p-en-8"
       },
       {
-        "date": "2022.05.20",
-        "detail": "GA37 VSD Overhaul",
+        "date": "May 20, 2022",
+        "detail": "GA37 VSD Air Compressor Overhaul",
         "client": "KB Autosys",
         "id": "p-en-9"
       },
       {
-        "date": "2022.04.30",
-        "detail": "GA160, GA75, GA55, GA37 Overhaul",
+        "date": "Apr 30, 2022",
+        "detail": "Overhaul of GA160, GA75, GA55, and GA37 Air Compressors",
         "client": "SHC INDIA",
         "id": "p-en-10"
       }
@@ -910,11 +905,11 @@
     ],
     "team": {
       "title": "Our Team",
-      "lead": "The people behind Hankook Service Center industrial air solutions.",
+      "lead": "Meet the people behind Hankook Service Center’s industrial compressed air solutions.",
       "ceo": {
         "name": "Hyun H.S.",
         "role": "Director",
-        "bio": "Leading industrial compressor sales, repair, and maintenance Total Air Solution in India.",
+        "bio": "Oversees industrial air compressor sales, repairs, and maintenance, delivering comprehensive compressed air solutions in India.",
         "photo": ""
       },
       "members": []
@@ -926,7 +921,7 @@
     },
     "gallery": {
       "title": "Gallery",
-      "lead": "Photos from our field service and operations.",
+      "lead": "Explore photos of our on-site services and daily operations.",
       "items": [
         {
           "id": "g1",
@@ -955,8 +950,8 @@
       ]
     },
     "clients": {
-      "title": "Clients",
-      "lead": "With compressed air solutions and responsible service for production sites, we support stable equipment operation and grow together with our clients.",
+      "title": "Our Clients",
+      "lead": "We help our clients maintain reliable equipment operation through tailored compressed air solutions and dependable service, building lasting partnerships along the way.",
       "items": [
         {
           "id": "c-1",
@@ -966,11 +961,11 @@
         {
           "id": "c-2",
           "name": "KB Autosys",
-          "logo": "/uploads/1790459412606-f5128ae1.jpg"
+          "logo": ""
         },
         {
           "id": "c-3",
-          "name": "Jintech",
+          "name": "Jintech Automotive",
           "logo": "/uploads/1790460470095-e785c571.png"
         },
         {
@@ -986,11 +981,6 @@
         {
           "id": "c-6",
           "name": "Hando Precision",
-          "logo": ""
-        },
-        {
-          "id": "c-7",
-          "name": "SHC",
           "logo": ""
         },
         {
@@ -1018,47 +1008,47 @@
     "services": {
       "label": "Products & Services",
       "title": "Equipment & Services",
-      "lead": "A Total Air Solution for industrial compressed air. We supply multi-brand compressors and related equipment, and support installation, repair, overhaul, and annual maintenance from one team.",
+      "lead": "Comprehensive solutions for industrial compressed air systems. We supply compressors and related equipment from multiple brands, with installation support, repairs, overhauls, and annual maintenance, all coordinated by one team.",
       "offeringsLabel": "Services",
-      "offeringsTitle": "What We Provide",
-      "offeringsLead": "Sales, service, and installation support to keep production air systems running reliably.",
+      "offeringsTitle": "Our Services",
+      "offeringsLead": "Equipment sales, servicing, and installation support to keep your industrial compressed air systems running reliably.",
       "equipmentLabel": "Equipment",
-      "equipmentTitle": "Equipment We Handle",
-      "equipmentLead": "Select a brand to view product photos (catalog covers) and descriptions from our Document For Websites folders.",
+      "equipmentTitle": "Our Equipment Range",
+      "equipmentLead": "Select a brand to explore equipment photos, product information, and available catalogs.",
       "viewDocs": "View product docs",
       "ctaTitle": "Need help selecting equipment or planning maintenance?",
       "ctaLead": "We review compressor, air-treatment, and maintenance options that fit your site conditions.",
-      "ctaButton": "Contact us",
+      "ctaButton": "Contact Us",
       "offerings": [
         {
           "id": "sales",
           "title": "New Equipment Sales",
-          "description": "We recommend and supply air compressors, dryers, filters, oils, UPS, DG, and related utilities for your plant requirements."
+          "description": "We recommend and supply air compressors, dryers, filters, lubricants, uninterruptible power supply (UPS) systems, diesel generators, and related equipment to meet your plant’s requirements."
         },
         {
           "id": "repair",
-          "title": "Repair & Overhaul",
-          "description": "Multi-brand compressor service including airend, motor, and controller work for Atlas Copco, ELGI, Chicago Pneumatic, FS Curtis, and more."
+          "title": "Repairs & Overhauls",
+          "description": "Repair and overhaul services for compressors from brands including Atlas Copco, ELGi, Chicago Pneumatic, and FS-Curtis, covering airends, motors, and controllers."
         },
         {
           "id": "amc",
-          "title": "Annual Maintenance (AMC)",
-          "description": "Preventive maintenance contracts covering inspections, consumables, and breakdown response to reduce downtime risk."
+          "title": "Annual Maintenance Contracts (AMC)",
+          "description": "Planned preventive maintenance and breakdown support to help reduce unplanned downtime, with inspections and consumables provided according to the agreed contract scope."
         },
         {
           "id": "treatment",
           "title": "Air Treatment & Piping",
-          "description": "Dryer, filter, and after-cooler setups plus pipeline work for stable air quality and distribution."
+          "description": "Installation of air dryers, filters, aftercoolers, and piping to maintain consistent compressed air quality and reliable distribution."
         },
         {
           "id": "rental",
-          "title": "Rental Compressors",
-          "description": "Temporary rental compressors for replacement, capacity increase, or emergency coverage."
+          "title": "Compressor Rentals",
+          "description": "Rental compressors for temporary replacement, additional capacity, or emergency use."
         },
         {
           "id": "special",
-          "title": "Nitrogen, Cooling & Power",
-          "description": "Nitrogen generation, chiller reconditioning, and DG/UPS support for plant utilities."
+          "title": "Nitrogen, Cooling & Power Solutions",
+          "description": "Nitrogen generation solutions, chiller reconditioning, and diesel generator and UPS support for your plant’s utility systems."
         }
       ],
       "brands": [
@@ -1331,7 +1321,7 @@
         {
           "id": "compressors",
           "title": "Air Compressors",
-          "description": "Industrial screw compressor packages including oil-injected / oil-free and fixed-speed / VSD-VFD models.",
+          "description": "Industrial rotary screw compressors, including oil-injected and oil-free models, with fixed-speed and variable-speed options.",
           "items": [
             {
               "label": "Atlas Copco",
@@ -1342,11 +1332,11 @@
               "slug": "chicago-pneumatic"
             },
             {
-              "label": "ELGI",
+              "label": "ELGi",
               "slug": "elgi"
             },
             {
-              "label": "FS Curtis",
+              "label": "FS-Curtis",
               "slug": "fs-curtis"
             },
             {
@@ -1361,23 +1351,30 @@
         },
         {
           "id": "dryers-filters",
-          "title": "Dryers, Filters & After Coolers",
-          "description": "Air quality equipment including Summit Adsorb heatless dryers, Elix refrigeration dryers, and filters.",
+          "title": "Air Dryers, Filters & Aftercoolers",
+          "description": "Compressed air treatment equipment, including heatless desiccant dryers, refrigerated air dryers, filters, and aftercoolers.",
           "items": [
             {
-              "label": "Summit dryers & filters",
+              "label": "Summit Dryers & Filters",
               "slug": "summit"
-            },
+            }
+          ]
+        },
+        {
+          "id": "nitrogen",
+          "title": "Nitrogen Generation Systems",
+          "description": "Nitrogen generation solutions for plant utility systems.",
+          "items": [
             {
-              "label": "Nitrogen plant",
+              "label": "Nitrogen Generation Systems",
               "slug": "summit"
             }
           ]
         },
         {
           "id": "oil",
-          "title": "Compressor Oils",
-          "description": "Application-specific synthetic compressor lubricants for long life and food-grade needs.",
+          "title": "Compressor Lubricants",
+          "description": "Synthetic compressor lubricants for a range of operating conditions, including options for extended service life and food-grade applications.",
           "items": [
             {
               "label": "Klüber Summit PS / SH / FG Elite",
@@ -1387,15 +1384,15 @@
         },
         {
           "id": "power",
-          "title": "DG & UPS",
-          "description": "Diesel generators and UPS solutions for standby power and stable electrical quality.",
+          "title": "Diesel Generators & UPS Systems",
+          "description": "Diesel generators and uninterruptible power supply (UPS) systems for reliable backup power and improved power quality.",
           "items": [
             {
-              "label": "Kirloskar DG",
+              "label": "Kirloskar Diesel Generators",
               "slug": "dg"
             },
             {
-              "label": "SBN Tech UPS",
+              "label": "SBN Tech UPS Systems",
               "slug": "ups"
             }
           ]
@@ -1403,10 +1400,10 @@
         {
           "id": "utility",
           "title": "Vacuum Pumps & Accessories",
-          "description": "FS Curtis vacuum pump and accessories documents.",
+          "description": "Explore FS-Curtis vacuum pumps and related accessories.",
           "items": [
             {
-              "label": "FS Curtis Accessories / Vacuum",
+              "label": "FS-Curtis Vacuum Pumps & Accessories",
               "slug": "fs-curtis"
             }
           ]

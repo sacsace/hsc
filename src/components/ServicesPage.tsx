@@ -1,14 +1,20 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
+import { ApplicationModal } from "@/components/ApplicationModal";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { LanguageProvider, useLanguage } from "@/components/LanguageProvider";
 import { defaultServicesContent } from "@/lib/services-default";
 import type { Locale, SiteContent } from "@/lib/types";
 
+const ctaBtnClass =
+  "inline-flex items-center justify-center rounded-md border border-white bg-white px-4 py-2 text-sm font-semibold !text-black transition-colors hover:bg-white/90";
+
 function ServicesSections() {
-  const { locale, content } = useLanguage();
+  const { locale, content, t } = useLanguage();
+  const [applyOpen, setApplyOpen] = useState(false);
   const copy = content.services || defaultServicesContent(locale);
 
   return (
@@ -126,17 +132,20 @@ function ServicesSections() {
                 {copy.ctaLead}
               </p>
             </div>
-            <a
-              href="/contact"
-              className="inline-flex w-fit items-center justify-center border border-white/30 bg-white px-5 py-2.5 text-sm font-semibold tracking-wide !text-[var(--navy)] transition-colors hover:bg-white/90"
-            >
-              {copy.ctaButton}
-            </a>
+            <div className="flex flex-wrap items-center gap-2.5">
+              <a href="/contact" className={ctaBtnClass}>
+                {copy.ctaButton}
+              </a>
+              <button type="button" onClick={() => setApplyOpen(true)} className={ctaBtnClass}>
+                {t.openApplyCta}
+              </button>
+            </div>
           </div>
         </section>
       </main>
 
       <Footer />
+      <ApplicationModal open={applyOpen} onClose={() => setApplyOpen(false)} />
     </div>
   );
 }

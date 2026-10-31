@@ -48,7 +48,7 @@ const ko: ServicesCopy = {
   equipmentLabel: "Equipment",
   equipmentTitle: "취급 설비",
   equipmentLead:
-    "브랜드를 선택하면 Document For Websites 폴더의 제품 사진(카탈로그 표지)과 설명을 볼 수 있습니다.",
+    "브랜드를 선택하면 설비 사진, 제품 정보, 카탈로그를 확인할 수 있습니다.",
   brandsLabel: "주요 취급 브랜드",
   viewDocs: "제품 자료 보기",
   ctaTitle: "설비 선정이나 유지보수 상담이 필요하신가요?",
@@ -148,57 +148,57 @@ const en: ServicesCopy = {
   label: "Products & Services",
   title: "Equipment & Services",
   lead:
-    "A Total Air Solution for industrial compressed air. We supply multi-brand compressors and related equipment, and support installation, repair, overhaul, and annual maintenance from one team.",
+    "Comprehensive solutions for industrial compressed air systems. We supply compressors and related equipment from multiple brands, with installation support, repairs, overhauls, and annual maintenance, all coordinated by one team.",
   offeringsLabel: "Services",
-  offeringsTitle: "What We Provide",
+  offeringsTitle: "Our Services",
   offeringsLead:
-    "Sales, service, and installation support to keep production air systems running reliably.",
+    "Equipment sales, servicing, and installation support to keep your industrial compressed air systems running reliably.",
   equipmentLabel: "Equipment",
-  equipmentTitle: "Equipment We Handle",
+  equipmentTitle: "Our Equipment Range",
   equipmentLead:
-    "Select a brand to view product photos (catalog covers) and descriptions from our Document For Websites folders.",
+    "Select a brand to explore equipment photos, product information, and available catalogs.",
   brandsLabel: "Key Brands",
   viewDocs: "View product docs",
   ctaTitle: "Need help selecting equipment or planning maintenance?",
   ctaLead:
     "We review compressor, air-treatment, and maintenance options that fit your site conditions.",
-  ctaButton: "Contact us",
+  ctaButton: "Contact Us",
   offerings: [
     {
       id: "sales",
       title: "New Equipment Sales",
       description:
-        "We recommend and supply air compressors, dryers, filters, oils, UPS, DG, and related utilities for your plant requirements.",
+        "We recommend and supply air compressors, dryers, filters, lubricants, uninterruptible power supply (UPS) systems, diesel generators, and related equipment to meet your plant’s requirements.",
     },
     {
       id: "repair",
-      title: "Repair & Overhaul",
+      title: "Repairs & Overhauls",
       description:
-        "Multi-brand compressor service including airend, motor, and controller work for Atlas Copco, ELGI, Chicago Pneumatic, FS Curtis, and more.",
+        "Repair and overhaul services for compressors from brands including Atlas Copco, ELGi, Chicago Pneumatic, and FS-Curtis, covering airends, motors, and controllers.",
     },
     {
       id: "amc",
-      title: "Annual Maintenance (AMC)",
+      title: "Annual Maintenance Contracts (AMC)",
       description:
-        "Preventive maintenance contracts covering inspections, consumables, and breakdown response to reduce downtime risk.",
+        "Planned preventive maintenance and breakdown support to help reduce unplanned downtime, with inspections and consumables provided according to the agreed contract scope.",
     },
     {
       id: "treatment",
       title: "Air Treatment & Piping",
       description:
-        "Dryer, filter, and after-cooler setups plus pipeline work for stable air quality and distribution.",
+        "Installation of air dryers, filters, aftercoolers, and piping to maintain consistent compressed air quality and reliable distribution.",
     },
     {
       id: "rental",
-      title: "Rental Compressors",
+      title: "Compressor Rentals",
       description:
-        "Temporary rental compressors for replacement, capacity increase, or emergency coverage.",
+        "Rental compressors for temporary replacement, additional capacity, or emergency use.",
     },
     {
       id: "special",
-      title: "Nitrogen, Cooling & Power",
+      title: "Nitrogen, Cooling & Power Solutions",
       description:
-        "Nitrogen generation, chiller reconditioning, and DG/UPS support for plant utilities.",
+        "Nitrogen generation solutions, chiller reconditioning, and diesel generator and UPS support for your plant’s utility systems.",
     },
   ],
   equipment: [
@@ -206,48 +206,51 @@ const en: ServicesCopy = {
       id: "compressors",
       title: "Air Compressors",
       description:
-        "Industrial screw compressor packages including oil-injected / oil-free and fixed-speed / VSD-VFD models.",
+        "Industrial rotary screw compressors, including oil-injected and oil-free models, with fixed-speed and variable-speed options.",
       items: [
         { label: "Atlas Copco", slug: "atlas-copco" },
         { label: "Chicago Pneumatic (CP)", slug: "chicago-pneumatic" },
-        { label: "ELGI", slug: "elgi" },
-        { label: "FS Curtis", slug: "fs-curtis" },
+        { label: "ELGi", slug: "elgi" },
+        { label: "FS-Curtis", slug: "fs-curtis" },
         { label: "Ingersoll Rand", slug: "ingersoll-rand" },
         { label: "Alisha", slug: "alisha" },
       ],
     },
     {
       id: "dryers-filters",
-      title: "Dryers, Filters & After Coolers",
+      title: "Air Dryers, Filters & Aftercoolers",
       description:
-        "Air quality equipment including Summit Adsorb heatless dryers, Elix refrigeration dryers, and filters.",
-      items: [
-        { label: "Summit dryers & filters", slug: "summit" },
-        { label: "Nitrogen plant", slug: "summit" },
-      ],
+        "Compressed air treatment equipment, including heatless desiccant dryers, refrigerated air dryers, filters, and aftercoolers.",
+      items: [{ label: "Summit Dryers & Filters", slug: "summit" }],
+    },
+    {
+      id: "nitrogen",
+      title: "Nitrogen Generation Systems",
+      description: "Nitrogen generation solutions for plant utility systems.",
+      items: [{ label: "Nitrogen Generation Systems", slug: "summit" }],
     },
     {
       id: "oil",
-      title: "Compressor Oils",
+      title: "Compressor Lubricants",
       description:
-        "Application-specific synthetic compressor lubricants for long life and food-grade needs.",
+        "Synthetic compressor lubricants for a range of operating conditions, including options for extended service life and food-grade applications.",
       items: [{ label: "Klüber Summit PS / SH / FG Elite", slug: "oil" }],
     },
     {
       id: "power",
-      title: "DG & UPS",
+      title: "Diesel Generators & UPS Systems",
       description:
-        "Diesel generators and UPS solutions for standby power and stable electrical quality.",
+        "Diesel generators and uninterruptible power supply (UPS) systems for reliable backup power and improved power quality.",
       items: [
-        { label: "Kirloskar DG", slug: "dg" },
-        { label: "SBN Tech UPS", slug: "ups" },
+        { label: "Kirloskar Diesel Generators", slug: "dg" },
+        { label: "SBN Tech UPS Systems", slug: "ups" },
       ],
     },
     {
       id: "utility",
       title: "Vacuum Pumps & Accessories",
-      description: "FS Curtis vacuum pump and accessories documents.",
-      items: [{ label: "FS Curtis Accessories / Vacuum", slug: "fs-curtis" }],
+      description: "Explore FS-Curtis vacuum pumps and related accessories.",
+      items: [{ label: "FS-Curtis Vacuum Pumps & Accessories", slug: "fs-curtis" }],
     },
   ],
 };

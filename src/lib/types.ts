@@ -158,9 +158,55 @@ export type SiteContent = {
 };
 
 /** Normalize date strings like 2022.04.30 / 2022-4-30 / 2022.4 for sorting */
+const MONTH_NAME_TO_NUM: Record<string, number> = {
+  jan: 1,
+  january: 1,
+  feb: 2,
+  february: 2,
+  mar: 3,
+  march: 3,
+  apr: 4,
+  april: 4,
+  may: 5,
+  jun: 6,
+  june: 6,
+  jul: 7,
+  july: 7,
+  aug: 8,
+  august: 8,
+  sep: 9,
+  sept: 9,
+  september: 9,
+  oct: 10,
+  october: 10,
+  nov: 11,
+  november: 11,
+  dec: 12,
+  december: 12,
+};
+
 export function dateSortKey(date: string): number {
-  const parts = date
-    .trim()
+  const trimmed = date.trim();
+
+  // "Nov 30, 2022" / "November 8, 2021"
+  const enDay = trimmed.match(/^([A-Za-z]+)\s+(\d{1,2}),?\s+(\d{4})$/);
+  if (enDay) {
+    const month = MONTH_NAME_TO_NUM[enDay[1].toLowerCase()];
+    if (month) {
+      return Number(enDay[3]) * 10000 + month * 100 + Number(enDay[2]);
+    }
+  }
+
+  // "Aug 2022" / "November 2021"
+  const enMonth = trimmed.match(/^([A-Za-z]+)\s+(\d{4})$/);
+  if (enMonth) {
+    const month = MONTH_NAME_TO_NUM[enMonth[1].toLowerCase()];
+    if (month) {
+      return Number(enMonth[2]) * 10000 + month * 100 + 1;
+    }
+  }
+
+  const parts = trimmed
     .split(/[^\d]+/)
     .filter(Boolean)
     .map((part) => Number(part));

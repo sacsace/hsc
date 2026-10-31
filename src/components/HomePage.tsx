@@ -1,8 +1,10 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 import type { SiteContent } from "@/lib/types";
 import { sortPerformances } from "@/lib/types";
+import { ApplicationModal } from "@/components/ApplicationModal";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { HeroSlider } from "@/components/HeroSlider";
@@ -28,6 +30,7 @@ function SectionLink({ href, label }: { href: string; label: string }) {
 
 function HomeSections() {
   const { content, t } = useLanguage();
+  const [applyOpen, setApplyOpen] = useState(false);
   const { hero, greeting, company, history, performances, clients, team, gallery } = content;
   const sortedPerformances = sortPerformances(performances || [], true)
     .filter((row) => row.date?.trim() || row.detail?.trim() || row.client?.trim())
@@ -147,7 +150,9 @@ function HomeSections() {
           <div className="container">
             <p className="section-label">{t.clientsLabel}</p>
             <h2 className="section-title">{clients?.title || t.clientsTitle}</h2>
-            <p className="section-lead">{clients?.lead || t.clientsLead}</p>
+            <p className="section-lead break-keep text-pretty">
+              {clients?.lead || t.clientsLead}
+            </p>
 
             {clientItems.length ? (
               <>
@@ -198,7 +203,7 @@ function HomeSections() {
               <p className="section-label">{t.teamLabel}</p>
               <h2 className="section-title">{team?.title || t.teamTitle}</h2>
               <p className="section-lead">{team?.lead || t.teamLead}</p>
-              <SectionLink href="/team" label={t.viewMore} />
+              <SectionLink href="/team" label={t.viewMoreTeam} />
             </div>
             <div className="border border-[var(--line)] bg-white p-6 md:p-8">
               <p className="text-xs font-semibold tracking-[0.12em] text-[var(--steel)]">
@@ -207,7 +212,8 @@ function HomeSections() {
               <p className="mt-2 font-display text-2xl font-bold tracking-tight">
                 {team?.ceo?.name || "—"}
               </p>
-              {team?.ceo?.role ? (
+              {team?.ceo?.role &&
+              team.ceo.role.trim().toLowerCase() !== t.teamCeoLabel.trim().toLowerCase() ? (
                 <p className="mt-1 text-sm font-medium text-[var(--navy)]">{team.ceo.role}</p>
               ) : null}
               {team?.ceo?.bio ? (
@@ -232,7 +238,7 @@ function HomeSections() {
                 href="/gallery"
                 className="text-sm font-semibold text-[var(--navy)] underline-offset-4 hover:underline"
               >
-                {t.viewMore} →
+                {t.viewMoreGallery} →
               </a>
             </div>
 
@@ -269,17 +275,27 @@ function HomeSections() {
               <h2 className="section-title !mb-2 !text-white">{t.contactTitle}</h2>
               <p className="max-w-xl text-white/70">{t.contactLead}</p>
             </div>
-            <a
-              href="/contact"
-              className="inline-flex items-center justify-center rounded-md bg-white px-5 py-2.5 text-sm font-semibold !text-[var(--navy)] transition-colors hover:bg-white/90"
-            >
-              {t.contactCta}
-            </a>
+            <div className="flex w-full flex-wrap items-center gap-2.5 sm:w-auto sm:justify-end">
+              <a
+                href="/contact"
+                className="inline-flex items-center justify-center rounded-md border border-white bg-white px-4 py-2 text-sm font-semibold !text-black transition-colors hover:bg-white/90"
+              >
+                {t.contactCta}
+              </a>
+              <button
+                type="button"
+                onClick={() => setApplyOpen(true)}
+                className="inline-flex items-center justify-center rounded-md border border-white bg-white px-4 py-2 text-sm font-semibold !text-black transition-colors hover:bg-white/90"
+              >
+                {t.openApplyCta}
+              </button>
+            </div>
           </div>
         </section>
       </main>
 
       <Footer />
+      <ApplicationModal open={applyOpen} onClose={() => setApplyOpen(false)} />
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { LanguageProvider, useLanguage } from "@/components/LanguageProvider";
+import { SafeSearchInput } from "@/components/SafeSearchInput";
 import { ViewModeToggle } from "@/components/ViewModeToggle";
 import type { SiteContent } from "@/lib/types";
 
@@ -179,11 +180,11 @@ function AboutSections() {
 
                   <label className="block w-full max-w-md">
                     <span className="sr-only">{t.certSearch}</span>
-                    <input
-                      type="search"
+                    <SafeSearchInput
                       value={certQuery}
                       onChange={(e) => setCertQuery(e.target.value)}
                       placeholder={t.certSearchPlaceholder}
+                      aria-label={t.certSearch}
                       className="w-full border border-[var(--line)] bg-white px-3 py-2.5 text-sm outline-none focus:border-[var(--navy)]"
                     />
                   </label>
