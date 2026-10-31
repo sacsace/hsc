@@ -20,6 +20,9 @@ export type PublicMailSettings = Omit<MailSettings, "pass"> & {
   hasPassword: boolean;
 };
 
+/** Default inbox for contact-form notifications */
+export const INQUIRY_MAIL_TO = "team@hksc.in";
+
 const DEFAULTS: MailSettings = {
   enabled: false,
   host: "smtp.gmail.com",
@@ -29,7 +32,7 @@ const DEFAULTS: MailSettings = {
   pass: "",
   fromName: "Hankook Service Center",
   fromEmail: "",
-  to: "",
+  to: INQUIRY_MAIL_TO,
 };
 
 export function mailFilePath() {
@@ -61,7 +64,7 @@ export async function readMailSettings(): Promise<MailSettings> {
     // no file yet
   }
 
-  return {
+  const merged: MailSettings = {
     ...DEFAULTS,
     ...fromEnv(),
     ...stored,
@@ -72,6 +75,12 @@ export async function readMailSettings(): Promise<MailSettings> {
         fromEnv().secure ??
         (Number(stored.port ?? fromEnv().port ?? DEFAULTS.port) === 465),
     ),
+  };
+
+  const to = String(merged.to || "").trim();
+  return {
+    ...merged,
+    to: to || INQUIRY_MAIL_TO,
   };
 }
 
@@ -102,7 +111,7 @@ export async function writeMailSettings(
           : "",
     fromName: String(input.fromName || current.fromName || DEFAULTS.fromName).trim(),
     fromEmail: String(input.fromEmail || "").trim(),
-    to: String(input.to || "").trim(),
+    to: String(input.to || "").trim() || INQUIRY_MAIL_TO,
   };
 
   await ensureDataDir();
@@ -184,7 +193,7 @@ export async function sendInquiryEmail(inquiry: Inquiry): Promise<{ ok: true } |
 
     await transporter.sendMail({
       from,
-      to: settings.to,
+      to: settings.to || INQUIRY_MAIL_TO,
       replyTo: inquiry.email,
       subject,
       text,
@@ -221,10 +230,10 @@ export async function sendTestEmail(): Promise<{ ok: true } | { ok: false; error
 
     await transporter.sendMail({
       from,
-      to: settings.to,
+      to: settings.to || INQUIRY_MAIL_TO,
       subject: "[테스트] Hankook Service Center 메일 설정",
-      text: "Google SMTP 설정이 정상입니다. 문의 접수 시 이 주소로 메일이 발송됩니다.",
-      html: "<p>Google SMTP 설정이 정상입니다.<br/>문의 접수 시 이 주소로 메일이 발송됩니다.</p>",
+      text: `Google SMTP 설정이 정상입니다. 문의 접수 시 ${settings.to || INQUIRY_MAIL_TO} 로 메일이 발송됩니다.`,
+      html: `<p>Google SMTP 설정이 정상입니다.<br/>문의 접수 시 <strong>${settings.to || INQUIRY_MAIL_TO}</strong> 로 메일이 발송됩니다.</p>`,
     });
 
     return { ok: true };

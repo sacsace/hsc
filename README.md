@@ -36,7 +36,7 @@ ADMIN_SECRET=your-random-secret
 # SMTP_PASS=your-16-char-app-password
 # SMTP_FROM_NAME=Hankook Service Center
 # SMTP_FROM_EMAIL=you@gmail.com
-# MAIL_TO=hyun.hs@hksc.in
+# MAIL_TO=team@hksc.in
 ```
 
 After changing the password in the admin UI, it is stored in `data/admin.json` (not committed to git).

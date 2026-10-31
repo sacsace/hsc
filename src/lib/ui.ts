@@ -98,6 +98,9 @@ export type UiCopy = {
   galleryViewCard: string;
   galleryViewList: string;
   contactCta: string;
+  openApplyTitle: string;
+  openApplyLead: string;
+  openApplyCta: string;
   contactForm: {
     name: string;
     email: string;
@@ -214,6 +217,10 @@ export const ui: Record<Locale, UiCopy> = {
     viewMoreClients: "고객사 더보기",
     viewMorePerformance: "실적 더보기",
     contactCta: "문의 남기기",
+    openApplyTitle: "맞는 포지션이 보이지 않나요?",
+    openApplyLead:
+      "재능 있는 분들의 지원을 언제나 환영합니다. 이력서와 함께 기여하고 싶은 방향을 알려주시면, 적합한 기회가 있을 때 연락드리겠습니다.",
+    openApplyCta: "열린 지원서 보내기",
     contactForm: {
       name: "이름",
       email: "이메일",
@@ -337,6 +344,10 @@ export const ui: Record<Locale, UiCopy> = {
     viewMoreClients: "View all clients",
     viewMorePerformance: "View all performance",
     contactCta: "Contact us",
+    openApplyTitle: "Don't see a role that fits?",
+    openApplyLead:
+      "We are always open to hearing from talented people. Send us your resume and tell us how you can contribute — we'll reach out when a suitable opportunity arises.",
+    openApplyCta: "SEND OPEN APPLICATION",
     contactForm: {
       name: "Name",
       email: "Email",

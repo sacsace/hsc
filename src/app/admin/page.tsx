@@ -1014,7 +1014,7 @@ function MailPanel({ ui }: { ui: AdminUi }) {
   const [hasPassword, setHasPassword] = useState(false);
   const [fromName, setFromName] = useState("Hankook Service Center");
   const [fromEmail, setFromEmail] = useState("");
-  const [to, setTo] = useState("");
+  const [to, setTo] = useState("team@hksc.in");
 
   useEffect(() => {
     void (async () => {
@@ -1031,7 +1031,7 @@ function MailPanel({ ui }: { ui: AdminUi }) {
       setHasPassword(Boolean(data.hasPassword));
       setFromName(data.fromName || "Hankook Service Center");
       setFromEmail(data.fromEmail || "");
-      setTo(data.to || "");
+      setTo(data.to || "team@hksc.in");
     })();
   }, []);
 
@@ -1196,7 +1196,7 @@ function MailPanel({ ui }: { ui: AdminUi }) {
             value={to}
             onChange={(e) => setTo(e.target.value)}
             className="mt-1.5 w-full border border-[var(--line)] px-3 py-2 outline-none focus:border-[var(--navy)]"
-            placeholder="hyun.hs@hksc.in"
+            placeholder="team@hksc.in"
             required={enabled}
           />
         </label>

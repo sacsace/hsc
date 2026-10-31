@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { LanguageProvider, useLanguage } from "@/components/LanguageProvider";
+import { OpenApplicationCta } from "@/components/OpenApplicationCta";
 import type { SiteContent, TeamMember } from "@/lib/types";
 
 function initials(name: string) {
@@ -123,6 +124,8 @@ function TeamSections() {
             ) : null}
           </div>
         </section>
+
+        <OpenApplicationCta />
       </main>
 
       <Footer />
