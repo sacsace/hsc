@@ -1,6 +1,7 @@
 import type { Locale } from "@/lib/types";
 
-export const DEFAULT_LOCALE: Locale = "ko";
+/** Fallback when Accept-Language has neither Korean nor English. */
+export const DEFAULT_LOCALE: Locale = "en";
 export const LOCALE_STORAGE_KEY = "hsc_locale";
 
 export type UiCopy = {

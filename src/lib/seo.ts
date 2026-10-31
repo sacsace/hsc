@@ -20,6 +20,8 @@ type SeoCopy = {
 };
 
 const SITE_NAME = "Hankook Service Center";
+const LEGAL_NAME = "Hankook Service Center Private Limited";
+const CONTACT_EMAIL = "hyun.hs@hksc.in";
 
 export function getSiteUrl() {
   return (process.env.NEXT_PUBLIC_SITE_URL || "https://hksc.in").replace(/\/$/, "");
@@ -36,9 +38,12 @@ const seo: Record<Locale, Record<SeoPage, SeoCopy>> = {
         "에어 컴프레서",
         "컴프레서 수리",
         "오버홀",
+        "압축공기",
         "인도",
         "방갈로르",
         "첸나이",
+        "Atlas Copco",
+        "ELGI",
       ],
       ogTitle: `${SITE_NAME} | Total Air Solution`,
       ogDescription: "산업용 압축공기 판매·수리·유지보수 파트너.",
@@ -46,7 +51,7 @@ const seo: Record<Locale, Record<SeoPage, SeoCopy>> = {
     about: {
       title: `회사 소개 | ${SITE_NAME}`,
       description: "대표 인사말, 회사 개요, 연혁 및 인증 안내. Hankook Service Center 회사 소개.",
-      keywords: ["회사 소개", "대표 인사말", "연혁", "Hankook Service Center"],
+      keywords: ["회사 소개", "대표 인사말", "연혁", "인증", "Hankook Service Center"],
       ogTitle: `회사 소개 | ${SITE_NAME}`,
       ogDescription: "대표 인사말과 회사 개요, 연혁을 확인하세요.",
     },
@@ -59,7 +64,9 @@ const seo: Record<Locale, Record<SeoPage, SeoCopy>> = {
         "서비스",
         "에어 컴프레서",
         "드라이어",
+        "필터",
         "오버홀",
+        "AMC",
         "Hankook Service Center",
       ],
       ogTitle: `설비와 서비스 | ${SITE_NAME}`,
@@ -112,9 +119,12 @@ const seo: Record<Locale, Record<SeoPage, SeoCopy>> = {
         "air compressor",
         "compressor repair",
         "overhaul",
+        "compressed air",
         "India",
         "Bangalore",
         "Chennai",
+        "Atlas Copco",
+        "ELGI",
       ],
       ogTitle: `${SITE_NAME} | Total Air Solution`,
       ogDescription: "Your industrial compressed air sales, repair, and maintenance partner.",
@@ -122,7 +132,7 @@ const seo: Record<Locale, Record<SeoPage, SeoCopy>> = {
     about: {
       title: `About Us | ${SITE_NAME}`,
       description: "CEO message, company overview, history, and certifications of Hankook Service Center.",
-      keywords: ["about", "CEO message", "company history", "Hankook Service Center"],
+      keywords: ["about", "CEO message", "company history", "certification", "Hankook Service Center"],
       ogTitle: `About Us | ${SITE_NAME}`,
       ogDescription: "Learn about our CEO message, company overview, and history.",
     },
@@ -135,7 +145,9 @@ const seo: Record<Locale, Record<SeoPage, SeoCopy>> = {
         "services",
         "air compressor",
         "dryer",
+        "filter",
         "overhaul",
+        "AMC",
         "Hankook Service Center",
       ],
       ogTitle: `Equipment & Services | ${SITE_NAME}`,
@@ -181,16 +193,28 @@ const seo: Record<Locale, Record<SeoPage, SeoCopy>> = {
   },
 };
 
+function absoluteUrl(path: string) {
+  const siteUrl = getSiteUrl();
+  if (!path || path === "/") return siteUrl;
+  return `${siteUrl}${path.startsWith("/") ? path : `/${path}`}`;
+}
+
 export function buildPageMetadata(
   page: SeoPage,
   locale: Locale,
   path = "/",
 ): Metadata {
   const copy = seo[locale][page];
-  const siteUrl = getSiteUrl();
-  const url = `${siteUrl}${path === "/" ? "" : path}`;
+  const url = absoluteUrl(path);
   const ogLocale = locale === "ko" ? "ko_KR" : "en_IN";
   const altLocale = locale === "ko" ? "en_IN" : "ko_KR";
+  const ogImage = {
+    url: absoluteUrl("/images/symbol-hsc.png"),
+    width: 1272,
+    height: 1153,
+    alt: SITE_NAME,
+    type: "image/png",
+  };
 
   return {
     title: copy.title,
@@ -200,6 +224,13 @@ export function buildPageMetadata(
     creator: SITE_NAME,
     publisher: SITE_NAME,
     category: "Business",
+    applicationName: SITE_NAME,
+    referrer: "origin-when-cross-origin",
+    formatDetection: {
+      telephone: false,
+      email: false,
+      address: false,
+    },
     alternates: {
       canonical: url,
       languages: {
@@ -216,20 +247,13 @@ export function buildPageMetadata(
       siteName: SITE_NAME,
       title: copy.ogTitle,
       description: copy.ogDescription,
-      images: [
-        {
-          url: `${siteUrl}/images/symbol-hsc.png`,
-          width: 1330,
-          height: 1182,
-          alt: SITE_NAME,
-        },
-      ],
+      images: [ogImage],
     },
     twitter: {
       card: "summary_large_image",
       title: copy.ogTitle,
       description: copy.ogDescription,
-      images: [`${siteUrl}/images/symbol-hsc.png`],
+      images: [ogImage.url],
     },
     robots: {
       index: true,
@@ -239,7 +263,11 @@ export function buildPageMetadata(
         follow: true,
         "max-image-preview": "large",
         "max-snippet": -1,
+        "max-video-preview": -1,
       },
+    },
+    other: {
+      "content-language": locale === "ko" ? "ko" : "en",
     },
   };
 }
@@ -251,12 +279,28 @@ export function organizationJsonLd(locale: Locale) {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
+    "@id": `${siteUrl}/#organization`,
     name: SITE_NAME,
-    legalName: "Hankook Service Center Private Limited",
+    legalName: LEGAL_NAME,
     url: siteUrl,
-    logo: `${siteUrl}/images/symbol-hsc.png`,
+    logo: {
+      "@type": "ImageObject",
+      url: `${siteUrl}/images/symbol-hsc.png`,
+      width: 1272,
+      height: 1153,
+    },
+    image: `${siteUrl}/images/symbol-hsc.png`,
     description,
-    email: "hyun.hs@hksc.in",
+    email: CONTACT_EMAIL,
+    contactPoint: [
+      {
+        "@type": "ContactPoint",
+        contactType: "customer service",
+        email: CONTACT_EMAIL,
+        availableLanguage: ["en", "ko"],
+        areaServed: "IN",
+      },
+    ],
     address: [
       {
         "@type": "PostalAddress",
@@ -271,8 +315,25 @@ export function organizationJsonLd(locale: Locale) {
         addressCountry: "IN",
       },
     ],
-    areaServed: "IN",
+    areaServed: {
+      "@type": "Country",
+      name: "India",
+    },
     inLanguage: locale === "ko" ? "ko" : "en",
+  };
+}
+
+export function websiteJsonLd(locale: Locale) {
+  const siteUrl = getSiteUrl();
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${siteUrl}/#website`,
+    name: SITE_NAME,
+    url: siteUrl,
+    inLanguage: locale === "ko" ? "ko" : "en",
+    publisher: { "@id": `${siteUrl}/#organization` },
+    description: seo[locale].home.description,
   };
 }
 

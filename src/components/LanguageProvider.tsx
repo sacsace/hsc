@@ -10,6 +10,7 @@ import {
   type ReactNode,
 } from "react";
 import type { Locale, LocaleContent, SiteContent } from "@/lib/types";
+import { LOCALE_MANUAL_KEY } from "@/lib/locale-detect";
 import { DEFAULT_LOCALE, LOCALE_STORAGE_KEY, ui, type UiCopy } from "@/lib/ui";
 
 type LanguageContextValue = {
@@ -21,14 +22,14 @@ type LanguageContextValue = {
 
 const LanguageContext = createContext<LanguageContextValue | null>(null);
 
-function syncLocaleCookie(locale: Locale) {
+function syncLocaleCookie(locale: Locale, manual: boolean) {
   void fetch("/api/locale", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ locale }),
+    body: JSON.stringify({ locale, manual }),
     credentials: "same-origin",
   }).catch(() => {
-    // Ignore network errors; UI locale still updates via localStorage.
+    // Ignore network errors; UI locale still updates in memory.
   });
 }
 
@@ -44,16 +45,18 @@ export function LanguageProvider({
   const [locale, setLocaleState] = useState<Locale>(initialLocale);
 
   useEffect(() => {
-    // 서버에서 감지한 언어를 우선 반영. 이후 수동 선택만 localStorage에 저장.
+    const manual = window.localStorage.getItem(LOCALE_MANUAL_KEY) === "1";
     const saved = window.localStorage.getItem(LOCALE_STORAGE_KEY);
-    if (saved === "ko" || saved === "en") {
+
+    // Explicit UI choice wins; otherwise follow server (Accept-Language / cookie).
+    if (manual && (saved === "ko" || saved === "en")) {
       setLocaleState(saved);
-      syncLocaleCookie(saved);
+      syncLocaleCookie(saved, true);
       return;
     }
+
     setLocaleState(initialLocale);
-    syncLocaleCookie(initialLocale);
-    window.localStorage.setItem(LOCALE_STORAGE_KEY, initialLocale);
+    syncLocaleCookie(initialLocale, false);
   }, [initialLocale]);
 
   useEffect(() => {
@@ -63,7 +66,8 @@ export function LanguageProvider({
   const setLocale = useCallback((next: Locale) => {
     setLocaleState(next);
     window.localStorage.setItem(LOCALE_STORAGE_KEY, next);
-    syncLocaleCookie(next);
+    window.localStorage.setItem(LOCALE_MANUAL_KEY, "1");
+    syncLocaleCookie(next, true);
   }, []);
 
   const value = useMemo<LanguageContextValue>(

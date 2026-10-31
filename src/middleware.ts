@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { localeFromAcceptLanguage, LOCALE_COOKIE, isLocale } from "@/lib/locale-detect";
+import {
+  localeFromAcceptLanguage,
+  LOCALE_COOKIE,
+  LOCALE_MANUAL_KEY,
+  isLocale,
+} from "@/lib/locale-detect";
 import { localeCookieOptions } from "@/lib/locale-cookie";
 
 function buildCsp(nonce: string) {
@@ -75,12 +80,16 @@ export function middleware(request: NextRequest) {
     csp,
   );
 
-  // 브라우저/OS 언어(Accept-Language)로 최초 로케일 쿠키 설정
+  // Browser/OS language unless the visitor explicitly chose a locale in the UI.
+  const manual = request.cookies.get(LOCALE_MANUAL_KEY)?.value === "1";
   const existing = request.cookies.get(LOCALE_COOKIE)?.value;
-  if (!isLocale(existing)) {
-    const locale = localeFromAcceptLanguage(request.headers.get("accept-language"));
+  const detected = localeFromAcceptLanguage(request.headers.get("accept-language"));
+  const locale = manual && isLocale(existing) ? existing : detected;
+
+  if (!manual || !isLocale(existing) || existing !== locale) {
     response.cookies.set(localeCookieOptions(locale));
   }
+  response.headers.set("Content-Language", locale === "ko" ? "ko" : "en");
 
   return response;
 }

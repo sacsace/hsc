@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { getRequestLocale } from "@/lib/locale";
-import { getSiteUrl, organizationJsonLd, serializeJsonLd } from "@/lib/seo";
+import {
+  getSiteUrl,
+  organizationJsonLd,
+  serializeJsonLd,
+  websiteJsonLd,
+} from "@/lib/seo";
 import "@fontsource/archivo/500.css";
 import "@fontsource/archivo/600.css";
 import "@fontsource/archivo/700.css";
@@ -19,6 +24,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const locale = await getRequestLocale();
   return {
     metadataBase: new URL(getSiteUrl()),
+    title: "Hankook Service Center | Total Air Solution",
     applicationName: "Hankook Service Center",
     icons: {
       icon: [
@@ -39,14 +45,14 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const locale = await getRequestLocale();
-  const jsonLd = organizationJsonLd(locale);
+  const graphs = [organizationJsonLd(locale), websiteJsonLd(locale)];
   const nonce = (await headers()).get("x-nonce") ?? undefined;
 
   return (
     <html lang={locale} className="h-full">
       <head>
         <script type="application/ld+json" nonce={nonce}>
-          {serializeJsonLd(jsonLd)}
+          {serializeJsonLd(graphs)}
         </script>
       </head>
       <body className="min-h-full antialiased">{children}</body>
