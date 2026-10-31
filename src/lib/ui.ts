@@ -15,6 +15,7 @@ export type UiCopy = {
     team: string;
     gallery: string;
     contact: string;
+    apply: string;
   };
   menu: string;
   learnMore: string;
@@ -101,6 +102,21 @@ export type UiCopy = {
   openApplyTitle: string;
   openApplyLead: string;
   openApplyCta: string;
+  openApplyModalTitle: string;
+  openApplyName: string;
+  openApplyEmail: string;
+  openApplyPhone: string;
+  openApplyMessage: string;
+  openApplyMessagePlaceholder: string;
+  openApplyFile: string;
+  openApplyFileHint: string;
+  openApplySubmit: string;
+  openApplySending: string;
+  openApplySuccess: string;
+  openApplyError: string;
+  openApplyClose: string;
+  openApplyFileTooLarge: string;
+  openApplyFileType: string;
   contactForm: {
     name: string;
     email: string;
@@ -140,6 +156,7 @@ export const ui: Record<Locale, UiCopy> = {
       team: "팀원",
       gallery: "갤러리",
       contact: "문의",
+      apply: "지원서",
     },
     menu: "메뉴",
     learnMore: "더 알아보기",
@@ -217,10 +234,25 @@ export const ui: Record<Locale, UiCopy> = {
     viewMoreClients: "고객사 더보기",
     viewMorePerformance: "실적 더보기",
     contactCta: "문의 남기기",
-    openApplyTitle: "맞는 포지션이 보이지 않나요?",
+    openApplyTitle: "지원서를 보내주세요",
     openApplyLead:
-      "재능 있는 분들의 지원을 언제나 환영합니다. 이력서와 함께 기여하고 싶은 방향을 알려주시면, 적합한 기회가 있을 때 연락드리겠습니다.",
-    openApplyCta: "열린 지원서 보내기",
+      "별도의 채용 공고 없이 상시로 지원을 받고 있습니다. 이력서와 간단한 소개를 보내주시면 검토 후 연락드리겠습니다.",
+    openApplyCta: "지원서 보내기",
+    openApplyModalTitle: "지원서 보내기",
+    openApplyName: "이름",
+    openApplyEmail: "이메일",
+    openApplyPhone: "연락처",
+    openApplyMessage: "자기소개 / 지원 내용",
+    openApplyMessagePlaceholder: "간단한 소개와 관심 분야를 적어 주세요.",
+    openApplyFile: "이력서 첨부",
+    openApplyFileHint: "PDF, DOC, DOCX (최대 8MB, 3개까지)",
+    openApplySubmit: "보내기",
+    openApplySending: "전송 중…",
+    openApplySuccess: "지원서가 접수되었습니다. 감사합니다.",
+    openApplyError: "전송에 실패했습니다. 잠시 후 다시 시도해 주세요.",
+    openApplyClose: "닫기",
+    openApplyFileTooLarge: "파일 크기는 8MB 이하여야 합니다.",
+    openApplyFileType: "PDF, DOC, DOCX 파일만 첨부할 수 있습니다.",
     contactForm: {
       name: "이름",
       email: "이메일",
@@ -265,6 +297,7 @@ export const ui: Record<Locale, UiCopy> = {
       team: "Team",
       gallery: "Gallery",
       contact: "Contact",
+      apply: "Apply",
     },
     menu: "Menu",
     learnMore: "Learn more",
@@ -344,10 +377,25 @@ export const ui: Record<Locale, UiCopy> = {
     viewMoreClients: "View all clients",
     viewMorePerformance: "View all performance",
     contactCta: "Contact us",
-    openApplyTitle: "Don't see a role that fits?",
+    openApplyTitle: "Send us your application",
     openApplyLead:
-      "We are always open to hearing from talented people. Send us your resume and tell us how you can contribute — we'll reach out when a suitable opportunity arises.",
-    openApplyCta: "SEND OPEN APPLICATION",
+      "We accept applications year-round without posting separate job listings. Share your resume and a short introduction — we'll review and get in touch.",
+    openApplyCta: "SEND APPLICATION",
+    openApplyModalTitle: "Send application",
+    openApplyName: "Name",
+    openApplyEmail: "Email",
+    openApplyPhone: "Phone",
+    openApplyMessage: "Introduction / message",
+    openApplyMessagePlaceholder: "Tell us briefly about yourself and your interests.",
+    openApplyFile: "Attach resume",
+    openApplyFileHint: "PDF, DOC, DOCX (max 8MB, up to 3 files)",
+    openApplySubmit: "Send",
+    openApplySending: "Sending…",
+    openApplySuccess: "Your application has been received. Thank you.",
+    openApplyError: "Something went wrong. Please try again shortly.",
+    openApplyClose: "Close",
+    openApplyFileTooLarge: "Each file must be 8MB or smaller.",
+    openApplyFileType: "Only PDF, DOC, and DOCX files are allowed.",
     contactForm: {
       name: "Name",
       email: "Email",

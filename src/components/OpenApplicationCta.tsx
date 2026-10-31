@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import { ApplicationModal } from "@/components/ApplicationModal";
 import { useLanguage } from "@/components/LanguageProvider";
 
 function MailIcon({ className = "" }: { className?: string }) {
@@ -40,6 +42,7 @@ function SendIcon({ className = "" }: { className?: string }) {
 
 export function OpenApplicationCta() {
   const { t } = useLanguage();
+  const [open, setOpen] = useState(false);
 
   return (
     <section className="section bg-white pt-0">
@@ -51,18 +54,21 @@ export function OpenApplicationCta() {
           <h2 className="font-display text-xl font-semibold tracking-tight md:text-2xl">
             {t.openApplyTitle}
           </h2>
-          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/70 md:text-[0.95rem]">
+          <p className="mt-3 overflow-x-auto whitespace-nowrap text-sm leading-relaxed text-white/70 md:text-[0.95rem]">
             {t.openApplyLead}
           </p>
-          <a
-            href="/contact"
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
             className="mt-6 inline-flex w-full items-center justify-center gap-2 bg-[#3b82f6] px-4 py-3.5 text-sm font-semibold tracking-[0.06em] !text-white transition-colors hover:bg-[#2563eb]"
           >
             <SendIcon className="h-4 w-4" />
             {t.openApplyCta}
-          </a>
+          </button>
         </div>
       </div>
+
+      <ApplicationModal open={open} onClose={() => setOpen(false)} />
     </section>
   );
 }

@@ -2,14 +2,36 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { ApplicationModal } from "@/components/ApplicationModal";
 import { useLanguage } from "@/components/LanguageProvider";
 import { SiteLogo } from "@/components/SiteLogo";
+
+function ApplyIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
+      <path d="M14 2v6h6" />
+      <path d="M12 18v-6" />
+      <path d="m9 15 3-3 3 3" />
+    </svg>
+  );
+}
 
 export function Header({ variant = "overlay" }: { variant?: "overlay" | "solid" }) {
   const { locale, setLocale, t } = useLanguage();
   const pathname = usePathname() || "/";
   const [scrolled, setScrolled] = useState(variant === "solid");
   const [open, setOpen] = useState(false);
+  const [applyOpen, setApplyOpen] = useState(false);
 
   const navLinks = [
     { href: "/about", label: t.nav.about },
@@ -40,6 +62,11 @@ export function Header({ variant = "overlay" }: { variant?: "overlay" | "solid" 
 
   const solid = scrolled || open || variant === "solid";
   const textTone = "bg-[var(--ink)]";
+
+  function openApply() {
+    setOpen(false);
+    setApplyOpen(true);
+  }
 
   return (
     <header
@@ -100,6 +127,16 @@ export function Header({ variant = "overlay" }: { variant?: "overlay" | "solid" 
 
           <button
             type="button"
+            onClick={openApply}
+            aria-label={t.nav.apply}
+            title={t.nav.apply}
+            className="inline-flex h-[2.2rem] w-[2.2rem] shrink-0 items-center justify-center rounded-full border border-[var(--line)] bg-white text-[var(--navy)] transition-colors hover:border-[var(--navy)] hover:bg-[var(--navy)] hover:!text-white"
+          >
+            <ApplyIcon className="h-[1.05rem] w-[1.05rem]" />
+          </button>
+
+          <button
+            type="button"
             className="inline-flex h-10 w-10 items-center justify-center lg:hidden"
             aria-label={t.menu}
             onClick={() => setOpen((v) => !v)}
@@ -143,9 +180,19 @@ export function Header({ variant = "overlay" }: { variant?: "overlay" | "solid" 
               {t.nav.contact}
               <span aria-hidden>↗</span>
             </a>
+            <button
+              type="button"
+              onClick={openApply}
+              className="mt-2 inline-flex items-center justify-center gap-1.5 rounded-full border border-[var(--navy)] px-4 py-2.5 text-[0.866rem] font-semibold text-[var(--navy)]"
+            >
+              <ApplyIcon className="h-4 w-4" />
+              {t.openApplyCta}
+            </button>
           </nav>
         </div>
       )}
+
+      <ApplicationModal open={applyOpen} onClose={() => setApplyOpen(false)} />
     </header>
   );
 }

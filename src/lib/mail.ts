@@ -208,6 +208,93 @@ export async function sendInquiryEmail(inquiry: Inquiry): Promise<{ ok: true } |
   }
 }
 
+export type ApplicationPayload = {
+  name: string;
+  email: string;
+  phone: string;
+  message: string;
+  attachments: Array<{
+    filename: string;
+    content: Buffer;
+    contentType: string;
+  }>;
+};
+
+export async function sendApplicationEmail(
+  application: ApplicationPayload,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const settings = await readMailSettings();
+  if (!isReady(settings)) {
+    return { ok: false, error: "Mail is not configured" };
+  }
+
+  try {
+    const transporter = nodemailer.createTransport({
+      host: settings.host,
+      port: settings.port,
+      secure: settings.secure,
+      auth: {
+        user: settings.user,
+        pass: settings.pass,
+      },
+    });
+
+    const subject = `[지원서] ${application.name}`;
+    const text = [
+      "사이트에서 새 지원서가 접수되었습니다.",
+      "",
+      `이름: ${application.name}`,
+      `이메일: ${application.email}`,
+      `연락처: ${application.phone || "-"}`,
+      `첨부: ${application.attachments.length ? application.attachments.map((a) => a.filename).join(", ") : "없음"}`,
+      "",
+      "내용:",
+      application.message,
+    ].join("\n");
+
+    const html = `
+      <div style="font-family:Arial,sans-serif;line-height:1.5;color:#111">
+        <p>사이트에서 새 지원서가 접수되었습니다.</p>
+        <table style="border-collapse:collapse;margin:16px 0">
+          <tr><td style="padding:4px 12px 4px 0;color:#666">이름</td><td>${escapeHtml(application.name)}</td></tr>
+          <tr><td style="padding:4px 12px 4px 0;color:#666">이메일</td><td>${escapeHtml(application.email)}</td></tr>
+          <tr><td style="padding:4px 12px 4px 0;color:#666">연락처</td><td>${escapeHtml(application.phone || "-")}</td></tr>
+          <tr><td style="padding:4px 12px 4px 0;color:#666">첨부</td><td>${escapeHtml(
+            application.attachments.length
+              ? application.attachments.map((a) => a.filename).join(", ")
+              : "없음",
+          )}</td></tr>
+        </table>
+        <p style="color:#666;margin:0 0 6px">내용</p>
+        <pre style="white-space:pre-wrap;background:#f5f7f9;padding:12px;border:1px solid #e5e7eb">${escapeHtml(application.message)}</pre>
+      </div>
+    `;
+
+    const fromEmail = settings.fromEmail || settings.user;
+    const from = settings.fromName ? `"${settings.fromName}" <${fromEmail}>` : fromEmail;
+
+    await transporter.sendMail({
+      from,
+      to: settings.to || INQUIRY_MAIL_TO,
+      replyTo: application.email,
+      subject,
+      text,
+      html,
+      attachments: application.attachments.map((file) => ({
+        filename: file.filename,
+        content: file.content,
+        contentType: file.contentType,
+      })),
+    });
+
+    return { ok: true };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to send mail";
+    console.error("[mail] sendApplicationEmail failed:", message);
+    return { ok: false, error: message };
+  }
+}
+
 export async function sendTestEmail(): Promise<{ ok: true } | { ok: false; error: string }> {
   const settings = await readMailSettings();
   if (!isReady(settings)) {
