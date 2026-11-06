@@ -125,7 +125,7 @@ export function HeroSlider({
       <div className="container relative z-10 flex min-h-[100svh] items-end justify-start pb-28 pt-28 md:pb-32">
         <div
           key={active.id}
-          className="relative mb-[20vh] max-w-xl overflow-hidden rounded-[1.25rem] md:max-w-2xl"
+          className="relative mb-[6vh] max-w-xl overflow-hidden rounded-[1.25rem] md:max-w-2xl"
         >
           <div className="absolute inset-0 bg-gradient-to-r from-[rgba(7,40,77,0.52)] via-[rgba(7,40,77,0.32)] to-transparent backdrop-blur-[8px]" />
           <div className="relative px-6 py-6 md:px-8 md:py-7">
