@@ -21,12 +21,39 @@ export type {
 
 export { dateSortKey, sortPerformances } from "@/lib/types";
 
+const RETIRED_HERO_VIDEO = "/videos/air-compressor.mp4";
+const CURRENT_HERO_VIDEO = "/videos/hero-reel.mp4";
+
+function replaceRetiredHeroVideo(value: string) {
+  return value === RETIRED_HERO_VIDEO ? CURRENT_HERO_VIDEO : value;
+}
+
 export async function getContent(): Promise<SiteContent> {
   const contentPath = await ensureRuntimeContentFile();
   // Restore bundled CMS images into the volume when missing (survives redeploy).
   await ensureSeedUploads();
   const raw = await fs.readFile(contentPath, "utf-8");
   const content = JSON.parse(raw) as SiteContent;
+  let heroVideoMigrated = false;
+
+  for (const locale of ["ko", "en"] as const) {
+    const hero = content[locale]?.hero;
+    if (!hero) continue;
+    if (hero.videoUrl === RETIRED_HERO_VIDEO) {
+      hero.videoUrl = CURRENT_HERO_VIDEO;
+      heroVideoMigrated = true;
+    }
+    for (const slide of hero.slides || []) {
+      if (slide.src === RETIRED_HERO_VIDEO) {
+        slide.src = replaceRetiredHeroVideo(slide.src);
+        heroVideoMigrated = true;
+      }
+    }
+  }
+
+  if (heroVideoMigrated) {
+    await fs.writeFile(contentPath, JSON.stringify(content, null, 2), "utf-8");
+  }
 
   for (const locale of ["ko", "en"] as const) {
     const localeData = content[locale];
