@@ -57,13 +57,25 @@ export function HeroSlider({
         el.pause();
       }
     });
-  }, [active]);
+  }, [active.id, active.type]);
 
   useEffect(() => {
-    if (paused || list.length < 2) return;
+    if (paused || list.length < 2 || active.type === "video") return;
     const timer = window.setTimeout(() => go(index + 1), AUTO_MS);
     return () => window.clearTimeout(timer);
-  }, [index, paused, go, list.length]);
+  }, [index, paused, go, list.length, active.type]);
+
+  function onVideoEnded(slideId: string) {
+    if (slideId !== active.id) return;
+    if (list.length < 2) {
+      const el = videoRefs.current[slideId];
+      if (!el) return;
+      el.currentTime = 0;
+      void el.play().catch(() => undefined);
+      return;
+    }
+    go(index + 1);
+  }
 
   return (
     <section
@@ -90,8 +102,8 @@ export function HeroSlider({
                 src={slide.src}
                 muted
                 playsInline
-                loop
-                preload="metadata"
+                preload="auto"
+                onEnded={() => onVideoEnded(slide.id)}
               />
             ) : (
               <Image

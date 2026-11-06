@@ -6,12 +6,12 @@
       "subheadline": "에어 컴프레서 판매·수리·유지보수 인도에서 신뢰할 수 있는 산업용 에어 솔루션을 제공합니다.",
       "ctaLabel": "문의하기",
       "ctaHref": "/contact",
-      "videoUrl": "/videos/air-compressor.mp4",
+      "videoUrl": "/videos/hero-reel.mp4",
       "slides": [
         {
           "id": "slide-compressor",
           "type": "video",
-          "src": "/videos/air-compressor.mp4",
+          "src": "/videos/hero-reel.mp4",
           "label": "에어 컴프레서",
           "brand": "Hankook Service Center",
           "headline": "Total Air Solution",
@@ -717,12 +717,12 @@
       "subheadline": "Air compressor sales, repair, and maintenance trusted industrial service in India.",
       "ctaLabel": "Contact Us",
       "ctaHref": "/contact",
-      "videoUrl": "/videos/air-compressor.mp4",
+      "videoUrl": "/videos/hero-reel.mp4",
       "slides": [
         {
           "id": "slide-compressor",
           "type": "video",
-          "src": "/videos/air-compressor.mp4",
+          "src": "/videos/hero-reel.mp4",
           "label": "Air Compressor",
           "brand": "Hankook Service Center",
           "headline": "Total Air Solution",

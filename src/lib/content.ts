@@ -50,7 +50,7 @@ export async function getContent(): Promise<SiteContent> {
               {
                 id: "slide-compressor",
                 type: "video",
-                src: "/videos/air-compressor.mp4",
+                src: "/videos/hero-reel.mp4",
                 label: "에어 컴프레서",
                 brand: "Hankook Service Center",
                 headline: "Total Air Solution",
@@ -88,7 +88,7 @@ export async function getContent(): Promise<SiteContent> {
               {
                 id: "slide-compressor",
                 type: "video",
-                src: "/videos/air-compressor.mp4",
+                src: "/videos/hero-reel.mp4",
                 label: "Air Compressor",
                 brand: "Hankook Service Center",
                 headline: "Total Air Solution",
