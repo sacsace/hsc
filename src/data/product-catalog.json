@@ -36,6 +36,48 @@
     "folder": "CP Air Compressor",
     "products": [
       {
+        "id": "cp-75-220",
+        "title": "CP 75-220 Screw Compressor",
+        "fileName": "CP 75-220 Screw Compressor.jpg",
+        "image": "/images/products/chicago-pneumatic--75-220.jpg",
+        "description": "Chicago Pneumatic CP 75-220 oil-injected screw compressors — flagship series for reliable industrial compressed air."
+      },
+      {
+        "id": "cp-cpf221",
+        "title": "CPF 220-450 Fixed Speed",
+        "fileName": "CPF 220-450 Fixed Speed.jpg",
+        "image": "/images/products/chicago-pneumatic--cpf221.jpg",
+        "description": "CPF fixed-speed high-capacity screw compressors for continuous operation and high air demand in mid- to large-scale plants."
+      },
+      {
+        "id": "cp-cpc-40-60",
+        "title": "CPC 40-60 Package",
+        "fileName": "CPC 40-60 Package.jpg",
+        "image": "/images/products/chicago-pneumatic--cpc-40-60.jpg",
+        "description": "CPC 40-60 oil-injected screw compressor packages — easy to install and service for site-ready solutions."
+      },
+      {
+        "id": "cp-cpm60",
+        "title": "CPM / CPMV / CPVS Series",
+        "fileName": "CPM CPMV CPVS Series.jpg",
+        "image": "/images/products/chicago-pneumatic--cpm60.jpg",
+        "description": "CPM fixed-speed and CPMV/CPVS variable-speed screw compressors for energy-efficient operation under changing load."
+      },
+      {
+        "id": "cp-oil-free",
+        "title": "Oil-Free Screw Compressor",
+        "fileName": "Oil-Free Screw Compressor.jpg",
+        "image": "/images/products/chicago-pneumatic--oil-free.jpg",
+        "description": "Chicago Pneumatic oil-free screw compressors for processes that require clean compressed air."
+      },
+      {
+        "id": "cp-piston",
+        "title": "Piston Air Compressor",
+        "fileName": "Piston Air Compressor.jpg",
+        "image": "/images/products/chicago-pneumatic--piston.jpg",
+        "description": "Chicago Pneumatic piston compressors suited to workshops and smaller industrial sites."
+      },
+      {
         "id": "cp-filters-2020-india-1",
         "title": "CP Filters 2020 India (1)",
         "fileName": "CP Filters 2020 India (1).pdf",

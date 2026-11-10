@@ -7,8 +7,25 @@ import { ensureUploadsDir, storageStatus, uploadsDir } from "@/lib/storage";
 
 export const runtime = "nodejs";
 
-const ALLOWED = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
-const MAX_BYTES = 8 * 1024 * 1024;
+const IMAGE_TYPES = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+]);
+const VIDEO_TYPES = new Set(["video/mp4", "video/webm"]);
+const ALLOWED = new Set([...IMAGE_TYPES, ...VIDEO_TYPES]);
+const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
+const MAX_VIDEO_BYTES = 50 * 1024 * 1024;
+
+const EXT_BY_TYPE: Record<string, string> = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+  "image/gif": "gif",
+  "video/mp4": "mp4",
+  "video/webm": "webm",
+};
 
 export async function POST(request: Request) {
   if (!(await isAuthenticated())) {
@@ -23,34 +40,37 @@ export async function POST(request: Request) {
   }
 
   if (!ALLOWED.has(file.type)) {
-    return NextResponse.json({ error: "Unsupported file type" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Unsupported file type (image: JPG/PNG/WEBP/GIF, video: MP4/WEBM)" },
+      { status: 400 },
+    );
   }
 
-  if (file.size > MAX_BYTES) {
-    return NextResponse.json({ error: "File too large (max 8MB)" }, { status: 400 });
+  const isVideo = VIDEO_TYPES.has(file.type);
+  const maxBytes = isVideo ? MAX_VIDEO_BYTES : MAX_IMAGE_BYTES;
+  if (file.size > maxBytes) {
+    return NextResponse.json(
+      {
+        error: isVideo
+          ? "File too large (max 50MB for video)"
+          : "File too large (max 8MB for image)",
+      },
+      { status: 400 },
+    );
   }
 
-  const ext =
-    file.type === "image/jpeg"
-      ? "jpg"
-      : file.type === "image/png"
-        ? "png"
-        : file.type === "image/webp"
-          ? "webp"
-          : "gif";
-
+  const ext = EXT_BY_TYPE[file.type] || "bin";
   const name = `${Date.now()}-${randomBytes(4).toString("hex")}.${ext}`;
   await ensureUploadsDir();
   const buffer = Buffer.from(await file.arrayBuffer());
   await fs.writeFile(path.join(uploadsDir(), name), buffer);
 
   const status = storageStatus();
-  // Served by /uploads/[...path] from the persistent data volume (+ seed fallback)
   return NextResponse.json({
     url: `/uploads/${name}`,
     persistent: status.persistent,
     warning: status.uploadsAtRisk
-      ? "Railway Volume(/data)이 없습니다. 재배포 시 이 이미지가 삭제될 수 있습니다."
+      ? "Railway Volume(/data)이 없습니다. 재배포 시 이 파일이 삭제될 수 있습니다."
       : undefined,
   });
 }

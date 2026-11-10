@@ -28,7 +28,7 @@
           "headline": "안정적인 설비 운영",
           "subheadline": "산업 현장의 컴프레서 설비를 점검하고, 생산이 멈추지 않도록 신속하고 정확한 서비스를 제공합니다.",
           "ctaLabel": "실적 보기",
-          "ctaHref": "#performance"
+          "ctaHref": "/performance"
         },
         {
           "id": "slide-pipe",
@@ -387,8 +387,44 @@
           "slug": "chicago-pneumatic",
           "brand": "Chicago Pneumatic",
           "folder": "CP Air Compressor",
-          "lead": "Chicago Pneumatic 관련 제품 자료입니다.",
+          "lead": "Chicago Pneumatic 주력 스크류·오일프리·피스톤 컴프레서 라인업입니다.",
           "products": [
+            {
+              "id": "cp-75-220",
+              "title": "CP 75-220 Screw Compressor",
+              "image": "/images/products/chicago-pneumatic--75-220.jpg",
+              "description": "Chicago Pneumatic CP 75-220 시리즈 오일 주입식 스크류 컴프레서. 산업 현장의 안정적인 압축공기 공급을 위한 주력 모델입니다."
+            },
+            {
+              "id": "cp-cpf221",
+              "title": "CPF 220-450 Fixed Speed",
+              "image": "/images/products/chicago-pneumatic--cpf221.jpg",
+              "description": "CPF 시리즈 고정속 대용량 스크류 컴프레서. 중대형 공장의 연속 가동과 높은 공기 수요에 적합합니다."
+            },
+            {
+              "id": "cp-cpc-40-60",
+              "title": "CPC 40-60 Package",
+              "image": "/images/products/chicago-pneumatic--cpc-40-60.jpg",
+              "description": "CPC 40-60 오일 주입식 스크류 컴프레서 패키지. 설치와 유지보수가 용이한 현장 맞춤형 솔루션입니다."
+            },
+            {
+              "id": "cp-cpm60",
+              "title": "CPM / CPMV / CPVS Series",
+              "image": "/images/products/chicago-pneumatic--cpm60.jpg",
+              "description": "CPM 고정속 및 CPMV·CPVS 가변속 스크류 컴프레서. 부하 변동에 맞춘 에너지 효율적인 운영을 지원합니다."
+            },
+            {
+              "id": "cp-oil-free",
+              "title": "Oil-Free Screw Compressor",
+              "image": "/images/products/chicago-pneumatic--oil-free.jpg",
+              "description": "Chicago Pneumatic 오일프리 스크류 컴프레서. 청정 압축공기가 필요한 공정에 적합합니다."
+            },
+            {
+              "id": "cp-piston",
+              "title": "Piston Air Compressor",
+              "image": "/images/products/chicago-pneumatic--piston.jpg",
+              "description": "Chicago Pneumatic 피스톤 컴프레서. 워크숍과 소규모 산업 현장에 적합한 실용형 모델입니다."
+            },
             {
               "id": "cp-filters-2020-india-1",
               "title": "CP Filters 2020 India (1)",
@@ -430,12 +466,6 @@
               "title": "Tank Mountain Quotation E Brochure2 CPA 10 15 20HP 7 10 13BAR BD Fixed Speed IE3 FM TM TMD",
               "image": "/images/products/chicago-pneumatic--tank-mountain-quotation-e-brochure2-cpa-10-15-20hp-7-10-13bar-bd-fixed-speed-ie3.jpg",
               "description": "10-20 HP\nFlexible Drive Rotary Screw\nAir Compresor\n17\n2021\nINTRODUCED LATEST \nGENERATION PM VFD \nCOMPRESSORS"
-            },
-            {
-              "id": "prod-1793462828407",
-              "title": "",
-              "image": "",
-              "description": ""
             }
           ]
         },
@@ -739,7 +769,7 @@
           "headline": "Keep Operations Running",
           "subheadline": "We inspect and service compressor facilities so your production stays stable and efficient.",
           "ctaLabel": "View All Projects",
-          "ctaHref": "#performance"
+          "ctaHref": "/performance"
         },
         {
           "id": "slide-pipe",
@@ -1087,8 +1117,44 @@
           "slug": "chicago-pneumatic",
           "brand": "Chicago Pneumatic",
           "folder": "CP Air Compressor",
-          "lead": "Product documents for Chicago Pneumatic.",
+          "lead": "Flagship Chicago Pneumatic screw, oil-free, and piston compressor lineup.",
           "products": [
+            {
+              "id": "cp-75-220",
+              "title": "CP 75-220 Screw Compressor",
+              "image": "/images/products/chicago-pneumatic--75-220.jpg",
+              "description": "Chicago Pneumatic CP 75-220 oil-injected screw compressors — our flagship series for reliable industrial compressed air."
+            },
+            {
+              "id": "cp-cpf221",
+              "title": "CPF 220-450 Fixed Speed",
+              "image": "/images/products/chicago-pneumatic--cpf221.jpg",
+              "description": "CPF fixed-speed high-capacity screw compressors for continuous operation and high air demand in mid- to large-scale plants."
+            },
+            {
+              "id": "cp-cpc-40-60",
+              "title": "CPC 40-60 Package",
+              "image": "/images/products/chicago-pneumatic--cpc-40-60.jpg",
+              "description": "CPC 40-60 oil-injected screw compressor packages — easy to install and service for site-ready solutions."
+            },
+            {
+              "id": "cp-cpm60",
+              "title": "CPM / CPMV / CPVS Series",
+              "image": "/images/products/chicago-pneumatic--cpm60.jpg",
+              "description": "CPM fixed-speed and CPMV/CPVS variable-speed screw compressors for energy-efficient operation under changing load."
+            },
+            {
+              "id": "cp-oil-free",
+              "title": "Oil-Free Screw Compressor",
+              "image": "/images/products/chicago-pneumatic--oil-free.jpg",
+              "description": "Chicago Pneumatic oil-free screw compressors for processes that require clean compressed air."
+            },
+            {
+              "id": "cp-piston",
+              "title": "Piston Air Compressor",
+              "image": "/images/products/chicago-pneumatic--piston.jpg",
+              "description": "Chicago Pneumatic piston compressors suited to workshops and smaller industrial sites."
+            },
             {
               "id": "cp-filters-2020-india-1",
               "title": "CP Filters 2020 India (1)",

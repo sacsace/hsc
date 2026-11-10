@@ -50,12 +50,12 @@ function HomeSections() {
         <HeroSlider
           slides={(hero.slides || []).map((slide) => ({
             ...slide,
-            brand: hero.brand || slide.brand,
-            label: hero.brand || slide.label,
-            headline: hero.headline || slide.headline,
-            subheadline: hero.subheadline || slide.subheadline,
-            ctaLabel: hero.ctaLabel || slide.ctaLabel,
-            ctaHref: hero.ctaHref || slide.ctaHref,
+            brand: slide.brand || hero.brand,
+            label: slide.label || slide.brand || hero.brand,
+            headline: slide.headline || hero.headline,
+            subheadline: slide.subheadline || hero.subheadline,
+            ctaLabel: slide.ctaLabel || hero.ctaLabel,
+            ctaHref: slide.ctaHref || hero.ctaHref,
           }))}
           learnMoreLabel={t.learnMore}
           prevLabel={t.slidePrev}

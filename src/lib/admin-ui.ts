@@ -34,7 +34,7 @@ const menuGroupsKo: MenuGroup[] = [
     id: "site",
     label: "사이트",
     items: [
-      { id: "hero", label: "히어로", desc: "메인 배너" },
+      { id: "hero", label: "히어로", desc: "메인 배너·미디어" },
       { id: "gallery", label: "갤러리", desc: "사진 관리" },
     ],
   },
@@ -74,7 +74,7 @@ const menuGroupsEn: MenuGroup[] = [
     id: "site",
     label: "Website",
     items: [
-      { id: "hero", label: "Hero", desc: "Main banner" },
+      { id: "hero", label: "Hero", desc: "Main banner & media" },
       { id: "gallery", label: "Gallery", desc: "Photo management" },
     ],
   },
@@ -172,6 +172,32 @@ export function adminUi(locale: Locale) {
     logoRemove: en ? "Remove logo" : "로고 제거",
 
     hero: en ? "Hero" : "히어로",
+    heroSlides: en ? "Hero slides" : "히어로 슬라이드",
+    heroSlidesHint: en
+      ? "Upload or replace each slide image/video. Changes auto-save and show on the home page."
+      : "슬라이드별 이미지·동영상을 업로드하거나 교체할 수 있습니다. 저장 후 메인 페이지에 바로 반영됩니다.",
+    heroSlidesEmpty: en
+      ? "No slides yet. Add an image or video slide."
+      : "등록된 슬라이드가 없습니다. 이미지 또는 동영상 슬라이드를 추가하세요.",
+    heroSlideAdd: en ? "Add slide" : "슬라이드 추가",
+    heroSlideEdit: en ? "Edit slide" : "슬라이드 수정",
+    heroSlideDeleteConfirm: en ? "Delete this hero slide?" : "이 히어로 슬라이드를 삭제할까요?",
+    heroSlideLabel: en ? "Label" : "라벨",
+    heroType: en ? "Type" : "유형",
+    heroTypeImage: en ? "Image" : "이미지",
+    heroTypeVideo: en ? "Video" : "동영상",
+    heroMedia: en ? "Media" : "미디어",
+    heroMediaUrl: en ? "Media URL" : "미디어 URL",
+    heroMediaPick: en ? "Choose file" : "파일 선택",
+    heroMediaChange: en ? "Replace file" : "파일 변경",
+    heroMediaHint: en
+      ? "Image: JPG/PNG/WEBP/GIF (max 8MB) · Video: MP4/WEBM (max 50MB)"
+      : "이미지: JPG/PNG/WEBP/GIF (최대 8MB) · 동영상: MP4/WEBM (최대 50MB)",
+    heroMediaRequired: en
+      ? "Please upload a file or enter a media URL."
+      : "파일을 업로드하거나 미디어 URL을 입력하세요.",
+    heroUploading: en ? "Uploading…" : "업로드 중…",
+    heroUploadFailed: en ? "Upload failed" : "업로드 실패",
     greeting: en ? "Greeting" : "인사말",
     company: en ? "Company" : "회사 정보",
     history: en ? "History" : "연혁",

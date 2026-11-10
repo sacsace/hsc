@@ -36,11 +36,11 @@ const brandIntro: Record<
   "chicago-pneumatic": {
     ko: {
       title: "Chicago Pneumatic",
-      lead: "오일프리·VSD/iPM 컴프레서, 필터 등 Chicago Pneumatic(CP) 제품 카탈로그입니다.",
+      lead: "CP 75-220, CPF, CPC, CPM/CPVS, 오일프리·피스톤 등 Chicago Pneumatic 주력 컴프레서 라인업입니다.",
     },
     en: {
       title: "Chicago Pneumatic",
-      lead: "Chicago Pneumatic (CP) catalogs for oil-free and VSD/iPM compressors, filters, and quality-air solutions.",
+      lead: "Flagship Chicago Pneumatic lineup including CP 75-220, CPF, CPC, CPM/CPVS, oil-free, and piston compressors.",
     },
   },
   elgi: {

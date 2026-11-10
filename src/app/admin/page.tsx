@@ -6,7 +6,6 @@ import type {
   CertificateItem,
   ClientItem,
   GalleryItem,
-  HeroSlide,
   HistoryItem,
   Locale,
   LocaleContent,
@@ -16,6 +15,7 @@ import type {
 } from "@/lib/types";
 import { sortPerformances } from "@/lib/types";
 import type { Inquiry } from "@/lib/inquiry";
+import { HeroSlidesEditor } from "@/components/admin/HeroSlidesEditor";
 import { ServicesEditor } from "@/components/admin/ServicesEditor";
 import { SiteLogo } from "@/components/SiteLogo";
 import {
@@ -38,23 +38,6 @@ function AdminSymbol({ className = "" }: { className?: string }) {
       priority
     />
   );
-}
-
-/** Keep top-level hero copy and slide overlays in sync for the homepage. */
-function syncHeroText(
-  hero: LocaleContent["hero"],
-  patch: Partial<Pick<LocaleContent["hero"], "brand" | "headline" | "subheadline" | "ctaLabel" | "ctaHref">>,
-) {
-  const next = { ...hero, ...patch };
-  const slides = (next.slides || []).map((slide: HeroSlide) => ({
-    ...slide,
-    ...(patch.brand !== undefined ? { brand: patch.brand, label: patch.brand } : {}),
-    ...(patch.headline !== undefined ? { headline: patch.headline } : {}),
-    ...(patch.subheadline !== undefined ? { subheadline: patch.subheadline } : {}),
-    ...(patch.ctaLabel !== undefined ? { ctaLabel: patch.ctaLabel } : {}),
-    ...(patch.ctaHref !== undefined ? { ctaHref: patch.ctaHref } : {}),
-  }));
-  return { ...next, slides };
 }
 
 export default function AdminPage() {
@@ -409,8 +392,8 @@ export default function AdminPage() {
                   title={t.hero}
                   hint={
                     editLocale === "ko"
-                      ? "수정하면 약 1초 후 자동 저장되며, 홈 히어로 슬라이드 문구에 바로 반영됩니다."
-                      : "Edits auto-save after about 1 second and update the home hero slides."
+                      ? "기본 문구는 슬라이드에 값이 없을 때 사용됩니다. 이미지·동영상은 아래 슬라이드에서 변경하세요. 약 1초 후 자동 저장됩니다."
+                      : "Default copy is used when a slide field is empty. Change images/videos in the slides list below. Edits auto-save after about 1 second."
                   }
                 >
                   <Field
@@ -419,7 +402,7 @@ export default function AdminPage() {
                     onChange={(v) =>
                       updateLocale({
                         ...localeContent,
-                        hero: syncHeroText(localeContent.hero, { brand: v }),
+                        hero: { ...localeContent.hero, brand: v },
                       })
                     }
                   />
@@ -429,7 +412,7 @@ export default function AdminPage() {
                     onChange={(v) =>
                       updateLocale({
                         ...localeContent,
-                        hero: syncHeroText(localeContent.hero, { headline: v }),
+                        hero: { ...localeContent.hero, headline: v },
                       })
                     }
                   />
@@ -439,7 +422,7 @@ export default function AdminPage() {
                     onChange={(v) =>
                       updateLocale({
                         ...localeContent,
-                        hero: syncHeroText(localeContent.hero, { subheadline: v }),
+                        hero: { ...localeContent.hero, subheadline: v },
                       })
                     }
                   />
@@ -449,7 +432,28 @@ export default function AdminPage() {
                     onChange={(v) =>
                       updateLocale({
                         ...localeContent,
-                        hero: syncHeroText(localeContent.hero, { ctaLabel: v }),
+                        hero: { ...localeContent.hero, ctaLabel: v },
+                      })
+                    }
+                  />
+                  <Field
+                    label={t.ctaHref}
+                    value={localeContent.hero.ctaHref}
+                    onChange={(v) =>
+                      updateLocale({
+                        ...localeContent,
+                        hero: { ...localeContent.hero, ctaHref: v },
+                      })
+                    }
+                  />
+                  <HeroSlidesEditor
+                    hero={localeContent.hero}
+                    locale={editLocale}
+                    ui={t}
+                    onChange={(hero) =>
+                      updateLocale({
+                        ...localeContent,
+                        hero,
                       })
                     }
                   />
