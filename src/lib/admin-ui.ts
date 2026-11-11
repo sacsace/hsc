@@ -126,6 +126,9 @@ export function adminUi(locale: Locale) {
       : "Railway Volume을 /data 경로에 연결하세요. 고객사 로고·갤러리 사진이 유지됩니다. 배포 이미지에 포함된 seed 이미지는 없을 때 자동으로 복구됩니다.",
     editing: (label: string) =>
       en ? `English · ${label}` : `한국어 · ${label}`,
+    enSeedsKoHint: en
+      ? "English edits also fill empty Korean fields and sync shared media/order."
+      : "영문 수정 시 비어 있는 한글 항목에 영문이 기본 입력되고, 이미지·순서가 함께 맞춰집니다.",
     loading: en ? "Loading…" : "로딩 중…",
     contentLoading: en ? "Loading content…" : "콘텐츠 로딩 중…",
 
@@ -233,6 +236,8 @@ export function adminUi(locale: Locale) {
     servicesAddBrand: en ? "Add brand" : "브랜드 추가",
     servicesAddProduct: en ? "Add product" : "제품 추가",
     servicesAddCategory: en ? "Add category" : "분류 추가",
+    servicesMoveUp: en ? "Move up" : "위로",
+    servicesMoveDown: en ? "Move down" : "아래로",
     servicesBrandName: en ? "Brand name" : "브랜드명",
     servicesSlug: en ? "URL slug" : "URL 슬러그",
     servicesFolder: en ? "Folder / source" : "폴더·출처",

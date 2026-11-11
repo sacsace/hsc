@@ -43,6 +43,61 @@ function slugify(value: string) {
     .replace(/^-|-$/g, "");
 }
 
+function moveItem<T>(items: T[], index: number, direction: -1 | 1): T[] {
+  const next = index + direction;
+  if (next < 0 || next >= items.length) return items;
+  const copy = [...items];
+  const tmp = copy[index];
+  copy[index] = copy[next];
+  copy[next] = tmp;
+  return copy;
+}
+
+function MoveButtons({
+  index,
+  total,
+  onMove,
+  labelUp,
+  labelDown,
+}: {
+  index: number;
+  total: number;
+  onMove: (direction: -1 | 1) => void;
+  labelUp: string;
+  labelDown: string;
+}) {
+  return (
+    <div className="flex items-center gap-1">
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          onMove(-1);
+        }}
+        disabled={index === 0}
+        className="border border-[var(--line)] bg-white px-1.5 py-1 text-xs disabled:opacity-30"
+        aria-label={labelUp}
+        title={labelUp}
+      >
+        ↑
+      </button>
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          onMove(1);
+        }}
+        disabled={index >= total - 1}
+        className="border border-[var(--line)] bg-white px-1.5 py-1 text-xs disabled:opacity-30"
+        aria-label={labelDown}
+        title={labelDown}
+      >
+        ↓
+      </button>
+    </div>
+  );
+}
+
 export function ServicesEditor({
   ui,
   services,
@@ -203,13 +258,22 @@ function OfferingsEditor({
           <div key={item.id} className="border border-[var(--line)] bg-[#f8fafb] p-4">
             <div className="mb-3 flex items-center justify-between gap-2">
               <p className="text-xs font-semibold text-[var(--muted)]">#{index + 1}</p>
-              <button
-                type="button"
-                className="text-xs text-red-600 hover:underline"
-                onClick={() => onChange(items.filter((_, i) => i !== index))}
-              >
-                {ui.delete}
-              </button>
+              <div className="flex items-center gap-2">
+                <MoveButtons
+                  index={index}
+                  total={items.length}
+                  onMove={(direction) => onChange(moveItem(items, index, direction))}
+                  labelUp={ui.servicesMoveUp}
+                  labelDown={ui.servicesMoveDown}
+                />
+                <button
+                  type="button"
+                  className="text-xs text-red-600 hover:underline"
+                  onClick={() => onChange(items.filter((_, i) => i !== index))}
+                >
+                  {ui.delete}
+                </button>
+              </div>
             </div>
             <div className="grid gap-3">
               <Field
@@ -270,22 +334,36 @@ function BrandsEditor({
           const open = openId === brand.id;
           return (
             <div key={brand.id} className="border border-[var(--line)]">
-              <button
-                type="button"
-                className="flex w-full items-center justify-between gap-3 bg-[#f5f7f9] px-4 py-3 text-left"
-                onClick={() => setOpenId(open ? null : brand.id)}
-              >
-                <span className="text-sm font-semibold text-[var(--ink)]">
-                  {brand.brand || brand.slug || `(brand ${index + 1})`}
-                  <span className="ml-2 text-xs font-normal text-[var(--muted)]">
-                    /services/{brand.slug || "…"} · {brand.products.length}
+              <div className="flex w-full items-center gap-2 bg-[#f5f7f9] px-3 py-2 sm:px-4 sm:py-3">
+                <MoveButtons
+                  index={index}
+                  total={items.length}
+                  onMove={(direction) => onChange(moveItem(items, index, direction))}
+                  labelUp={ui.servicesMoveUp}
+                  labelDown={ui.servicesMoveDown}
+                />
+                <button
+                  type="button"
+                  className="flex min-w-0 flex-1 items-center justify-between gap-3 text-left"
+                  onClick={() => setOpenId(open ? null : brand.id)}
+                >
+                  <span className="truncate text-sm font-semibold text-[var(--ink)]">
+                    {brand.brand || brand.slug || `(brand ${index + 1})`}
+                    <span className="ml-2 text-xs font-normal text-[var(--muted)]">
+                      /services/{brand.slug || "…"} · {brand.products.length}
+                    </span>
                   </span>
-                </span>
-                <span className="text-xs text-[var(--muted)]">{open ? "▲" : "▼"}</span>
-              </button>
+                  <span className="shrink-0 text-xs text-[var(--muted)]">
+                    {open ? "▲" : "▼"}
+                  </span>
+                </button>
+              </div>
               {open ? (
                 <div className="grid gap-3 p-4">
-                  <div className="flex justify-end">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-xs font-semibold text-[var(--muted)]">
+                      #{index + 1} / {items.length}
+                    </p>
                     <button
                       type="button"
                       className="text-xs text-red-600 hover:underline"
@@ -359,37 +437,67 @@ function BrandsEditor({
                     </div>
                     <div className="grid gap-3">
                       {brand.products.map((product, pIndex) => (
-                        <ProductEditor
-                          key={product.id}
-                          ui={ui}
-                          product={product}
-                          onChange={(next) =>
-                            onChange(
-                              items.map((row, i) =>
-                                i === index
-                                  ? {
-                                      ...row,
-                                      products: row.products.map((p, j) =>
-                                        j === pIndex ? next : p,
-                                      ),
-                                    }
-                                  : row,
-                              ),
-                            )
-                          }
-                          onRemove={() =>
-                            onChange(
-                              items.map((row, i) =>
-                                i === index
-                                  ? {
-                                      ...row,
-                                      products: row.products.filter((_, j) => j !== pIndex),
-                                    }
-                                  : row,
-                              ),
-                            )
-                          }
-                        />
+                        <div key={product.id} className="grid gap-2">
+                          <div className="flex items-center justify-between gap-2">
+                            <p className="text-xs font-semibold text-[var(--muted)]">
+                              #{pIndex + 1}
+                            </p>
+                            <MoveButtons
+                              index={pIndex}
+                              total={brand.products.length}
+                              onMove={(direction) =>
+                                onChange(
+                                  items.map((row, i) =>
+                                    i === index
+                                      ? {
+                                          ...row,
+                                          products: moveItem(
+                                            row.products,
+                                            pIndex,
+                                            direction,
+                                          ),
+                                        }
+                                      : row,
+                                  ),
+                                )
+                              }
+                              labelUp={ui.servicesMoveUp}
+                              labelDown={ui.servicesMoveDown}
+                            />
+                          </div>
+                          <ProductEditor
+                            ui={ui}
+                            product={product}
+                            onChange={(next) =>
+                              onChange(
+                                items.map((row, i) =>
+                                  i === index
+                                    ? {
+                                        ...row,
+                                        products: row.products.map((p, j) =>
+                                          j === pIndex ? next : p,
+                                        ),
+                                      }
+                                    : row,
+                                ),
+                              )
+                            }
+                            onRemove={() =>
+                              onChange(
+                                items.map((row, i) =>
+                                  i === index
+                                    ? {
+                                        ...row,
+                                        products: row.products.filter(
+                                          (_, j) => j !== pIndex,
+                                        ),
+                                      }
+                                    : row,
+                                ),
+                              )
+                            }
+                          />
+                        </div>
                       ))}
                     </div>
                   </div>
@@ -507,14 +615,24 @@ function CategoriesEditor({
       </div>
       {items.map((item, index) => (
         <div key={item.id} className="border border-[var(--line)] bg-[#f8fafb] p-4">
-          <div className="mb-3 flex justify-end">
-            <button
-              type="button"
-              className="text-xs text-red-600 hover:underline"
-              onClick={() => onChange(items.filter((_, i) => i !== index))}
-            >
-              {ui.delete}
-            </button>
+          <div className="mb-3 flex items-center justify-between gap-2">
+            <p className="text-xs font-semibold text-[var(--muted)]">#{index + 1}</p>
+            <div className="flex items-center gap-2">
+              <MoveButtons
+                index={index}
+                total={items.length}
+                onMove={(direction) => onChange(moveItem(items, index, direction))}
+                labelUp={ui.servicesMoveUp}
+                labelDown={ui.servicesMoveDown}
+              />
+              <button
+                type="button"
+                className="text-xs text-red-600 hover:underline"
+                onClick={() => onChange(items.filter((_, i) => i !== index))}
+              >
+                {ui.delete}
+              </button>
+            </div>
           </div>
           <div className="grid gap-3">
             <Field

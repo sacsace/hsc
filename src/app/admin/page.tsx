@@ -25,6 +25,7 @@ import {
   type AdminSectionId,
   type AdminUi,
 } from "@/lib/admin-ui";
+import { seedKoreanFromEnglish } from "@/lib/locale-seed";
 import { defaultServicesContent } from "@/lib/services-default";
 
 function AdminSymbol({ className = "" }: { className?: string }) {
@@ -142,19 +143,30 @@ export default function AdminPage() {
     }, 1200);
   }
 
-  function updateLocale(next: LocaleContent) {
+  function buildNextContent(next: LocaleContent): SiteContent | null {
     const current = contentRef.current;
-    if (!current) return;
-    const nextContent = { ...current, [editLocale]: next };
+    if (!current) return null;
+    if (editLocale === "en") {
+      return {
+        ...current,
+        en: next,
+        ko: seedKoreanFromEnglish(current.ko, next),
+      };
+    }
+    return { ...current, ko: next };
+  }
+
+  function updateLocale(next: LocaleContent) {
+    const nextContent = buildNextContent(next);
+    if (!nextContent) return;
     contentRef.current = nextContent;
     setContent(nextContent);
     schedulePersist(nextContent);
   }
 
   async function persistLocaleNow(next: LocaleContent) {
-    const current = contentRef.current;
-    if (!current) return;
-    const nextContent = { ...current, [editLocale]: next };
+    const nextContent = buildNextContent(next);
+    if (!nextContent) return;
     contentRef.current = nextContent;
     setContent(nextContent);
     if (persistTimer.current) clearTimeout(persistTimer.current);
@@ -362,6 +374,15 @@ export default function AdminPage() {
           >
             <p className="font-semibold">{t.storageRiskTitle}</p>
             <p className="mt-1 text-amber-900/90">{t.storageRiskBody}</p>
+          </div>
+        ) : null}
+
+        {editLocale === "en" &&
+        section !== "inquiries" &&
+        section !== "mail" &&
+        section !== "security" ? (
+          <div className="shrink-0 border-b border-[var(--line)] bg-[#f5f7f9] px-3 py-2.5 text-xs text-[var(--muted)] sm:px-4 md:px-6 lg:px-8">
+            {t.enSeedsKoHint}
           </div>
         ) : null}
 

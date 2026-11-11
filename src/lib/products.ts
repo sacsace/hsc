@@ -170,6 +170,10 @@ export const productPageUi = {
     docsLead: "해당 폴더의 카탈로그·브로슈어 미리보기와 요약 설명입니다.",
     empty: "등록된 제품 자료가 없습니다.",
     contact: "이 제품 문의하기",
+    close: "닫기",
+    enlarge: "이미지 크게 보기",
+    prev: "이전",
+    next: "다음",
   },
   en: {
     back: "Back to Equipment & Services",
@@ -177,5 +181,9 @@ export const productPageUi = {
     docsLead: "Preview images and short descriptions from the product folder.",
     empty: "No product documents yet.",
     contact: "Ask about this product line",
+    close: "Close",
+    enlarge: "View larger image",
+    prev: "Previous",
+    next: "Next",
   },
 } as const;
