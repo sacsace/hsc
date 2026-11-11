@@ -129,6 +129,8 @@ export function adminUi(locale: Locale) {
     enSeedsKoHint: en
       ? "English edits also fill empty Korean fields and sync shared media/order."
       : "영문 수정 시 비어 있는 한글 항목에 영문이 기본 입력되고, 이미지·순서가 함께 맞춰집니다.",
+    syncEnToKo: en ? "Sync EN → KO" : "영문→한글 동기화",
+    syncEnToKoDone: en ? "Korean gaps filled from English." : "영문 기준으로 한글 빈 항목을 채웠습니다.",
     loading: en ? "Loading…" : "로딩 중…",
     contentLoading: en ? "Loading content…" : "콘텐츠 로딩 중…",
 

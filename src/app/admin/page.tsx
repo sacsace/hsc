@@ -49,7 +49,7 @@ export default function AdminPage() {
   const [editLocale, setEditLocale] = useState<Locale>("ko");
   const [section, setSection] = useState<AdminSectionId>("hero");
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [statusKey, setStatusKey] = useState<"" | "saved" | "failed">("");
+  const [statusKey, setStatusKey] = useState<"" | "saved" | "failed" | "synced">("");
   const [saving, setSaving] = useState(false);
   const [loginError, setLoginError] = useState("");
   const [uploadsAtRisk, setUploadsAtRisk] = useState(false);
@@ -171,6 +171,20 @@ export default function AdminPage() {
     setContent(nextContent);
     if (persistTimer.current) clearTimeout(persistTimer.current);
     await persistContent(nextContent);
+  }
+
+  async function syncEnglishIntoKorean() {
+    const current = contentRef.current;
+    if (!current) return;
+    const nextContent: SiteContent = {
+      ...current,
+      ko: seedKoreanFromEnglish(current.ko, current.en),
+    };
+    contentRef.current = nextContent;
+    setContent(nextContent);
+    if (persistTimer.current) clearTimeout(persistTimer.current);
+    await persistContent(nextContent);
+    setStatusKey("synced");
   }
 
   if (checking) {
@@ -339,30 +353,44 @@ export default function AdminPage() {
                   ? t.saving
                   : statusKey === "saved"
                     ? t.saved
-                    : statusKey === "failed"
-                      ? t.saveFailed
-                      : t.editing(activeMenu.label)}
+                    : statusKey === "synced"
+                      ? t.syncEnToKoDone
+                      : statusKey === "failed"
+                        ? t.saveFailed
+                        : t.editing(activeMenu.label)}
               </p>
               {section !== "inquiries" &&
                 section !== "mail" &&
-                section !== "security" &&
-                (["ko", "en"] as const).map((code) => (
-                  <button
-                    key={code}
-                    type="button"
-                    onClick={() => {
-                      setEditLocale(code);
-                      setStatusKey("");
-                    }}
-                    className={`px-3 py-1.5 text-xs font-semibold transition-colors ${
-                      editLocale === code
-                        ? "bg-[var(--navy)] text-white"
-                        : "border border-[var(--line)] text-[var(--muted)] hover:text-[var(--ink)]"
-                    }`}
-                  >
-                    {code === "ko" ? "KO" : "EN"}
-                  </button>
-                ))}
+                section !== "security" && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => void syncEnglishIntoKorean()}
+                      disabled={saving}
+                      className="border border-[var(--line)] px-2.5 py-1.5 text-xs font-semibold text-[var(--ink)] hover:bg-[#f5f7f9] disabled:opacity-50"
+                      title={t.enSeedsKoHint}
+                    >
+                      {t.syncEnToKo}
+                    </button>
+                    {(["ko", "en"] as const).map((code) => (
+                      <button
+                        key={code}
+                        type="button"
+                        onClick={() => {
+                          setEditLocale(code);
+                          setStatusKey("");
+                        }}
+                        className={`px-3 py-1.5 text-xs font-semibold transition-colors ${
+                          editLocale === code
+                            ? "bg-[var(--navy)] text-white"
+                            : "border border-[var(--line)] text-[var(--muted)] hover:text-[var(--ink)]"
+                        }`}
+                      >
+                        {code === "ko" ? "KO" : "EN"}
+                      </button>
+                    ))}
+                  </>
+                )}
             </div>
           </div>
         </header>

@@ -40,6 +40,17 @@
           "subheadline": "압축공기 배관 설계부터 시공·유지관리까지, 현장 맞춤형 엔지니어링 솔루션을 지원합니다.",
           "ctaLabel": "회사 소개",
           "ctaHref": "/about"
+        },
+        {
+          "id": "slide-1794308288313",
+          "type": "image",
+          "src": "/uploads/1794308299177-ecc320b0.png",
+          "label": "",
+          "brand": "Chicago Pneumatic",
+          "headline": "",
+          "subheadline": "",
+          "ctaLabel": "제품 보기",
+          "ctaHref": "/services/chicago-pneumatic"
         }
       ]
     },
@@ -56,138 +67,127 @@
       "hqKorea": "충청남도 천안시 서북구 성환읍 연암율금로 166",
       "branchIndia": "Office 119, 24/1, Doddanekundi, Ferns City Road, Outer Ring Road, Marathahalli, Bangalore, Karnataka 560037",
       "branchIndiaMapEmbed": "https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d1973.0562914194513!2d77.69682492859985!3d12.978534306050603!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTLCsDU4JzQyLjciTiA3N8KwNDEnNTAuOSJF!5e1!3m2!1sko!2sin!4v1790584743425!5m2!1sko!2sin",
+      "chennaiOffice": "28-B, CASA Grande Futura, Singaperumal Koil Road, Sriperumbudur, Kancheepuram, Tamil Nadu - 602105, India.",
+      "chennaiMapEmbed": "https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d1973.2628005165345!2d79.93732026970514!3d12.95249630619212!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTLCsDU3JzA5LjAiTiA3OcKwNTYnMTYuNyJF!5e1!3m2!1sko!2skr!4v1790449072251!5m2!1sko!2skr",
       "cin": "U29100KA2021PTC153989",
       "pan": "AAGCH0318F",
       "tan": "BLRH13130F",
       "email": "hyun.hs@hksc.in",
-      "phone": "",
-      "chennaiOffice": "28-B, CASA Grande Futura, Singaperumal Koil Road, Sriperumbudur, Kancheepuram, Tamil Nadu - 602105, India.",
-      "chennaiMapEmbed": "https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d1973.2628005165345!2d79.93732026970514!3d12.95249630619212!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTLCsDU3JzA5LjAiTiA3OcKwNTYnMTYuNyJF!5e1!3m2!1sko!2skr!4v1790449072251!5m2!1sko!2skr"
+      "phone": ""
     },
     "history": [
       {
+        "id": "h-en-0",
         "date": "2023.08",
-        "detail": "test",
-        "id": "h-ko-0"
+        "detail": "test"
       },
       {
+        "id": "h-en-1",
         "date": "2010.02",
-        "detail": "컴프레서 서비스센터 설립",
-        "id": "h-ko-1"
+        "detail": "컴프레서 서비스센터 설립"
       },
       {
+        "id": "h-en-2",
         "date": "2010.08",
-        "detail": "컴프레서 서비스센터 법인 설립",
-        "id": "h-ko-2"
+        "detail": "컴프레서 서비스센터 법인 설립"
       },
       {
+        "id": "h-en-3",
         "date": "2012.01",
-        "detail": "태국 Hankook Compressor 설립",
-        "id": "h-ko-3"
+        "detail": "태국 Hankook Compressor 설립"
       },
       {
+        "id": "h-en-4",
         "date": "2014.01",
-        "detail": "태국 Hankook Compressor Co., Ltd. 서비스센터 본사 이전",
-        "id": "h-ko-4"
+        "detail": "태국 Hankook Compressor Co., Ltd. 서비스센터 본사 이전"
       },
       {
+        "id": "h-en-5",
         "date": "2016.10",
-        "detail": "서비스센터 법인으로 상호 변경",
-        "id": "h-ko-5"
+        "detail": "서비스센터 법인으로 상호 변경"
       },
       {
+        "id": "h-en-6",
         "date": "2016.10",
-        "detail": "컴프레서 공식 대리점 계약",
-        "id": "h-ko-6"
+        "detail": "컴프레서 공식 대리점 계약"
       },
       {
+        "id": "h-en-7",
         "date": "2021.11",
-        "detail": "인도 Hankook Service Center Pvt. Ltd. 설립",
-        "id": "h-ko-7"
+        "detail": "인도 Hankook Service Center Pvt. Ltd. 설립"
       },
       {
+        "id": "h-en-8",
         "date": "2022.05",
-        "detail": "Tectyl Oil & Chemicals (India) Pvt Ltd 컴프레서 오일 판매 계약",
-        "id": "h-ko-8"
-      },
-      {
-        "date": "2022.08",
-        "detail": "Kluber Lubrication India 컴프레서 오일 판매 계약",
-        "id": "h-ko-9"
+        "detail": "Tectyl Oil & Chemicals (India) Pvt Ltd 컴프레서 오일 판매 계약"
       }
     ],
     "performances": [
       {
+        "id": "p-en-0",
         "date": "2022.11.30",
         "detail": "GA75+ 오버홀",
-        "client": "Dae Seung Autopart",
-        "id": "p-ko-0"
+        "client": "Dae Seung Autopart"
       },
       {
+        "id": "p-en-1",
         "date": "2022.11.20",
         "detail": "GA132 오버홀",
-        "client": "DAS",
-        "id": "p-ko-1"
+        "client": "DAS"
       },
       {
+        "id": "p-en-2",
         "date": "2022.09.06",
         "detail": "ES-4000 Control Unit (CPC 50G) 교체",
-        "client": "SIT",
-        "id": "p-ko-2"
+        "client": "SIT"
       },
       {
+        "id": "p-en-3",
         "date": "2022.09.01",
         "detail": "ELGI Air Compressor EN-22 Package 판매",
-        "client": "Kolon India",
-        "id": "p-ko-3"
+        "client": "Kolon India"
       },
       {
+        "id": "p-en-4",
         "date": "2022.08.26",
         "detail": "GA160, GA75, GA55, GA37 연간 유지보수 계약",
-        "client": "SHC INDIA",
-        "id": "p-ko-4"
+        "client": "SHC INDIA"
       },
       {
+        "id": "p-en-5",
         "date": "2022.08.24",
         "detail": "GA30 판매",
-        "client": "Hando Precision",
-        "id": "p-ko-5"
+        "client": "Hando Precision"
       },
       {
+        "id": "p-en-6",
         "date": "2022.08.05",
         "detail": "TA-100 (FS Curtis) 판매",
-        "client": "Samwoo Packing",
-        "id": "p-ko-6"
+        "client": "Samwoo Packing"
       },
       {
+        "id": "p-en-7",
         "date": "2022.07.10",
         "detail": "GA55, GA37 연간 유지보수 계약",
-        "client": "Woory Automotive",
-        "id": "p-ko-7"
+        "client": "Woory Automotive"
       },
       {
+        "id": "p-en-8",
         "date": "2022.07.08",
         "detail": "GA75 판매",
-        "client": "Jintech Automotive",
-        "id": "p-ko-8"
+        "client": "Jintech Automotive"
       },
       {
+        "id": "p-en-9",
         "date": "2022.05.20",
         "detail": "GA37 VSD 오버홀",
-        "client": "KB Autosys",
-        "id": "p-ko-9"
+        "client": "KB Autosys"
       },
       {
-        "id": "p-1790458452352",
+        "id": "p-en-10",
         "date": "2022.05.01",
         "detail": "test",
         "client": "test"
-      },
-      {
-        "date": "2022.04.30",
-        "detail": "GA160, GA75, GA55, GA37 오버홀",
-        "client": "SHC INDIA",
-        "id": "p-ko-10"
       }
     ],
     "affiliate": {
@@ -212,20 +212,7 @@
         "bio": "인도 현지에서 산업용 컴프레서 판매·수리·유지보수 Total Air Solution을 이끌고 있습니다.",
         "photo": ""
       },
-      "members": [
-        {
-          "name": "test ",
-          "role": "",
-          "bio": "test ",
-          "photo": "/uploads/1790457111808-a016f2e9.jpg"
-        },
-        {
-          "name": "aaaaaaaaaaaa",
-          "role": "aaaaaaaaa",
-          "bio": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "photo": "/uploads/1790457615778-7a813d7f.jpg"
-        }
-      ]
+      "members": []
     },
     "media": {
       "title": "현장 영상",
@@ -237,10 +224,28 @@
       "lead": "현장과 서비스 활동 사진입니다.",
       "items": [
         {
-          "id": "g-1790459493075",
-          "title": "ㅁㅁㅁㅁ",
-          "image": "/uploads/1790459495672-359dc5e3.jpg",
-          "caption": "ㅁㅁㅁ"
+          "id": "g1",
+          "title": "Partnership",
+          "image": "/images/hero-graphic.png",
+          "caption": "Trusted business partnership"
+        },
+        {
+          "id": "g2",
+          "title": "Brand",
+          "image": "/images/banner-blue.png",
+          "caption": "Hankook Service Center"
+        },
+        {
+          "id": "g3",
+          "title": "Incorporation",
+          "image": "/images/certificate-incorporation.png",
+          "caption": "Certificate of Incorporation"
+        },
+        {
+          "id": "g4",
+          "title": "Visual motif",
+          "image": "/images/pattern-light.png",
+          "caption": "Brand visual"
         }
       ]
     },
@@ -297,11 +302,6 @@
           "id": "c-11",
           "name": "Dae Seung Autopart",
           "logo": ""
-        },
-        {
-          "id": "c-1790457536508",
-          "name": "test ",
-          "logo": "/uploads/1790457543238-c46bb23d.jpg"
         }
       ]
     },
@@ -693,9 +693,16 @@
             {
               "label": "Summit 드라이어·필터",
               "slug": "summit"
-            },
+            }
+          ]
+        },
+        {
+          "id": "nitrogen",
+          "title": "Nitrogen Generation Systems",
+          "description": "Nitrogen generation solutions for plant utility systems.",
+          "items": [
             {
-              "label": "질소 발생장치",
+              "label": "Nitrogen Generation Systems",
               "slug": "summit"
             }
           ]
@@ -781,6 +788,17 @@
           "subheadline": "From compressed-air piping design to installation and maintenance, we support site-ready engineering.",
           "ctaLabel": "About Us",
           "ctaHref": "/about"
+        },
+        {
+          "id": "slide-1794308288313",
+          "type": "image",
+          "src": "/uploads/1794308299177-ecc320b0.png",
+          "label": "",
+          "brand": "Chicago Pneumatic",
+          "headline": "",
+          "subheadline": "",
+          "ctaLabel": "제품 보기",
+          "ctaHref": "/services/chicago-pneumatic"
         }
       ]
     },

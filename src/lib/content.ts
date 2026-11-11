@@ -1,4 +1,5 @@
 import { promises as fs } from "fs";
+import { seedKoreanFromEnglish } from "@/lib/locale-seed";
 import { ensureServicesContent } from "@/lib/services-default";
 import { sortPerformances, type SiteContent } from "@/lib/types";
 import {
@@ -298,6 +299,14 @@ export async function getContent(): Promise<SiteContent> {
       contentMigrated = true;
     }
     if (ensureChicagoPneumaticFlagships(content, locale)) {
+      contentMigrated = true;
+    }
+  }
+
+  if (content.ko && content.en) {
+    const seededKo = seedKoreanFromEnglish(content.ko, content.en);
+    if (JSON.stringify(seededKo) !== JSON.stringify(content.ko)) {
+      content.ko = seededKo;
       contentMigrated = true;
     }
   }

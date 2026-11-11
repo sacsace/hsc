@@ -161,6 +161,32 @@ function seedGalleryItem(ko: GalleryItem | undefined, en: GalleryItem): GalleryI
   };
 }
 
+function alignByIdOrIndex<T extends { id?: string }>(
+  koList: T[] | undefined,
+  enList: T[] | undefined,
+  seeder: (ko: T | undefined, en: T) => T,
+): T[] {
+  const koItems = koList || [];
+  const enItems = enList || [];
+  const koMap = new Map(
+    koItems.filter((item) => item.id).map((item) => [item.id as string, item]),
+  );
+  const enIds = new Set(enItems.map((item) => item.id).filter(Boolean) as string[]);
+
+  return enItems.map((enItem, index) => {
+    if (enItem.id && koMap.has(enItem.id)) {
+      return seeder(koMap.get(enItem.id), enItem);
+    }
+    const candidate = koItems[index];
+    if (!candidate) return seeder(undefined, enItem);
+    // Locale-prefixed ids (h-en-* / h-ko-*) still pair by index.
+    if (!candidate.id || !enIds.has(candidate.id)) {
+      return seeder(candidate, enItem);
+    }
+    return seeder(undefined, enItem);
+  });
+}
+
 /**
  * When English is edited, fill empty Korean fields with the English values
  * and keep shared media/structure aligned with English order.
@@ -170,16 +196,6 @@ export function seedKoreanFromEnglish(
   en: LocaleContent,
 ): LocaleContent {
   const koSlides = new Map((ko.hero?.slides || []).map((item) => [item.id, item]));
-  const koHistory = new Map(
-    (ko.history || [])
-      .filter((item) => item.id)
-      .map((item) => [item.id as string, item]),
-  );
-  const koPerformances = new Map(
-    (ko.performances || [])
-      .filter((item) => item.id)
-      .map((item) => [item.id as string, item]),
-  );
   const koClients = new Map((ko.clients?.items || []).map((item) => [item.id, item]));
   const koMembers = new Map(
     (ko.team?.members || []).map((item, index) => [item.name || `m-${index}`, item]),
@@ -229,18 +245,8 @@ export function seedKoreanFromEnglish(
       email: media(ko.company?.email, en.company?.email),
       phone: media(ko.company?.phone, en.company?.phone),
     },
-    history: (en.history || []).map((item, index) =>
-      seedHistory(
-        (item.id && koHistory.get(item.id)) || ko.history?.[index],
-        item,
-      ),
-    ),
-    performances: (en.performances || []).map((item, index) =>
-      seedPerformance(
-        (item.id && koPerformances.get(item.id)) || ko.performances?.[index],
-        item,
-      ),
-    ),
+    history: alignByIdOrIndex(ko.history, en.history, seedHistory),
+    performances: alignByIdOrIndex(ko.performances, en.performances, seedPerformance),
     clients: {
       title: text(ko.clients?.title, en.clients?.title),
       lead: text(ko.clients?.lead, en.clients?.lead),
