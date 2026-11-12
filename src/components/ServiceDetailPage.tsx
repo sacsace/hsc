@@ -6,13 +6,35 @@ import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { LanguageProvider, useLanguage } from "@/components/LanguageProvider";
 import { productPageUi } from "@/lib/products";
-import type { Locale, ServiceBrandItem, SiteContent } from "@/lib/types";
+import type { Locale, ServiceBrandItem, ServiceProductItem, SiteContent } from "@/lib/types";
+
+const DOC_FILE_RE = /\.(pdf|docx?|xlsx?|xls)(\?|$)/i;
+
+function isPreviewImage(url: string | undefined) {
+  if (!url) return false;
+  return !DOC_FILE_RE.test(url);
+}
+
+function catalogFile(product: ServiceProductItem) {
+  if (product.file) {
+    return { url: product.file, name: product.fileName || "" };
+  }
+  if (product.image && DOC_FILE_RE.test(product.image)) {
+    return { url: product.image, name: product.fileName || "" };
+  }
+  return null;
+}
+
+function downloadHref(url: string, name?: string) {
+  if (!name) return url;
+  return `${url}?download=${encodeURIComponent(name)}`;
+}
 
 function ServiceDetailSections({ brand }: { brand: ServiceBrandItem }) {
   const { locale } = useLanguage();
   const ui = productPageUi[locale];
   const [active, setActive] = useState<number | null>(null);
-  const products = brand.products.filter((item) => Boolean(item.image));
+  const products = brand.products.filter((item) => isPreviewImage(item.image));
   const current = active !== null ? brand.products[active] : null;
 
   useEffect(() => {
@@ -27,20 +49,20 @@ function ServiceDetailSections({ brand }: { brand: ServiceBrandItem }) {
         setActive((i) => {
           if (i === null) return i;
           const next = brand.products.findIndex(
-            (item, idx) => idx > i && item.image,
+            (item, idx) => idx > i && isPreviewImage(item.image),
           );
           if (next >= 0) return next;
-          return brand.products.findIndex((item) => item.image);
+          return brand.products.findIndex((item) => isPreviewImage(item.image));
         });
       }
       if (e.key === "ArrowLeft") {
         setActive((i) => {
           if (i === null) return i;
           for (let idx = i - 1; idx >= 0; idx -= 1) {
-            if (brand.products[idx]?.image) return idx;
+            if (isPreviewImage(brand.products[idx]?.image)) return idx;
           }
           for (let idx = brand.products.length - 1; idx >= 0; idx -= 1) {
-            if (brand.products[idx]?.image) return idx;
+            if (isPreviewImage(brand.products[idx]?.image)) return idx;
           }
           return i;
         });
@@ -105,13 +127,16 @@ function ServiceDetailSections({ brand }: { brand: ServiceBrandItem }) {
               <p className="mt-8 text-sm text-[var(--muted)]">{ui.empty}</p>
             ) : (
               <div className="mt-8 space-y-8">
-                {brand.products.map((product, index) => (
+                {brand.products.map((product, index) => {
+                  const file = catalogFile(product);
+                  const hasPreview = isPreviewImage(product.image);
+                  return (
                   <article
                     key={product.id}
                     id={product.id}
                     className="grid gap-5 border border-[var(--line)] bg-white p-4 md:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] md:gap-8 md:p-6"
                   >
-                    {product.image ? (
+                    {hasPreview ? (
                       <button
                         type="button"
                         onClick={() => openAt(index)}
@@ -127,7 +152,11 @@ function ServiceDetailSections({ brand }: { brand: ServiceBrandItem }) {
                         />
                       </button>
                     ) : (
-                      <div className="relative aspect-[4/3] overflow-hidden bg-[#eef1f4] md:aspect-[5/4]" />
+                      <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden bg-[#eef1f4] px-4 text-center md:aspect-[5/4]">
+                        <p className="text-sm text-[var(--muted)]">
+                          {file ? ui.download : product.title}
+                        </p>
+                      </div>
                     )}
                     <div className="flex flex-col justify-center">
                       <h3 className="text-[1.05rem] font-semibold tracking-wide text-[var(--ink)]">
@@ -138,27 +167,24 @@ function ServiceDetailSections({ brand }: { brand: ServiceBrandItem }) {
                           {product.description}
                         </p>
                       ) : null}
-                      {product.file ? (
+                      {file ? (
                         <a
-                          href={
-                            product.fileName
-                              ? `${product.file}?download=${encodeURIComponent(product.fileName)}`
-                              : product.file
-                          }
+                          href={downloadHref(file.url, file.name)}
                           className="mt-5 inline-flex w-fit border border-[var(--navy)] bg-white px-4 py-2 text-sm font-semibold tracking-wide text-[var(--navy)] transition hover:bg-[var(--navy)] hover:!text-white"
-                          download={product.fileName || true}
+                          download={file.name || true}
                         >
                           {ui.download}
-                          {product.fileName ? (
+                          {file.name ? (
                             <span className="ml-2 font-normal text-[var(--muted)]">
-                              ({product.fileName})
+                              ({file.name})
                             </span>
                           ) : null}
                         </a>
                       ) : null}
                     </div>
                   </article>
-                ))}
+                  );
+                })}
               </div>
             )}
 
@@ -177,7 +203,7 @@ function ServiceDetailSections({ brand }: { brand: ServiceBrandItem }) {
 
       <Footer />
 
-      {current?.image && active !== null ? (
+      {current && isPreviewImage(current.image) && active !== null ? (
         <div
           className="fixed inset-0 z-[80] flex items-center justify-center bg-black/85 p-3 sm:p-6"
           role="dialog"

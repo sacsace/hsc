@@ -1,5 +1,6 @@
 import { promises as fs } from "fs";
 import { seedKoreanFromEnglish } from "@/lib/locale-seed";
+import { productCatalog } from "@/lib/products";
 import { ensureServicesContent } from "@/lib/services-default";
 import { sortPerformances, type SiteContent } from "@/lib/types";
 import {
@@ -7,6 +8,29 @@ import {
   ensureSeedUploads,
   contentFilePath,
 } from "@/lib/storage";
+
+const DOC_FILE_RE = /\.(pdf|docx?|xlsx?|xls)(\?|$)/i;
+
+function isDocumentUrl(url: string | undefined) {
+  return Boolean(url && DOC_FILE_RE.test(url));
+}
+
+function catalogPreviewImage(productId: string) {
+  for (const brand of productCatalog) {
+    const product = brand.products.find((item) => item.id === productId);
+    if (product?.image) return product.image;
+  }
+  return "";
+}
+
+function fileNameFromUrl(url: string) {
+  try {
+    const clean = url.split("?")[0] || url;
+    return decodeURIComponent(clean.split("/").pop() || "catalog");
+  } catch {
+    return "catalog";
+  }
+}
 
 export type {
   Locale,
@@ -153,6 +177,18 @@ function ensureCatalogFileFields(content: SiteContent): boolean {
           }
           if (product.fileName === undefined) {
             product.fileName = "";
+            changed = true;
+          }
+          // Admin sometimes saved a PDF into `image` — move it to `file`
+          // and restore the preview thumbnail from the product catalog.
+          if (isDocumentUrl(product.image)) {
+            if (!product.file) {
+              product.file = product.image;
+              if (!product.fileName) {
+                product.fileName = fileNameFromUrl(product.image);
+              }
+            }
+            product.image = catalogPreviewImage(product.id) || "";
             changed = true;
           }
         }

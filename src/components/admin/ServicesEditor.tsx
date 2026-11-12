@@ -544,6 +544,11 @@ function ProductEditor({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   async function uploadImage(file: File) {
+    // PDFs/docs belong in catalog file, not the preview image slot.
+    if (/\.(pdf|docx?|xlsx?|xls)$/i.test(file.name) || file.type === "application/pdf") {
+      await uploadCatalog(file);
+      return;
+    }
     setUploadError("");
     setUploading(true);
     const body = new FormData();
