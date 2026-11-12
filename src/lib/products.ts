@@ -174,6 +174,7 @@ export const productPageUi = {
     enlarge: "이미지 크게 보기",
     prev: "이전",
     next: "다음",
+    download: "카탈로그 다운로드",
   },
   en: {
     back: "Back to Equipment & Services",
@@ -185,5 +186,11 @@ export const productPageUi = {
     enlarge: "View larger image",
     prev: "Previous",
     next: "Next",
+    download: "Download catalog",
   },
+} as const;
+
+export const servicesPageExtraUi = {
+  ko: { download: "자료 다운로드" },
+  en: { download: "Download file" },
 } as const;

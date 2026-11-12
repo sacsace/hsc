@@ -139,6 +139,42 @@ function needsHeroSlideRefresh(slides: { src?: string; id?: string }[] | undefin
   );
 }
 
+/** Ensure product/category catalog file fields exist on volume content. */
+function ensureCatalogFileFields(content: SiteContent): boolean {
+  let changed = false;
+  for (const locale of ["ko", "en"] as const) {
+    const brands = content[locale]?.services?.brands;
+    if (Array.isArray(brands)) {
+      for (const brand of brands) {
+        for (const product of brand.products || []) {
+          if (product.file === undefined) {
+            product.file = "";
+            changed = true;
+          }
+          if (product.fileName === undefined) {
+            product.fileName = "";
+            changed = true;
+          }
+        }
+      }
+    }
+    const categories = content[locale]?.services?.categories;
+    if (Array.isArray(categories)) {
+      for (const category of categories) {
+        if (category.file === undefined) {
+          category.file = "";
+          changed = true;
+        }
+        if (category.fileName === undefined) {
+          category.fileName = "";
+          changed = true;
+        }
+      }
+    }
+  }
+  return changed;
+}
+
 function ensureChicagoPneumaticFlagships(
   content: SiteContent,
   locale: "ko" | "en",
@@ -301,6 +337,10 @@ export async function getContent(): Promise<SiteContent> {
     if (ensureChicagoPneumaticFlagships(content, locale)) {
       contentMigrated = true;
     }
+  }
+
+  if (ensureCatalogFileFields(content)) {
+    contentMigrated = true;
   }
 
   if (content.ko && content.en) {

@@ -6,6 +6,7 @@ import { ApplicationModal } from "@/components/ApplicationModal";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { LanguageProvider, useLanguage } from "@/components/LanguageProvider";
+import { servicesPageExtraUi } from "@/lib/products";
 import { defaultServicesContent } from "@/lib/services-default";
 import type { Locale, SiteContent } from "@/lib/types";
 
@@ -16,6 +17,7 @@ function ServicesSections() {
   const { locale, content, t } = useLanguage();
   const [applyOpen, setApplyOpen] = useState(false);
   const copy = content.services || defaultServicesContent(locale);
+  const extra = servicesPageExtraUi[locale];
 
   return (
     <div className="site-shell bg-white">
@@ -118,6 +120,24 @@ function ServicesSections() {
                       </li>
                     ))}
                   </ul>
+                  {category.file ? (
+                    <a
+                      href={
+                        category.fileName
+                          ? `${category.file}?download=${encodeURIComponent(category.fileName)}`
+                          : category.file
+                      }
+                      className="mt-4 inline-flex w-fit border border-[var(--navy)] bg-white px-3.5 py-2 text-sm font-semibold tracking-wide text-[var(--navy)] transition hover:bg-[var(--navy)] hover:!text-white"
+                      download={category.fileName || true}
+                    >
+                      {extra.download}
+                      {category.fileName ? (
+                        <span className="ml-2 font-normal text-[var(--muted)]">
+                          ({category.fileName})
+                        </span>
+                      ) : null}
+                    </a>
+                  ) : null}
                 </article>
               ))}
             </div>

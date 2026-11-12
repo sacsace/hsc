@@ -138,6 +138,24 @@ function ServiceDetailSections({ brand }: { brand: ServiceBrandItem }) {
                           {product.description}
                         </p>
                       ) : null}
+                      {product.file ? (
+                        <a
+                          href={
+                            product.fileName
+                              ? `${product.file}?download=${encodeURIComponent(product.fileName)}`
+                              : product.file
+                          }
+                          className="mt-5 inline-flex w-fit border border-[var(--navy)] bg-white px-4 py-2 text-sm font-semibold tracking-wide text-[var(--navy)] transition hover:bg-[var(--navy)] hover:!text-white"
+                          download={product.fileName || true}
+                        >
+                          {ui.download}
+                          {product.fileName ? (
+                            <span className="ml-2 font-normal text-[var(--muted)]">
+                              ({product.fileName})
+                            </span>
+                          ) : null}
+                        </a>
+                      ) : null}
                     </div>
                   </article>
                 ))}

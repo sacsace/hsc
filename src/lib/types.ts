@@ -104,6 +104,10 @@ export type ServiceProductItem = {
   title: string;
   image: string;
   description: string;
+  /** Downloadable catalog file URL (PDF, Word, image, etc.) */
+  file?: string;
+  /** Original file name shown on download */
+  fileName?: string;
 };
 
 export type ServiceBrandItem = {
@@ -131,6 +135,9 @@ export type ServiceCategoryItem = {
   title: string;
   description: string;
   items: ServiceCategoryLink[];
+  /** Optional downloadable catalog for this category */
+  file?: string;
+  fileName?: string;
 };
 
 export type ServicesContent = {

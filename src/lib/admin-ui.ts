@@ -246,7 +246,27 @@ export function adminUi(locale: Locale) {
     servicesLead: en ? "Intro" : "소개",
     servicesProductTitle: en ? "Document title" : "자료 제목",
     servicesProductDesc: en ? "Description" : "설명",
-    servicesCategoryItems: en ? "Links (label|slug per line)" : "링크 (한 줄에 라벨|슬러그)",
+    servicesCatalog: en ? "Catalog file" : "카탈로그 파일",
+    servicesCatalogHint: en
+      ? "PDF, Word, Excel, JPG/PNG (max 40MB)"
+      : "PDF, Word, Excel, JPG/PNG (최대 40MB)",
+    servicesCatalogPick: en ? "Attach catalog" : "카탈로그 첨부",
+    servicesCatalogChange: en ? "Replace catalog" : "카탈로그 변경",
+    servicesCatalogRemove: en ? "Remove catalog" : "카탈로그 제거",
+    servicesCatalogEmpty: en ? "No file attached" : "첨부된 파일 없음",
+    servicesCategoryItems: en ? "Brand links" : "브랜드 링크",
+    servicesCategoryPick: en ? "Select brand to add" : "추가할 브랜드 선택",
+    servicesCategoryLinksHint: en
+      ? "Choose a brand from the dropdown to add a link."
+      : "드롭다운에서 브랜드를 선택하면 링크가 추가됩니다.",
+    servicesCategoryFile: en ? "Category catalog" : "분류 카탈로그",
+    servicesCategoryFileHint: en
+      ? "PDF, Word, Excel, JPG/PNG (max 40MB)"
+      : "PDF, Word, Excel, JPG/PNG (최대 40MB)",
+    servicesCategoryFilePick: en ? "Attach file" : "파일 첨부",
+    servicesCategoryFileChange: en ? "Replace file" : "파일 변경",
+    servicesCategoryFileRemove: en ? "Remove file" : "파일 제거",
+    servicesCategoryFileEmpty: en ? "No file attached" : "첨부된 파일 없음",
     servicesEmptyOfferings: en ? "No offerings yet." : "등록된 제공 서비스가 없습니다.",
     servicesEmptyBrands: en ? "No brands yet." : "등록된 브랜드가 없습니다.",
     clients: en ? "Clients" : "고객사",

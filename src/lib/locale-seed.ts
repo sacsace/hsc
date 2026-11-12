@@ -48,6 +48,8 @@ function seedProduct(ko: ServiceProductItem | undefined, en: ServiceProductItem)
     title: text(ko?.title, en.title),
     image: media(ko?.image, en.image),
     description: text(ko?.description, en.description),
+    file: media(ko?.file, en.file),
+    fileName: text(ko?.fileName, en.fileName),
   };
 }
 
@@ -91,6 +93,8 @@ function seedCategory(
         slug: media(prev?.slug, link.slug) || link.slug,
       };
     }),
+    file: media(ko?.file, en.file),
+    fileName: text(ko?.fileName, en.fileName),
   };
 }
 

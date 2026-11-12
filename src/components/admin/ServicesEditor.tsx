@@ -28,11 +28,25 @@ function emptyBrand(): ServiceBrandItem {
 }
 
 function emptyProduct(): ServiceProductItem {
-  return { id: `prod-${Date.now()}`, title: "", image: "", description: "" };
+  return {
+    id: `prod-${Date.now()}`,
+    title: "",
+    image: "",
+    description: "",
+    file: "",
+    fileName: "",
+  };
 }
 
 function emptyCategory(): ServiceCategoryItem {
-  return { id: `cat-${Date.now()}`, title: "", description: "", items: [] };
+  return {
+    id: `cat-${Date.now()}`,
+    title: "",
+    description: "",
+    items: [],
+    file: "",
+    fileName: "",
+  };
 }
 
 function slugify(value: string) {
@@ -224,6 +238,7 @@ export function ServicesEditor({
         <CategoriesEditor
           ui={ui}
           items={services.categories}
+          brands={services.brands}
           onChange={(categories) => onChange({ ...services, categories })}
         />
       ) : null}
@@ -523,8 +538,10 @@ function ProductEditor({
   onRemove: () => void;
 }) {
   const [uploading, setUploading] = useState(false);
+  const [uploadingFile, setUploadingFile] = useState(false);
   const [uploadError, setUploadError] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   async function uploadImage(file: File) {
     setUploadError("");
@@ -542,6 +559,26 @@ function ProductEditor({
     onChange({ ...product, image: data.url });
   }
 
+  async function uploadCatalog(file: File) {
+    setUploadError("");
+    setUploadingFile(true);
+    const body = new FormData();
+    body.append("file", file);
+    const res = await fetch("/api/upload", { method: "POST", body });
+    setUploadingFile(false);
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      setUploadError(data.error || "Upload failed");
+      return;
+    }
+    const data = (await res.json()) as { url: string; fileName?: string };
+    onChange({
+      ...product,
+      file: data.url,
+      fileName: data.fileName || file.name,
+    });
+  }
+
   return (
     <div className="border border-[var(--line)] bg-white p-3">
       <div className="mb-2 flex justify-end">
@@ -553,7 +590,7 @@ function ProductEditor({
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
-          disabled={uploading}
+          disabled={uploading || uploadingFile}
           className="relative flex h-28 items-center justify-center overflow-hidden border border-dashed border-[var(--line)] bg-[#f8fafb]"
         >
           {product.image ? (
@@ -575,6 +612,43 @@ function ProductEditor({
             onChange={(v) => onChange({ ...product, description: v })}
             rows={3}
           />
+          <div className="grid gap-1.5 border border-[var(--line)] bg-[#f8fafb] p-2.5">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="text-sm font-medium text-[var(--ink)]">{ui.servicesCatalog}</p>
+              <p className="text-[11px] text-[var(--muted)]">{ui.servicesCatalogHint}</p>
+            </div>
+            {product.file ? (
+              <p className="truncate text-xs text-[var(--muted)]">
+                {product.fileName || product.file}
+              </p>
+            ) : (
+              <p className="text-xs text-[var(--muted)]">{ui.servicesCatalogEmpty}</p>
+            )}
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploading || uploadingFile}
+                className="border border-[var(--line)] bg-white px-2.5 py-1.5 text-xs hover:bg-white disabled:opacity-50"
+              >
+                {uploadingFile
+                  ? ui.heroUploading
+                  : product.file
+                    ? ui.servicesCatalogChange
+                    : ui.servicesCatalogPick}
+              </button>
+              {product.file ? (
+                <button
+                  type="button"
+                  onClick={() => onChange({ ...product, file: "", fileName: "" })}
+                  disabled={uploading || uploadingFile}
+                  className="px-2.5 py-1.5 text-xs text-red-600 hover:underline disabled:opacity-50"
+                >
+                  {ui.servicesCatalogRemove}
+                </button>
+              ) : null}
+            </div>
+          </div>
           {uploadError ? <p className="text-xs text-red-600">{uploadError}</p> : null}
         </div>
       </div>
@@ -589,6 +663,17 @@ function ProductEditor({
           e.target.value = "";
         }}
       />
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".pdf,.doc,.docx,.xls,.xlsx,image/png,image/jpeg,image/webp,image/gif,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        className="sr-only"
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) void uploadCatalog(file);
+          e.target.value = "";
+        }}
+      />
     </div>
   );
 }
@@ -596,12 +681,56 @@ function ProductEditor({
 function CategoriesEditor({
   ui,
   items,
+  brands,
   onChange,
 }: {
   ui: AdminUi;
   items: ServiceCategoryItem[];
+  brands: ServiceBrandItem[];
   onChange: (items: ServiceCategoryItem[]) => void;
 }) {
+  const [uploadingId, setUploadingId] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState("");
+  const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
+
+  function updateCategory(index: number, patch: Partial<ServiceCategoryItem>) {
+    onChange(items.map((row, i) => (i === index ? { ...row, ...patch } : row)));
+  }
+
+  function addBrandLink(index: number, slug: string) {
+    if (!slug) return;
+    const brand = brands.find((item) => item.slug === slug);
+    if (!brand) return;
+    const current = items[index];
+    if (current.items.some((link) => link.slug === brand.slug)) return;
+    updateCategory(index, {
+      items: [
+        ...current.items,
+        { label: brand.brand || brand.slug, slug: brand.slug },
+      ],
+    });
+  }
+
+  async function uploadCategoryFile(index: number, file: File) {
+    const category = items[index];
+    setUploadError("");
+    setUploadingId(category.id);
+    const body = new FormData();
+    body.append("file", file);
+    const res = await fetch("/api/upload", { method: "POST", body });
+    setUploadingId(null);
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      setUploadError(data.error || "Upload failed");
+      return;
+    }
+    const data = (await res.json()) as { url: string; fileName?: string };
+    updateCategory(index, {
+      file: data.url,
+      fileName: data.fileName || file.name,
+    });
+  }
+
   return (
     <div className="grid gap-4">
       <div className="flex justify-end">
@@ -613,66 +742,175 @@ function CategoriesEditor({
           {ui.servicesAddCategory}
         </button>
       </div>
-      {items.map((item, index) => (
-        <div key={item.id} className="border border-[var(--line)] bg-[#f8fafb] p-4">
-          <div className="mb-3 flex items-center justify-between gap-2">
-            <p className="text-xs font-semibold text-[var(--muted)]">#{index + 1}</p>
-            <div className="flex items-center gap-2">
-              <MoveButtons
-                index={index}
-                total={items.length}
-                onMove={(direction) => onChange(moveItem(items, index, direction))}
-                labelUp={ui.servicesMoveUp}
-                labelDown={ui.servicesMoveDown}
+      {items.map((item, index) => {
+        const usedSlugs = new Set(item.items.map((link) => link.slug));
+        const availableBrands = brands.filter(
+          (brand) => brand.slug && !usedSlugs.has(brand.slug),
+        );
+        return (
+          <div key={item.id} className="border border-[var(--line)] bg-[#f8fafb] p-4">
+            <div className="mb-3 flex items-center justify-between gap-2">
+              <p className="text-xs font-semibold text-[var(--muted)]">#{index + 1}</p>
+              <div className="flex items-center gap-2">
+                <MoveButtons
+                  index={index}
+                  total={items.length}
+                  onMove={(direction) => onChange(moveItem(items, index, direction))}
+                  labelUp={ui.servicesMoveUp}
+                  labelDown={ui.servicesMoveDown}
+                />
+                <button
+                  type="button"
+                  className="text-xs text-red-600 hover:underline"
+                  onClick={() => onChange(items.filter((_, i) => i !== index))}
+                >
+                  {ui.delete}
+                </button>
+              </div>
+            </div>
+            <div className="grid gap-3">
+              <Field
+                label={ui.title}
+                value={item.title}
+                onChange={(v) => updateCategory(index, { title: v })}
               />
-              <button
-                type="button"
-                className="text-xs text-red-600 hover:underline"
-                onClick={() => onChange(items.filter((_, i) => i !== index))}
-              >
-                {ui.delete}
-              </button>
+              <TextArea
+                label={ui.body}
+                value={item.description}
+                onChange={(v) => updateCategory(index, { description: v })}
+                rows={2}
+              />
+
+              <div className="grid gap-2 border border-[var(--line)] bg-white p-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p className="text-sm font-medium text-[var(--ink)]">
+                    {ui.servicesCategoryItems}
+                  </p>
+                  <p className="text-[11px] text-[var(--muted)]">
+                    {ui.servicesCategoryLinksHint}
+                  </p>
+                </div>
+                <select
+                  className="w-full border border-[var(--line)] bg-white px-3 py-2 text-sm outline-none focus:border-[var(--navy)]"
+                  value=""
+                  onChange={(e) => {
+                    addBrandLink(index, e.target.value);
+                    e.target.value = "";
+                  }}
+                >
+                  <option value="">{ui.servicesCategoryPick}</option>
+                  {availableBrands.map((brand) => (
+                    <option key={brand.id} value={brand.slug}>
+                      {brand.brand || brand.slug} (/services/{brand.slug})
+                    </option>
+                  ))}
+                </select>
+                {item.items.length === 0 ? (
+                  <p className="text-xs text-[var(--muted)]">{ui.none}</p>
+                ) : (
+                  <ul className="grid gap-1.5">
+                    {item.items.map((link, linkIndex) => (
+                      <li
+                        key={`${item.id}-${link.slug}-${linkIndex}`}
+                        className="flex flex-wrap items-center justify-between gap-2 border border-[var(--line)] bg-[#f8fafb] px-2.5 py-2"
+                      >
+                        <span className="min-w-0 truncate text-sm text-[var(--ink)]">
+                          {link.label}
+                          <span className="ml-2 text-xs text-[var(--muted)]">
+                            /services/{link.slug}
+                          </span>
+                        </span>
+                        <div className="flex items-center gap-1">
+                          <MoveButtons
+                            index={linkIndex}
+                            total={item.items.length}
+                            onMove={(direction) =>
+                              updateCategory(index, {
+                                items: moveItem(item.items, linkIndex, direction),
+                              })
+                            }
+                            labelUp={ui.servicesMoveUp}
+                            labelDown={ui.servicesMoveDown}
+                          />
+                          <button
+                            type="button"
+                            className="px-2 py-1 text-xs text-red-600 hover:underline"
+                            onClick={() =>
+                              updateCategory(index, {
+                                items: item.items.filter((_, i) => i !== linkIndex),
+                              })
+                            }
+                          >
+                            {ui.delete}
+                          </button>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              <div className="grid gap-1.5 border border-[var(--line)] bg-white p-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p className="text-sm font-medium text-[var(--ink)]">
+                    {ui.servicesCategoryFile}
+                  </p>
+                  <p className="text-[11px] text-[var(--muted)]">
+                    {ui.servicesCategoryFileHint}
+                  </p>
+                </div>
+                {item.file ? (
+                  <p className="truncate text-xs text-[var(--muted)]">
+                    {item.fileName || item.file}
+                  </p>
+                ) : (
+                  <p className="text-xs text-[var(--muted)]">
+                    {ui.servicesCategoryFileEmpty}
+                  </p>
+                )}
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => fileInputRefs.current[item.id]?.click()}
+                    disabled={uploadingId === item.id}
+                    className="border border-[var(--line)] bg-white px-2.5 py-1.5 text-xs hover:bg-[#f5f7f9] disabled:opacity-50"
+                  >
+                    {uploadingId === item.id
+                      ? ui.heroUploading
+                      : item.file
+                        ? ui.servicesCategoryFileChange
+                        : ui.servicesCategoryFilePick}
+                  </button>
+                  {item.file ? (
+                    <button
+                      type="button"
+                      onClick={() => updateCategory(index, { file: "", fileName: "" })}
+                      disabled={uploadingId === item.id}
+                      className="px-2.5 py-1.5 text-xs text-red-600 hover:underline disabled:opacity-50"
+                    >
+                      {ui.servicesCategoryFileRemove}
+                    </button>
+                  ) : null}
+                </div>
+                <input
+                  ref={(el) => {
+                    fileInputRefs.current[item.id] = el;
+                  }}
+                  type="file"
+                  accept=".pdf,.doc,.docx,.xls,.xlsx,image/png,image/jpeg,image/webp,image/gif,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                  className="sr-only"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) void uploadCategoryFile(index, file);
+                    e.target.value = "";
+                  }}
+                />
+              </div>
+              {uploadError ? <p className="text-xs text-red-600">{uploadError}</p> : null}
             </div>
           </div>
-          <div className="grid gap-3">
-            <Field
-              label={ui.title}
-              value={item.title}
-              onChange={(v) =>
-                onChange(items.map((row, i) => (i === index ? { ...row, title: v } : row)))
-              }
-            />
-            <TextArea
-              label={ui.body}
-              value={item.description}
-              onChange={(v) =>
-                onChange(
-                  items.map((row, i) => (i === index ? { ...row, description: v } : row)),
-                )
-              }
-              rows={2}
-            />
-            <TextArea
-              label={ui.servicesCategoryItems}
-              value={item.items.map((link) => `${link.label}|${link.slug}`).join("\n")}
-              onChange={(v) => {
-                const links = v
-                  .split("\n")
-                  .map((line) => line.trim())
-                  .filter(Boolean)
-                  .map((line) => {
-                    const [label, slug] = line.split("|").map((part) => part.trim());
-                    return { label: label || slug || "", slug: slug || slugify(label || "") };
-                  });
-                onChange(
-                  items.map((row, i) => (i === index ? { ...row, items: links } : row)),
-                );
-              }}
-              rows={4}
-            />
-          </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

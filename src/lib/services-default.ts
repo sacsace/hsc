@@ -27,6 +27,8 @@ function defaultBrands(locale: Locale): ServiceBrandItem[] {
           title: product.title,
           image: product.image,
           description: product.description,
+          file: "",
+          fileName: product.fileName || "",
         })),
       };
     });
