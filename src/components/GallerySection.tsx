@@ -6,6 +6,56 @@ import type { GalleryItem } from "@/lib/types";
 
 export type GalleryViewMode = "card" | "list";
 
+function isVideoMedia(src: string | undefined) {
+  return Boolean(src && /\.(mp4|webm|ogg)(\?|$)/i.test(src));
+}
+
+function GalleryMedia({
+  src,
+  alt,
+  className,
+  sizes,
+  priority = false,
+  controls = false,
+  muted = true,
+  autoPlay = false,
+}: {
+  src: string;
+  alt: string;
+  className?: string;
+  sizes?: string;
+  priority?: boolean;
+  controls?: boolean;
+  muted?: boolean;
+  autoPlay?: boolean;
+}) {
+  if (isVideoMedia(src)) {
+    return (
+      <video
+        src={src}
+        className={className || "h-full w-full object-cover"}
+        muted={muted}
+        playsInline
+        autoPlay={autoPlay}
+        loop={!controls}
+        controls={controls}
+        preload="metadata"
+      />
+    );
+  }
+
+  return (
+    <Image
+      src={src}
+      alt={alt}
+      fill
+      className={className || "object-cover"}
+      sizes={sizes}
+      priority={priority}
+    />
+  );
+}
+
 export function GallerySection({
   label,
   title,
@@ -38,7 +88,12 @@ export function GallerySection({
         setActive((i) => (i === null ? i : (i - 1 + items.length) % items.length));
     };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
   }, [active, items.length]);
 
   if (!items.length) return null;
@@ -66,17 +121,18 @@ export function GallerySection({
                 className="flex w-full items-center gap-4 bg-white px-3 py-3 text-left transition-colors hover:bg-[#f8fafb] sm:gap-5 sm:px-4"
               >
                 <div className="relative h-16 w-24 shrink-0 overflow-hidden bg-[var(--bg)] sm:h-20 sm:w-28">
-                  <Image
-                    src={item.image}
-                    alt={item.title}
-                    fill
-                    className="object-cover"
-                    sizes="112px"
-                  />
+                  {item.image ? (
+                    <GalleryMedia
+                      src={item.image}
+                      alt={item.title || item.caption || "gallery"}
+                      className="absolute inset-0 h-full w-full object-cover"
+                      sizes="112px"
+                    />
+                  ) : null}
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-semibold text-[var(--ink)] sm:text-base">
-                    {item.title}
+                    {item.title || item.caption || "(No title)"}
                   </p>
                   {item.caption ? (
                     <p className="mt-0.5 line-clamp-2 text-xs text-[var(--muted)] sm:text-sm">
@@ -96,16 +152,19 @@ export function GallerySection({
                 onClick={() => setActive(index)}
                 className="group relative aspect-[4/3] overflow-hidden bg-[var(--bg)] text-left"
               >
-                <Image
-                  src={item.image}
-                  alt={item.title}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                />
+                {item.image ? (
+                  <GalleryMedia
+                    src={item.image}
+                    alt={item.title || item.caption || "gallery"}
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  />
+                ) : null}
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/65 to-transparent p-4 pt-10">
-                  <p className="text-sm font-semibold text-white">{item.title}</p>
-                  {item.caption ? (
+                  <p className="text-sm font-semibold text-white">
+                    {item.title || item.caption || "(No title)"}
+                  </p>
+                  {item.caption && item.title ? (
                     <p className="mt-0.5 line-clamp-1 text-xs text-white/75">{item.caption}</p>
                   ) : null}
                 </div>
@@ -115,7 +174,7 @@ export function GallerySection({
         )}
       </div>
 
-      {current && active !== null && (
+      {current && active !== null && current.image ? (
         <div
           className="fixed inset-0 z-[80] flex items-center justify-center bg-black/85 p-4"
           role="dialog"
@@ -124,19 +183,23 @@ export function GallerySection({
         >
           <div className="relative w-full max-w-4xl" onClick={(e) => e.stopPropagation()}>
             <div className="relative aspect-[16/10] w-full overflow-hidden bg-black">
-              <Image
+              <GalleryMedia
                 src={current.image}
-                alt={current.title}
-                fill
-                className="object-contain"
+                alt={current.title || current.caption || "gallery"}
+                className="absolute inset-0 h-full w-full object-contain"
                 sizes="100vw"
                 priority
+                controls={isVideoMedia(current.image)}
+                muted={false}
+                autoPlay={isVideoMedia(current.image)}
               />
             </div>
             <div className="mt-3 flex items-start justify-between gap-4 text-white">
               <div>
-                <p className="font-display text-lg font-semibold">{current.title}</p>
-                {current.caption ? (
+                <p className="font-display text-lg font-semibold">
+                  {current.title || current.caption}
+                </p>
+                {current.caption && current.title ? (
                   <p className="mt-1 text-sm text-white/70">{current.caption}</p>
                 ) : null}
               </div>
@@ -150,7 +213,7 @@ export function GallerySection({
             </div>
           </div>
         </div>
-      )}
+      ) : null}
     </section>
   );
 }

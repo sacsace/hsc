@@ -25,7 +25,7 @@ import {
   type AdminSectionId,
   type AdminUi,
 } from "@/lib/admin-ui";
-import { seedKoreanFromEnglish } from "@/lib/locale-seed";
+import { syncLocalePair } from "@/lib/locale-seed";
 import { defaultServicesContent } from "@/lib/services-default";
 
 function AdminSymbol({ className = "" }: { className?: string }) {
@@ -146,14 +146,11 @@ export default function AdminPage() {
   function buildNextContent(next: LocaleContent): SiteContent | null {
     const current = contentRef.current;
     if (!current) return null;
-    if (editLocale === "en") {
-      return {
-        ...current,
-        en: next,
-        ko: seedKoreanFromEnglish(current.ko, next),
-      };
-    }
-    return { ...current, ko: next };
+    const pair =
+      editLocale === "en"
+        ? syncLocalePair(current.ko, next)
+        : syncLocalePair(next, current.en);
+    return { ...current, ko: pair.ko, en: pair.en };
   }
 
   function updateLocale(next: LocaleContent) {
@@ -173,12 +170,14 @@ export default function AdminPage() {
     await persistContent(nextContent);
   }
 
-  async function syncEnglishIntoKorean() {
+  async function syncBothLocales() {
     const current = contentRef.current;
     if (!current) return;
+    const pair = syncLocalePair(current.ko, current.en);
     const nextContent: SiteContent = {
       ...current,
-      ko: seedKoreanFromEnglish(current.ko, current.en),
+      ko: pair.ko,
+      en: pair.en,
     };
     contentRef.current = nextContent;
     setContent(nextContent);
@@ -365,12 +364,12 @@ export default function AdminPage() {
                   <>
                     <button
                       type="button"
-                      onClick={() => void syncEnglishIntoKorean()}
+                      onClick={() => void syncBothLocales()}
                       disabled={saving}
                       className="border border-[var(--line)] px-2.5 py-1.5 text-xs font-semibold text-[var(--ink)] hover:bg-[#f5f7f9] disabled:opacity-50"
-                      title={t.enSeedsKoHint}
+                      title={t.localeSyncHint}
                     >
-                      {t.syncEnToKo}
+                      {t.syncLocales}
                     </button>
                     {(["ko", "en"] as const).map((code) => (
                       <button
@@ -405,12 +404,11 @@ export default function AdminPage() {
           </div>
         ) : null}
 
-        {editLocale === "en" &&
-        section !== "inquiries" &&
+        {section !== "inquiries" &&
         section !== "mail" &&
         section !== "security" ? (
           <div className="shrink-0 border-b border-[var(--line)] bg-[#f5f7f9] px-3 py-2.5 text-xs text-[var(--muted)] sm:px-4 md:px-6 lg:px-8">
-            {t.enSeedsKoHint}
+            {t.localeSyncHint}
           </div>
         ) : null}
 
@@ -2472,8 +2470,18 @@ function GalleryEditor({
                   <td className="px-3 py-2.5">
                     <div className="h-12 w-16 overflow-hidden border border-[var(--line)] bg-[#f8fafb]">
                       {item.image ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={item.image} alt="" className="h-full w-full object-cover" />
+                        /\.(mp4|webm|ogg)(\?|$)/i.test(item.image) ? (
+                          <video
+                            src={item.image}
+                            className="h-full w-full object-cover"
+                            muted
+                            playsInline
+                            preload="metadata"
+                          />
+                        ) : (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={item.image} alt="" className="h-full w-full object-cover" />
+                        )
                       ) : (
                         <div className="flex h-full items-center justify-center text-[10px] text-[var(--muted)]">
                           없음
@@ -2545,12 +2553,13 @@ function GalleryEditor({
 
           <div className="grid gap-4 md:grid-cols-[200px_1fr]">
             <ImageAttach
-              label="이미지"
-              hint="미리보기 클릭 또는 아래 버튼"
+              label="이미지/영상"
+              hint="JPG/PNG 또는 MP4"
               value={draft.image}
               uploading={uploading}
               fit="cover"
               aspect="wide"
+              accept="image/png,image/jpeg,image/webp,image/gif,video/mp4,video/webm"
               onFile={(file) => void uploadImage(file)}
               onClear={() => setDraft((prev) => ({ ...prev, image: "" }))}
             />
@@ -2567,7 +2576,7 @@ function GalleryEditor({
                 onChange={(v) => setDraft((prev) => ({ ...prev, caption: v }))}
               />
               <Field
-                label="이미지 URL"
+                label="미디어 URL"
                 value={draft.image}
                 onChange={(v) => setDraft((prev) => ({ ...prev, image: v }))}
               />
@@ -2614,6 +2623,7 @@ function ImageAttach({
   uploading,
   fit = "cover",
   aspect = "square",
+  accept = "image/png,image/jpeg,image/webp,image/gif",
   onFile,
   onClear,
 }: {
@@ -2623,10 +2633,12 @@ function ImageAttach({
   uploading?: boolean;
   fit?: "cover" | "contain";
   aspect?: "square" | "wide";
+  accept?: string;
   onFile: (file: File) => void;
   onClear?: () => void;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const isVideo = Boolean(value && /\.(mp4|webm|ogg)(\?|$)/i.test(value));
 
   function openPicker() {
     if (uploading) return;
@@ -2655,18 +2667,28 @@ function ImageAttach({
           aria-label={value ? `${label} 변경` : `${label} 첨부`}
         >
           {value ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={value}
-              alt=""
-              className={`h-full w-full ${fit === "contain" ? "object-contain p-2" : "object-cover"}`}
-            />
+            isVideo ? (
+              <video
+                src={value}
+                className={`h-full w-full ${fit === "contain" ? "object-contain p-2" : "object-cover"}`}
+                muted
+                playsInline
+                preload="metadata"
+              />
+            ) : (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={value}
+                alt=""
+                className={`h-full w-full ${fit === "contain" ? "object-contain p-2" : "object-cover"}`}
+              />
+            )
           ) : (
             <span className="flex h-full w-full flex-col items-center justify-center gap-1 px-2 text-center text-[var(--muted)]">
               <span className="text-lg leading-none text-[var(--navy)]" aria-hidden>
                 +
               </span>
-              <span className="text-[11px] font-medium">사진 첨부</span>
+              <span className="text-[11px] font-medium">파일 첨부</span>
             </span>
           )}
           {uploading ? (
@@ -2683,7 +2705,7 @@ function ImageAttach({
             disabled={uploading}
             className="btn btn-primary w-full max-w-[14rem] text-sm disabled:opacity-60"
           >
-            {uploading ? "업로드 중…" : value ? "사진 변경" : "사진 선택"}
+            {uploading ? "업로드 중…" : value ? "파일 변경" : "파일 선택"}
           </button>
           {value && onClear ? (
             <button
@@ -2692,7 +2714,7 @@ function ImageAttach({
               disabled={uploading}
               className="w-full max-w-[14rem] border border-[var(--line)] bg-white px-3 py-2 text-sm text-[var(--muted)] hover:text-red-600 disabled:opacity-60"
             >
-              사진 삭제
+              파일 삭제
             </button>
           ) : null}
           <p className="text-xs text-[var(--muted)]">미리보기 영역을 눌러도 파일을 선택할 수 있습니다.</p>
@@ -2702,7 +2724,7 @@ function ImageAttach({
       <input
         ref={inputRef}
         type="file"
-        accept="image/png,image/jpeg,image/webp,image/gif"
+        accept={accept}
         className="sr-only"
         tabIndex={-1}
         onChange={(e) => {

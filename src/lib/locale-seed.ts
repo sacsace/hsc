@@ -6,6 +6,7 @@ import type {
   PerformanceItem,
   ServiceBrandItem,
   ServiceCategoryItem,
+  ServiceCategoryLink,
   ServiceOfferingItem,
   ServiceProductItem,
   ServicesContent,
@@ -16,294 +17,576 @@ function isBlank(value: unknown) {
   return typeof value !== "string" || !value.trim();
 }
 
-/** Prefer Korean text when present; otherwise fall back to English. */
-function text(ko: string | undefined, en: string | undefined) {
-  if (!isBlank(ko)) return ko as string;
-  return (en || "").trim() ? (en as string) : ko || "";
+/**
+ * If only one side has a value, copy it to the empty side.
+ * If both are filled (or both empty), keep each value as-is.
+ */
+function fillBlank(a: string | undefined, b: string | undefined): [string, string] {
+  const left = a || "";
+  const right = b || "";
+  if (!isBlank(left) && isBlank(right)) return [left, left];
+  if (isBlank(left) && !isBlank(right)) return [right, right];
+  return [left, right];
 }
 
-/** Shared media / URL fields follow English when English has a value. */
-function media(ko: string | undefined, en: string | undefined) {
-  if (!isBlank(en)) return en as string;
-  return ko || "";
-}
-
-function seedHeroSlide(ko: HeroSlide | undefined, en: HeroSlide): HeroSlide {
-  return {
-    id: en.id,
-    type: en.type,
-    src: media(ko?.src, en.src),
-    label: text(ko?.label, en.label),
-    brand: text(ko?.brand, en.brand),
-    headline: text(ko?.headline, en.headline),
-    subheadline: text(ko?.subheadline, en.subheadline),
-    ctaLabel: text(ko?.ctaLabel, en.ctaLabel),
-    ctaHref: media(ko?.ctaHref, en.ctaHref),
-  };
-}
-
-function seedProduct(ko: ServiceProductItem | undefined, en: ServiceProductItem): ServiceProductItem {
-  return {
-    id: en.id,
-    title: text(ko?.title, en.title),
-    image: media(ko?.image, en.image),
-    description: text(ko?.description, en.description),
-    file: media(ko?.file, en.file),
-    fileName: text(ko?.fileName, en.fileName),
-  };
-}
-
-function seedBrand(ko: ServiceBrandItem | undefined, en: ServiceBrandItem): ServiceBrandItem {
-  const koProducts = new Map((ko?.products || []).map((item) => [item.id, item]));
-  return {
-    id: en.id,
-    slug: media(ko?.slug, en.slug) || en.slug,
-    brand: text(ko?.brand, en.brand),
-    folder: text(ko?.folder, en.folder),
-    lead: text(ko?.lead, en.lead),
-    products: (en.products || []).map((product) =>
-      seedProduct(koProducts.get(product.id), product),
-    ),
-  };
-}
-
-function seedOffering(
-  ko: ServiceOfferingItem | undefined,
-  en: ServiceOfferingItem,
-): ServiceOfferingItem {
-  return {
-    id: en.id,
-    title: text(ko?.title, en.title),
-    description: text(ko?.description, en.description),
-  };
-}
-
-function seedCategory(
-  ko: ServiceCategoryItem | undefined,
-  en: ServiceCategoryItem,
-): ServiceCategoryItem {
-  return {
-    id: en.id,
-    title: text(ko?.title, en.title),
-    description: text(ko?.description, en.description),
-    items: (en.items || []).map((link, index) => {
-      const prev = ko?.items?.[index];
-      return {
-        label: text(prev?.label, link.label),
-        slug: media(prev?.slug, link.slug) || link.slug,
-      };
-    }),
-    file: media(ko?.file, en.file),
-    fileName: text(ko?.fileName, en.fileName),
-  };
-}
-
-function seedServices(ko: ServicesContent | undefined, en: ServicesContent): ServicesContent {
-  const koBrands = new Map((ko?.brands || []).map((item) => [item.id, item]));
-  const koOfferings = new Map((ko?.offerings || []).map((item) => [item.id, item]));
-  const koCategories = new Map((ko?.categories || []).map((item) => [item.id, item]));
-
-  return {
-    label: text(ko?.label, en.label),
-    title: text(ko?.title, en.title),
-    lead: text(ko?.lead, en.lead),
-    offeringsLabel: text(ko?.offeringsLabel, en.offeringsLabel),
-    offeringsTitle: text(ko?.offeringsTitle, en.offeringsTitle),
-    offeringsLead: text(ko?.offeringsLead, en.offeringsLead),
-    equipmentLabel: text(ko?.equipmentLabel, en.equipmentLabel),
-    equipmentTitle: text(ko?.equipmentTitle, en.equipmentTitle),
-    equipmentLead: text(ko?.equipmentLead, en.equipmentLead),
-    viewDocs: text(ko?.viewDocs, en.viewDocs),
-    ctaTitle: text(ko?.ctaTitle, en.ctaTitle),
-    ctaLead: text(ko?.ctaLead, en.ctaLead),
-    ctaButton: text(ko?.ctaButton, en.ctaButton),
-    offerings: (en.offerings || []).map((item) =>
-      seedOffering(koOfferings.get(item.id), item),
-    ),
-    brands: (en.brands || []).map((item) => seedBrand(koBrands.get(item.id), item)),
-    categories: (en.categories || []).map((item) =>
-      seedCategory(koCategories.get(item.id), item),
-    ),
-  };
-}
-
-function seedTeamMember(ko: TeamMember | undefined, en: TeamMember): TeamMember {
-  return {
-    name: text(ko?.name, en.name),
-    role: text(ko?.role, en.role),
-    bio: text(ko?.bio, en.bio),
-    photo: media(ko?.photo, en.photo),
-  };
-}
-
-function seedHistory(ko: HistoryItem | undefined, en: HistoryItem): HistoryItem {
-  return {
-    id: en.id || ko?.id,
-    date: text(ko?.date, en.date),
-    detail: text(ko?.detail, en.detail),
-  };
-}
-
-function seedPerformance(
-  ko: PerformanceItem | undefined,
-  en: PerformanceItem,
-): PerformanceItem {
-  return {
-    id: en.id || ko?.id,
-    date: text(ko?.date, en.date),
-    detail: text(ko?.detail, en.detail),
-    client: text(ko?.client, en.client),
-  };
-}
-
-function seedGalleryItem(ko: GalleryItem | undefined, en: GalleryItem): GalleryItem {
-  return {
-    id: en.id,
-    title: text(ko?.title, en.title),
-    image: media(ko?.image, en.image),
-    caption: text(ko?.caption, en.caption),
-  };
-}
-
-function alignByIdOrIndex<T extends { id?: string }>(
+function syncIdLists<T extends { id: string }>(
   koList: T[] | undefined,
   enList: T[] | undefined,
-  seeder: (ko: T | undefined, en: T) => T,
-): T[] {
+  syncItem: (ko: T | undefined, en: T | undefined, id: string) => { ko: T; en: T },
+): { ko: T[]; en: T[] } {
   const koItems = koList || [];
   const enItems = enList || [];
-  const koMap = new Map(
+  const koMap = new Map(koItems.map((item) => [item.id, item]));
+  const enMap = new Map(enItems.map((item) => [item.id, item]));
+  const allIds = new Set<string>([...koMap.keys(), ...enMap.keys()]);
+
+  const pairs = new Map<string, { ko: T; en: T }>();
+  for (const id of allIds) {
+    pairs.set(id, syncItem(koMap.get(id), enMap.get(id), id));
+  }
+
+  const koOut: T[] = [];
+  const seenKo = new Set<string>();
+  for (const item of koItems) {
+    koOut.push(pairs.get(item.id)!.ko);
+    seenKo.add(item.id);
+  }
+  for (const id of allIds) {
+    if (!seenKo.has(id)) koOut.push(pairs.get(id)!.ko);
+  }
+
+  const enOut: T[] = [];
+  const seenEn = new Set<string>();
+  for (const item of enItems) {
+    enOut.push(pairs.get(item.id)!.en);
+    seenEn.add(item.id);
+  }
+  for (const id of allIds) {
+    if (!seenEn.has(id)) enOut.push(pairs.get(id)!.en);
+  }
+
+  return { ko: koOut, en: enOut };
+}
+
+/** Pair by id when possible, otherwise by index (h-ko-* / h-en-*). */
+function syncAlignedLists<T extends { id?: string }>(
+  koList: T[] | undefined,
+  enList: T[] | undefined,
+  syncItem: (ko: T | undefined, en: T | undefined) => { ko: T; en: T },
+): { ko: T[]; en: T[] } {
+  const koItems = koList || [];
+  const enItems = enList || [];
+  const len = Math.max(koItems.length, enItems.length);
+  const koOut: T[] = [];
+  const enOut: T[] = [];
+
+  const koById = new Map(
     koItems.filter((item) => item.id).map((item) => [item.id as string, item]),
   );
-  const enIds = new Set(enItems.map((item) => item.id).filter(Boolean) as string[]);
+  const enById = new Map(
+    enItems.filter((item) => item.id).map((item) => [item.id as string, item]),
+  );
+  const usedKo = new Set<string>();
+  const usedEn = new Set<string>();
 
-  return enItems.map((enItem, index) => {
-    if (enItem.id && koMap.has(enItem.id)) {
-      return seeder(koMap.get(enItem.id), enItem);
+  for (let i = 0; i < len; i += 1) {
+    let koItem = koItems[i];
+    let enItem = enItems[i];
+
+    if (koItem?.id && enById.has(koItem.id)) {
+      enItem = enById.get(koItem.id);
+      usedEn.add(koItem.id);
+      usedKo.add(koItem.id);
+    } else if (enItem?.id && koById.has(enItem.id)) {
+      koItem = koById.get(enItem.id);
+      usedKo.add(enItem.id);
+      usedEn.add(enItem.id);
+    } else {
+      if (koItem?.id) usedKo.add(koItem.id);
+      if (enItem?.id) usedEn.add(enItem.id);
     }
-    const candidate = koItems[index];
-    if (!candidate) return seeder(undefined, enItem);
-    // Locale-prefixed ids (h-en-* / h-ko-*) still pair by index.
-    if (!candidate.id || !enIds.has(candidate.id)) {
-      return seeder(candidate, enItem);
-    }
-    return seeder(undefined, enItem);
-  });
+
+    const pair = syncItem(koItem, enItem);
+    koOut.push(pair.ko);
+    enOut.push(pair.en);
+  }
+
+  return { ko: koOut, en: enOut };
+}
+
+function syncHeroSlide(
+  ko: HeroSlide | undefined,
+  en: HeroSlide | undefined,
+  id: string,
+): { ko: HeroSlide; en: HeroSlide } {
+  const base = ko || en;
+  const type = (en?.type || ko?.type || "image") as HeroSlide["type"];
+  const [srcKo, srcEn] = fillBlank(ko?.src, en?.src);
+  const [labelKo, labelEn] = fillBlank(ko?.label, en?.label);
+  const [brandKo, brandEn] = fillBlank(ko?.brand, en?.brand);
+  const [headlineKo, headlineEn] = fillBlank(ko?.headline, en?.headline);
+  const [subKo, subEn] = fillBlank(ko?.subheadline, en?.subheadline);
+  const [ctaKo, ctaEn] = fillBlank(ko?.ctaLabel, en?.ctaLabel);
+  const [hrefKo, hrefEn] = fillBlank(ko?.ctaHref, en?.ctaHref);
+
+  const slideKo: HeroSlide = {
+    id,
+    type,
+    src: srcKo,
+    label: labelKo,
+    brand: brandKo,
+    headline: headlineKo,
+    subheadline: subKo,
+    ctaLabel: ctaKo,
+    ctaHref: hrefKo || base?.ctaHref || "/contact",
+  };
+  const slideEn: HeroSlide = {
+    id,
+    type,
+    src: srcEn,
+    label: labelEn,
+    brand: brandEn,
+    headline: headlineEn,
+    subheadline: subEn,
+    ctaLabel: ctaEn,
+    ctaHref: hrefEn || base?.ctaHref || "/contact",
+  };
+  return { ko: slideKo, en: slideEn };
+}
+
+function syncProduct(
+  ko: ServiceProductItem | undefined,
+  en: ServiceProductItem | undefined,
+  id: string,
+): { ko: ServiceProductItem; en: ServiceProductItem } {
+  const [titleKo, titleEn] = fillBlank(ko?.title, en?.title);
+  const [imageKo, imageEn] = fillBlank(ko?.image, en?.image);
+  const [descKo, descEn] = fillBlank(ko?.description, en?.description);
+  const [fileKo, fileEn] = fillBlank(ko?.file, en?.file);
+  const [fileNameKo, fileNameEn] = fillBlank(ko?.fileName, en?.fileName);
+  return {
+    ko: {
+      id,
+      title: titleKo,
+      image: imageKo,
+      description: descKo,
+      file: fileKo,
+      fileName: fileNameKo,
+    },
+    en: {
+      id,
+      title: titleEn,
+      image: imageEn,
+      description: descEn,
+      file: fileEn,
+      fileName: fileNameEn,
+    },
+  };
+}
+
+function syncBrand(
+  ko: ServiceBrandItem | undefined,
+  en: ServiceBrandItem | undefined,
+  id: string,
+): { ko: ServiceBrandItem; en: ServiceBrandItem } {
+  const [slugKo, slugEn] = fillBlank(ko?.slug, en?.slug);
+  const [brandKo, brandEn] = fillBlank(ko?.brand, en?.brand);
+  const [folderKo, folderEn] = fillBlank(ko?.folder, en?.folder);
+  const [leadKo, leadEn] = fillBlank(ko?.lead, en?.lead);
+  const products = syncIdLists(ko?.products, en?.products, syncProduct);
+  const slug = slugKo || slugEn || id;
+  return {
+    ko: {
+      id,
+      slug,
+      brand: brandKo,
+      folder: folderKo,
+      lead: leadKo,
+      products: products.ko,
+    },
+    en: {
+      id,
+      slug: slugEn || slug,
+      brand: brandEn,
+      folder: folderEn,
+      lead: leadEn,
+      products: products.en,
+    },
+  };
+}
+
+function syncOffering(
+  ko: ServiceOfferingItem | undefined,
+  en: ServiceOfferingItem | undefined,
+  id: string,
+): { ko: ServiceOfferingItem; en: ServiceOfferingItem } {
+  const [titleKo, titleEn] = fillBlank(ko?.title, en?.title);
+  const [descKo, descEn] = fillBlank(ko?.description, en?.description);
+  return {
+    ko: { id, title: titleKo, description: descKo },
+    en: { id, title: titleEn, description: descEn },
+  };
+}
+
+function syncCategoryLinks(
+  koLinks: ServiceCategoryLink[] | undefined,
+  enLinks: ServiceCategoryLink[] | undefined,
+): { ko: ServiceCategoryLink[]; en: ServiceCategoryLink[] } {
+  const koItems = koLinks || [];
+  const enItems = enLinks || [];
+  const bySlug = new Map<string, { ko?: ServiceCategoryLink; en?: ServiceCategoryLink }>();
+  for (const link of koItems) {
+    if (!link.slug) continue;
+    bySlug.set(link.slug, { ...(bySlug.get(link.slug) || {}), ko: link });
+  }
+  for (const link of enItems) {
+    if (!link.slug) continue;
+    bySlug.set(link.slug, { ...(bySlug.get(link.slug) || {}), en: link });
+  }
+
+  const koOut: ServiceCategoryLink[] = [];
+  const enOut: ServiceCategoryLink[] = [];
+  const seen = new Set<string>();
+
+  for (const link of koItems) {
+    const pair = bySlug.get(link.slug) || { ko: link };
+    const [labelKo, labelEn] = fillBlank(pair.ko?.label, pair.en?.label);
+    const slug = pair.ko?.slug || pair.en?.slug || link.slug;
+    koOut.push({ label: labelKo, slug });
+    enOut.push({ label: labelEn, slug });
+    seen.add(slug);
+  }
+  for (const link of enItems) {
+    if (seen.has(link.slug)) continue;
+    const pair = bySlug.get(link.slug) || { en: link };
+    const [labelKo, labelEn] = fillBlank(pair.ko?.label, pair.en?.label);
+    const slug = pair.en?.slug || pair.ko?.slug || link.slug;
+    koOut.push({ label: labelKo, slug });
+    enOut.push({ label: labelEn, slug });
+  }
+  return { ko: koOut, en: enOut };
+}
+
+function syncCategory(
+  ko: ServiceCategoryItem | undefined,
+  en: ServiceCategoryItem | undefined,
+  id: string,
+): { ko: ServiceCategoryItem; en: ServiceCategoryItem } {
+  const [titleKo, titleEn] = fillBlank(ko?.title, en?.title);
+  const [descKo, descEn] = fillBlank(ko?.description, en?.description);
+  const [fileKo, fileEn] = fillBlank(ko?.file, en?.file);
+  const [fileNameKo, fileNameEn] = fillBlank(ko?.fileName, en?.fileName);
+  const links = syncCategoryLinks(ko?.items, en?.items);
+  return {
+    ko: {
+      id,
+      title: titleKo,
+      description: descKo,
+      items: links.ko,
+      file: fileKo,
+      fileName: fileNameKo,
+    },
+    en: {
+      id,
+      title: titleEn,
+      description: descEn,
+      items: links.en,
+      file: fileEn,
+      fileName: fileNameEn,
+    },
+  };
+}
+
+function syncServices(
+  ko: ServicesContent | undefined,
+  en: ServicesContent | undefined,
+): { ko: ServicesContent; en: ServicesContent } {
+  const keys = [
+    "label",
+    "title",
+    "lead",
+    "offeringsLabel",
+    "offeringsTitle",
+    "offeringsLead",
+    "equipmentLabel",
+    "equipmentTitle",
+    "equipmentLead",
+    "viewDocs",
+    "ctaTitle",
+    "ctaLead",
+    "ctaButton",
+  ] as const;
+
+  const koOut = { ...(ko || ({} as ServicesContent)) };
+  const enOut = { ...(en || ({} as ServicesContent)) };
+  for (const key of keys) {
+    const [left, right] = fillBlank(ko?.[key], en?.[key]);
+    koOut[key] = left;
+    enOut[key] = right;
+  }
+
+  const offerings = syncIdLists(ko?.offerings, en?.offerings, syncOffering);
+  const brands = syncIdLists(ko?.brands, en?.brands, syncBrand);
+  const categories = syncIdLists(ko?.categories, en?.categories, syncCategory);
+
+  koOut.offerings = offerings.ko;
+  enOut.offerings = offerings.en;
+  koOut.brands = brands.ko;
+  enOut.brands = brands.en;
+  koOut.categories = categories.ko;
+  enOut.categories = categories.en;
+
+  return { ko: koOut, en: enOut };
+}
+
+function syncTeamMember(
+  ko: TeamMember | undefined,
+  en: TeamMember | undefined,
+): { ko: TeamMember; en: TeamMember } {
+  const [nameKo, nameEn] = fillBlank(ko?.name, en?.name);
+  const [roleKo, roleEn] = fillBlank(ko?.role, en?.role);
+  const [bioKo, bioEn] = fillBlank(ko?.bio, en?.bio);
+  const [photoKo, photoEn] = fillBlank(ko?.photo, en?.photo);
+  return {
+    ko: { name: nameKo, role: roleKo, bio: bioKo, photo: photoKo },
+    en: { name: nameEn, role: roleEn, bio: bioEn, photo: photoEn },
+  };
+}
+
+function syncHistory(
+  ko: HistoryItem | undefined,
+  en: HistoryItem | undefined,
+): { ko: HistoryItem; en: HistoryItem } {
+  const [dateKo, dateEn] = fillBlank(ko?.date, en?.date);
+  const [detailKo, detailEn] = fillBlank(ko?.detail, en?.detail);
+  const id = ko?.id || en?.id;
+  return {
+    ko: { id, date: dateKo, detail: detailKo },
+    en: { id, date: dateEn, detail: detailEn },
+  };
+}
+
+function syncPerformance(
+  ko: PerformanceItem | undefined,
+  en: PerformanceItem | undefined,
+): { ko: PerformanceItem; en: PerformanceItem } {
+  const [dateKo, dateEn] = fillBlank(ko?.date, en?.date);
+  const [detailKo, detailEn] = fillBlank(ko?.detail, en?.detail);
+  const [clientKo, clientEn] = fillBlank(ko?.client, en?.client);
+  const id = ko?.id || en?.id;
+  return {
+    ko: { id, date: dateKo, detail: detailKo, client: clientKo },
+    en: { id, date: dateEn, detail: detailEn, client: clientEn },
+  };
+}
+
+function syncGalleryItem(
+  ko: GalleryItem | undefined,
+  en: GalleryItem | undefined,
+  id: string,
+): { ko: GalleryItem; en: GalleryItem } {
+  const [titleKo, titleEn] = fillBlank(ko?.title, en?.title);
+  const [imageKo, imageEn] = fillBlank(ko?.image, en?.image);
+  const [captionKo, captionEn] = fillBlank(ko?.caption, en?.caption);
+  return {
+    ko: { id, title: titleKo, image: imageKo, caption: captionKo },
+    en: { id, title: titleEn, image: imageEn, caption: captionEn },
+  };
+}
+
+function syncClientItem(
+  ko: { id: string; name: string; logo: string } | undefined,
+  en: { id: string; name: string; logo: string } | undefined,
+  id: string,
+): { ko: { id: string; name: string; logo: string }; en: { id: string; name: string; logo: string } } {
+  const [nameKo, nameEn] = fillBlank(ko?.name, en?.name);
+  const [logoKo, logoEn] = fillBlank(ko?.logo, en?.logo);
+  return {
+    ko: { id, name: nameKo, logo: logoKo },
+    en: { id, name: nameEn, logo: logoEn },
+  };
 }
 
 /**
- * When English is edited, fill empty Korean fields with the English values
- * and keep shared media/structure aligned with English order.
+ * Bidirectional locale sync:
+ * - empty side inherits the filled side
+ * - when both sides already have values, keep each as-is
  */
+export function syncLocalePair(
+  ko: LocaleContent,
+  en: LocaleContent,
+): { ko: LocaleContent; en: LocaleContent } {
+  const [heroBrandKo, heroBrandEn] = fillBlank(ko.hero?.brand, en.hero?.brand);
+  const [heroHeadlineKo, heroHeadlineEn] = fillBlank(ko.hero?.headline, en.hero?.headline);
+  const [heroSubKo, heroSubEn] = fillBlank(ko.hero?.subheadline, en.hero?.subheadline);
+  const [heroCtaKo, heroCtaEn] = fillBlank(ko.hero?.ctaLabel, en.hero?.ctaLabel);
+  const [heroHrefKo, heroHrefEn] = fillBlank(ko.hero?.ctaHref, en.hero?.ctaHref);
+  const [heroVideoKo, heroVideoEn] = fillBlank(ko.hero?.videoUrl, en.hero?.videoUrl);
+  const slides = syncIdLists(ko.hero?.slides, en.hero?.slides, syncHeroSlide);
+
+  const [greetTitleKo, greetTitleEn] = fillBlank(ko.greeting?.title, en.greeting?.title);
+  const [greetBodyKo, greetBodyEn] = fillBlank(ko.greeting?.body, en.greeting?.body);
+
+  const companyKeys = [
+    "legalName",
+    "founded",
+    "employees",
+    "businessType",
+    "businessItem",
+    "hqKorea",
+    "branchIndia",
+    "branchIndiaMapEmbed",
+    "chennaiOffice",
+    "chennaiMapEmbed",
+    "cin",
+    "pan",
+    "tan",
+    "email",
+    "phone",
+  ] as const;
+  const companyKo = { ...(ko.company || {}) } as LocaleContent["company"];
+  const companyEn = { ...(en.company || {}) } as LocaleContent["company"];
+  for (const key of companyKeys) {
+    const [left, right] = fillBlank(ko.company?.[key], en.company?.[key]);
+    companyKo[key] = left;
+    companyEn[key] = right;
+  }
+
+  const history = syncAlignedLists(ko.history, en.history, syncHistory);
+  const performances = syncAlignedLists(ko.performances, en.performances, syncPerformance);
+  const clients = syncIdLists(ko.clients?.items, en.clients?.items, syncClientItem);
+  const [clientsTitleKo, clientsTitleEn] = fillBlank(ko.clients?.title, en.clients?.title);
+  const [clientsLeadKo, clientsLeadEn] = fillBlank(ko.clients?.lead, en.clients?.lead);
+
+  const [teamTitleKo, teamTitleEn] = fillBlank(ko.team?.title, en.team?.title);
+  const [teamLeadKo, teamLeadEn] = fillBlank(ko.team?.lead, en.team?.lead);
+  const ceo = syncTeamMember(ko.team?.ceo, en.team?.ceo);
+  const members = syncAlignedLists(ko.team?.members, en.team?.members, syncTeamMember);
+
+  const [mediaTitleKo, mediaTitleEn] = fillBlank(ko.media?.title, en.media?.title);
+  const [mediaLeadKo, mediaLeadEn] = fillBlank(ko.media?.lead, en.media?.lead);
+  const mediaItems = syncAlignedLists(ko.media?.items, en.media?.items, (a, b) => {
+    const [titleKo, titleEn] = fillBlank(a?.title, b?.title);
+    const [descKo, descEn] = fillBlank(a?.description, b?.description);
+    const [urlKo, urlEn] = fillBlank(a?.videoUrl, b?.videoUrl);
+    return {
+      ko: { title: titleKo, description: descKo, videoUrl: urlKo },
+      en: { title: titleEn, description: descEn, videoUrl: urlEn },
+    };
+  });
+
+  const gallery = syncIdLists(ko.gallery?.items, en.gallery?.items, syncGalleryItem);
+  const [galleryTitleKo, galleryTitleEn] = fillBlank(ko.gallery?.title, en.gallery?.title);
+  const [galleryLeadKo, galleryLeadEn] = fillBlank(ko.gallery?.lead, en.gallery?.lead);
+
+  const affiliateKeys = ["name", "tel", "fax", "email", "website"] as const;
+  const affiliateKo = { ...(ko.affiliate || {}) } as LocaleContent["affiliate"];
+  const affiliateEn = { ...(en.affiliate || {}) } as LocaleContent["affiliate"];
+  for (const key of affiliateKeys) {
+    const [left, right] = fillBlank(ko.affiliate?.[key], en.affiliate?.[key]);
+    affiliateKo[key] = left;
+    affiliateEn[key] = right;
+  }
+
+  const certificates = syncAlignedLists(ko.certificates, en.certificates, (a, b) => {
+    const [titleKo, titleEn] = fillBlank(a?.title, b?.title);
+    const [imageKo, imageEn] = fillBlank(a?.image, b?.image);
+    return {
+      ko: { title: titleKo, image: imageKo },
+      en: { title: titleEn, image: imageEn },
+    };
+  });
+
+  const services = syncServices(ko.services, en.services);
+
+  return {
+    ko: {
+      ...ko,
+      hero: {
+        brand: heroBrandKo,
+        headline: heroHeadlineKo,
+        subheadline: heroSubKo,
+        ctaLabel: heroCtaKo,
+        ctaHref: heroHrefKo,
+        videoUrl: heroVideoKo,
+        slides: slides.ko,
+      },
+      greeting: { title: greetTitleKo, body: greetBodyKo },
+      company: companyKo,
+      history: history.ko,
+      performances: performances.ko,
+      clients: {
+        title: clientsTitleKo,
+        lead: clientsLeadKo,
+        items: clients.ko,
+      },
+      team: {
+        title: teamTitleKo,
+        lead: teamLeadKo,
+        ceo: ceo.ko,
+        members: members.ko,
+      },
+      media: {
+        title: mediaTitleKo,
+        lead: mediaLeadKo,
+        items: mediaItems.ko,
+      },
+      gallery: {
+        title: galleryTitleKo,
+        lead: galleryLeadKo,
+        items: gallery.ko,
+      },
+      affiliate: affiliateKo,
+      certificates: certificates.ko,
+      services: services.ko,
+    },
+    en: {
+      ...en,
+      hero: {
+        brand: heroBrandEn,
+        headline: heroHeadlineEn,
+        subheadline: heroSubEn,
+        ctaLabel: heroCtaEn,
+        ctaHref: heroHrefEn,
+        videoUrl: heroVideoEn,
+        slides: slides.en,
+      },
+      greeting: { title: greetTitleEn, body: greetBodyEn },
+      company: companyEn,
+      history: history.en,
+      performances: performances.en,
+      clients: {
+        title: clientsTitleEn,
+        lead: clientsLeadEn,
+        items: clients.en,
+      },
+      team: {
+        title: teamTitleEn,
+        lead: teamLeadEn,
+        ceo: ceo.en,
+        members: members.en,
+      },
+      media: {
+        title: mediaTitleEn,
+        lead: mediaLeadEn,
+        items: mediaItems.en,
+      },
+      gallery: {
+        title: galleryTitleEn,
+        lead: galleryLeadEn,
+        items: gallery.en,
+      },
+      affiliate: affiliateEn,
+      certificates: certificates.en,
+      services: services.en,
+    },
+  };
+}
+
+/** @deprecated Prefer syncLocalePair — kept for callers that only need KO filled from EN. */
 export function seedKoreanFromEnglish(
   ko: LocaleContent,
   en: LocaleContent,
 ): LocaleContent {
-  const koSlides = new Map((ko.hero?.slides || []).map((item) => [item.id, item]));
-  const koClients = new Map((ko.clients?.items || []).map((item) => [item.id, item]));
-  const koMembers = new Map(
-    (ko.team?.members || []).map((item, index) => [item.name || `m-${index}`, item]),
-  );
-  const koGallery = new Map((ko.gallery?.items || []).map((item) => [item.id, item]));
-  const koMedia = new Map(
-    (ko.media?.items || []).map((item, index) => [item.title || `media-${index}`, item]),
-  );
-  const koCerts = new Map(
-    (ko.certificates || []).map((item, index) => [item.title || `cert-${index}`, item]),
-  );
-
-  return {
-    ...ko,
-    hero: {
-      brand: text(ko.hero?.brand, en.hero?.brand),
-      headline: text(ko.hero?.headline, en.hero?.headline),
-      subheadline: text(ko.hero?.subheadline, en.hero?.subheadline),
-      ctaLabel: text(ko.hero?.ctaLabel, en.hero?.ctaLabel),
-      ctaHref: media(ko.hero?.ctaHref, en.hero?.ctaHref),
-      videoUrl: media(ko.hero?.videoUrl, en.hero?.videoUrl),
-      slides: (en.hero?.slides || []).map((slide) =>
-        seedHeroSlide(koSlides.get(slide.id), slide),
-      ),
-    },
-    greeting: {
-      title: text(ko.greeting?.title, en.greeting?.title),
-      body: text(ko.greeting?.body, en.greeting?.body),
-    },
-    company: {
-      legalName: text(ko.company?.legalName, en.company?.legalName),
-      founded: text(ko.company?.founded, en.company?.founded),
-      employees: text(ko.company?.employees, en.company?.employees),
-      businessType: text(ko.company?.businessType, en.company?.businessType),
-      businessItem: text(ko.company?.businessItem, en.company?.businessItem),
-      hqKorea: text(ko.company?.hqKorea, en.company?.hqKorea),
-      branchIndia: text(ko.company?.branchIndia, en.company?.branchIndia),
-      branchIndiaMapEmbed: media(
-        ko.company?.branchIndiaMapEmbed,
-        en.company?.branchIndiaMapEmbed,
-      ),
-      chennaiOffice: text(ko.company?.chennaiOffice, en.company?.chennaiOffice),
-      chennaiMapEmbed: media(ko.company?.chennaiMapEmbed, en.company?.chennaiMapEmbed),
-      cin: media(ko.company?.cin, en.company?.cin),
-      pan: media(ko.company?.pan, en.company?.pan),
-      tan: media(ko.company?.tan, en.company?.tan),
-      email: media(ko.company?.email, en.company?.email),
-      phone: media(ko.company?.phone, en.company?.phone),
-    },
-    history: alignByIdOrIndex(ko.history, en.history, seedHistory),
-    performances: alignByIdOrIndex(ko.performances, en.performances, seedPerformance),
-    clients: {
-      title: text(ko.clients?.title, en.clients?.title),
-      lead: text(ko.clients?.lead, en.clients?.lead),
-      items: (en.clients?.items || []).map((item) => {
-        const prev = koClients.get(item.id);
-        return {
-          id: item.id,
-          name: text(prev?.name, item.name),
-          logo: media(prev?.logo, item.logo),
-        };
-      }),
-    },
-    team: {
-      title: text(ko.team?.title, en.team?.title),
-      lead: text(ko.team?.lead, en.team?.lead),
-      ceo: seedTeamMember(ko.team?.ceo, en.team?.ceo || { name: "", role: "", bio: "", photo: "" }),
-      members: (en.team?.members || []).map((item, index) =>
-        seedTeamMember(koMembers.get(item.name) || ko.team?.members?.[index], item),
-      ),
-    },
-    media: {
-      title: text(ko.media?.title, en.media?.title),
-      lead: text(ko.media?.lead, en.media?.lead),
-      items: (en.media?.items || []).map((item, index) => {
-        const prev = koMedia.get(item.title) || ko.media?.items?.[index];
-        return {
-          title: text(prev?.title, item.title),
-          description: text(prev?.description, item.description),
-          videoUrl: media(prev?.videoUrl, item.videoUrl),
-        };
-      }),
-    },
-    gallery: {
-      title: text(ko.gallery?.title, en.gallery?.title),
-      lead: text(ko.gallery?.lead, en.gallery?.lead),
-      items: (en.gallery?.items || []).map((item) =>
-        seedGalleryItem(koGallery.get(item.id), item),
-      ),
-    },
-    affiliate: {
-      name: text(ko.affiliate?.name, en.affiliate?.name),
-      tel: media(ko.affiliate?.tel, en.affiliate?.tel),
-      fax: media(ko.affiliate?.fax, en.affiliate?.fax),
-      email: media(ko.affiliate?.email, en.affiliate?.email),
-      website: media(ko.affiliate?.website, en.affiliate?.website),
-    },
-    certificates: (en.certificates || []).map((item, index) => {
-      const prev = koCerts.get(item.title) || ko.certificates?.[index];
-      return {
-        title: text(prev?.title, item.title),
-        image: media(prev?.image, item.image),
-      };
-    }),
-    services: seedServices(ko.services, en.services),
-  };
+  return syncLocalePair(ko, en).ko;
 }

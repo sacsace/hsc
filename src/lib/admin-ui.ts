@@ -126,11 +126,17 @@ export function adminUi(locale: Locale) {
       : "Railway Volume을 /data 경로에 연결하세요. 고객사 로고·갤러리 사진이 유지됩니다. 배포 이미지에 포함된 seed 이미지는 없을 때 자동으로 복구됩니다.",
     editing: (label: string) =>
       en ? `English · ${label}` : `한국어 · ${label}`,
+    localeSyncHint: en
+      ? "If only one language has a value, the empty side is filled automatically. When both sides already have text, each keeps its own."
+      : "한쪽만 입력되면 비어 있는 쪽에 자동으로 채워집니다. 한글·영문 모두 값이 있으면 각각 그대로 유지됩니다.",
+    syncLocales: en ? "Sync KO ↔ EN" : "한↔영 동기화",
+    syncEnToKoDone: en
+      ? "Empty fields synced between Korean and English."
+      : "비어 있던 한글·영문 항목을 서로 채웠습니다.",
     enSeedsKoHint: en
-      ? "English edits also fill empty Korean fields and sync shared media/order."
-      : "영문 수정 시 비어 있는 한글 항목에 영문이 기본 입력되고, 이미지·순서가 함께 맞춰집니다.",
-    syncEnToKo: en ? "Sync EN → KO" : "영문→한글 동기화",
-    syncEnToKoDone: en ? "Korean gaps filled from English." : "영문 기준으로 한글 빈 항목을 채웠습니다.",
+      ? "If only one language has a value, the empty side is filled automatically. When both sides already have text, each keeps its own."
+      : "한쪽만 입력되면 비어 있는 쪽에 자동으로 채워집니다. 한글·영문 모두 값이 있으면 각각 그대로 유지됩니다.",
+    syncEnToKo: en ? "Sync KO ↔ EN" : "한↔영 동기화",
     loading: en ? "Loading…" : "로딩 중…",
     contentLoading: en ? "Loading content…" : "콘텐츠 로딩 중…",
 

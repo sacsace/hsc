@@ -1,5 +1,5 @@
 import { promises as fs } from "fs";
-import { seedKoreanFromEnglish } from "@/lib/locale-seed";
+import { syncLocalePair } from "@/lib/locale-seed";
 import { productCatalog } from "@/lib/products";
 import { ensureServicesContent } from "@/lib/services-default";
 import { sortPerformances, type SiteContent } from "@/lib/types";
@@ -380,9 +380,13 @@ export async function getContent(): Promise<SiteContent> {
   }
 
   if (content.ko && content.en) {
-    const seededKo = seedKoreanFromEnglish(content.ko, content.en);
-    if (JSON.stringify(seededKo) !== JSON.stringify(content.ko)) {
-      content.ko = seededKo;
+    const synced = syncLocalePair(content.ko, content.en);
+    if (
+      JSON.stringify(synced.ko) !== JSON.stringify(content.ko) ||
+      JSON.stringify(synced.en) !== JSON.stringify(content.en)
+    ) {
+      content.ko = synced.ko;
+      content.en = synced.en;
       contentMigrated = true;
     }
   }
