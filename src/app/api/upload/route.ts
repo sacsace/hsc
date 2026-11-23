@@ -78,10 +78,7 @@ export async function POST(request: Request) {
 
   if (!ALLOWED.has(mime)) {
     return NextResponse.json(
-      {
-        error:
-          "Unsupported file type (PDF, Word, Excel, JPG/PNG/WEBP/GIF, MP4/WEBM)",
-      },
+      { error: "업로드할 수 없습니다." },
       { status: 400 },
     );
   }

@@ -69,7 +69,7 @@ function syncIdLists<T extends { id: string }>(
 }
 
 /** Pair by id when possible, otherwise by index (h-ko-* / h-en-*). */
-function syncAlignedLists<T extends { id?: string }>(
+function syncAlignedLists<T extends object>(
   koList: T[] | undefined,
   enList: T[] | undefined,
   syncItem: (ko: T | undefined, en: T | undefined) => { ko: T; en: T },
@@ -80,30 +80,37 @@ function syncAlignedLists<T extends { id?: string }>(
   const koOut: T[] = [];
   const enOut: T[] = [];
 
+  type WithOptionalId = T & { id?: string };
   const koById = new Map(
-    koItems.filter((item) => item.id).map((item) => [item.id as string, item]),
+    (koItems as WithOptionalId[])
+      .filter((item) => item.id)
+      .map((item) => [item.id as string, item as T]),
   );
   const enById = new Map(
-    enItems.filter((item) => item.id).map((item) => [item.id as string, item]),
+    (enItems as WithOptionalId[])
+      .filter((item) => item.id)
+      .map((item) => [item.id as string, item as T]),
   );
   const usedKo = new Set<string>();
   const usedEn = new Set<string>();
 
   for (let i = 0; i < len; i += 1) {
-    let koItem = koItems[i];
-    let enItem = enItems[i];
+    let koItem: T | undefined = koItems[i];
+    let enItem: T | undefined = enItems[i];
+    const koId = (koItem as WithOptionalId | undefined)?.id;
+    const enId = (enItem as WithOptionalId | undefined)?.id;
 
-    if (koItem?.id && enById.has(koItem.id)) {
-      enItem = enById.get(koItem.id);
-      usedEn.add(koItem.id);
-      usedKo.add(koItem.id);
-    } else if (enItem?.id && koById.has(enItem.id)) {
-      koItem = koById.get(enItem.id);
-      usedKo.add(enItem.id);
-      usedEn.add(enItem.id);
+    if (koId && enById.has(koId)) {
+      enItem = enById.get(koId);
+      usedEn.add(koId);
+      usedKo.add(koId);
+    } else if (enId && koById.has(enId)) {
+      koItem = koById.get(enId);
+      usedKo.add(enId);
+      usedEn.add(enId);
     } else {
-      if (koItem?.id) usedKo.add(koItem.id);
-      if (enItem?.id) usedEn.add(enItem.id);
+      if (koId) usedKo.add(koId);
+      if (enId) usedEn.add(enId);
     }
 
     const pair = syncItem(koItem, enItem);

@@ -25,6 +25,10 @@ import {
   type AdminSectionId,
   type AdminUi,
 } from "@/lib/admin-ui";
+import {
+  UPLOAD_NOT_ALLOWED_MESSAGE,
+  fileMatchesAccept,
+} from "@/lib/file-accept";
 import { syncLocalePair } from "@/lib/locale-seed";
 import { defaultServicesContent } from "@/lib/services-default";
 
@@ -1722,6 +1726,7 @@ function ClientsEditor({
             uploading={uploading}
             fit="contain"
             onFile={(file) => void uploadLogo(file)}
+            onInvalid={setUploadError}
             onClear={() => setDraft((prev) => ({ ...prev, logo: "" }))}
           />
 
@@ -2013,6 +2018,7 @@ function TeamEditor({
             uploading={uploading}
             fit="cover"
             onFile={(file) => void uploadPhoto(file)}
+            onInvalid={setUploadError}
             onClear={() => setDraft((prev) => ({ ...prev, photo: "" }))}
           />
 
@@ -2263,6 +2269,7 @@ function CertificatesEditor({
                 fit="contain"
                 aspect="wide"
                 onFile={(file) => void uploadImage(file)}
+                onInvalid={setUploadError}
                 onClear={() => setDraft((prev) => ({ ...prev, image: "" }))}
               />
 
@@ -2561,6 +2568,7 @@ function GalleryEditor({
               aspect="wide"
               accept="image/png,image/jpeg,image/webp,image/gif,video/mp4,video/webm"
               onFile={(file) => void uploadImage(file)}
+              onInvalid={setUploadError}
               onClear={() => setDraft((prev) => ({ ...prev, image: "" }))}
             />
 
@@ -2626,6 +2634,7 @@ function ImageAttach({
   accept = "image/png,image/jpeg,image/webp,image/gif",
   onFile,
   onClear,
+  onInvalid,
 }: {
   label: string;
   hint?: string;
@@ -2636,13 +2645,27 @@ function ImageAttach({
   accept?: string;
   onFile: (file: File) => void;
   onClear?: () => void;
+  onInvalid?: (message: string) => void;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [localError, setLocalError] = useState("");
   const isVideo = Boolean(value && /\.(mp4|webm|ogg)(\?|$)/i.test(value));
 
   function openPicker() {
     if (uploading) return;
     inputRef.current?.click();
+  }
+
+  function handleSelected(file: File) {
+    if (!fileMatchesAccept(file, accept)) {
+      const message = UPLOAD_NOT_ALLOWED_MESSAGE;
+      setLocalError(message);
+      onInvalid?.(message);
+      return;
+    }
+    setLocalError("");
+    onInvalid?.("");
+    onFile(file);
   }
 
   return (
@@ -2718,6 +2741,7 @@ function ImageAttach({
             </button>
           ) : null}
           <p className="text-xs text-[var(--muted)]">미리보기 영역을 눌러도 파일을 선택할 수 있습니다.</p>
+          {localError ? <p className="text-xs text-red-600">{localError}</p> : null}
         </div>
       </div>
 
@@ -2729,7 +2753,7 @@ function ImageAttach({
         tabIndex={-1}
         onChange={(e) => {
           const file = e.target.files?.[0];
-          if (file) onFile(file);
+          if (file) handleSelected(file);
           e.target.value = "";
         }}
       />

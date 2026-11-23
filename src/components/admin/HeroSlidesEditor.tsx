@@ -3,6 +3,13 @@
 import { useRef, useState } from "react";
 import type { HeroSlide, LocaleContent } from "@/lib/types";
 import type { AdminUi } from "@/lib/admin-ui";
+import {
+  UPLOAD_NOT_ALLOWED_MESSAGE,
+  fileMatchesAccept,
+} from "@/lib/file-accept";
+
+const HERO_MEDIA_ACCEPT =
+  "image/png,image/jpeg,image/webp,image/gif,video/mp4,video/webm";
 
 function emptySlide(locale: "ko" | "en"): HeroSlide {
   return {
@@ -112,6 +119,10 @@ export function HeroSlidesEditor({
   }
 
   async function uploadMedia(file: File) {
+    if (!fileMatchesAccept(file, HERO_MEDIA_ACCEPT)) {
+      setUploadError(UPLOAD_NOT_ALLOWED_MESSAGE);
+      return;
+    }
     setUploadError("");
     setUploading(true);
     const body = new FormData();
@@ -326,7 +337,7 @@ export function HeroSlidesEditor({
               <input
                 ref={inputRef}
                 type="file"
-                accept="image/png,image/jpeg,image/webp,image/gif,video/mp4,video/webm"
+                accept={HERO_MEDIA_ACCEPT}
                 className="sr-only"
                 tabIndex={-1}
                 onChange={(e) => {

@@ -2,6 +2,10 @@
 
 import { useRef, useState } from "react";
 import type { AdminUi } from "@/lib/admin-ui";
+import {
+  UPLOAD_NOT_ALLOWED_MESSAGE,
+  fileMatchesAccept,
+} from "@/lib/file-accept";
 import type {
   ServiceBrandItem,
   ServiceCategoryItem,
@@ -9,6 +13,10 @@ import type {
   ServiceProductItem,
   ServicesContent,
 } from "@/lib/types";
+
+const PRODUCT_IMAGE_ACCEPT = "image/png,image/jpeg,image/webp,image/gif";
+const CATALOG_FILE_ACCEPT =
+  ".pdf,.doc,.docx,.xls,.xlsx,image/png,image/jpeg,image/webp,image/gif,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
 type Tab = "page" | "offerings" | "brands" | "categories";
 
@@ -549,6 +557,10 @@ function ProductEditor({
       await uploadCatalog(file);
       return;
     }
+    if (!fileMatchesAccept(file, PRODUCT_IMAGE_ACCEPT)) {
+      setUploadError(UPLOAD_NOT_ALLOWED_MESSAGE);
+      return;
+    }
     setUploadError("");
     setUploading(true);
     const body = new FormData();
@@ -565,6 +577,10 @@ function ProductEditor({
   }
 
   async function uploadCatalog(file: File) {
+    if (!fileMatchesAccept(file, CATALOG_FILE_ACCEPT)) {
+      setUploadError(UPLOAD_NOT_ALLOWED_MESSAGE);
+      return;
+    }
     setUploadError("");
     setUploadingFile(true);
     const body = new FormData();
@@ -660,7 +676,7 @@ function ProductEditor({
       <input
         ref={inputRef}
         type="file"
-        accept="image/png,image/jpeg,image/webp,image/gif"
+        accept={PRODUCT_IMAGE_ACCEPT}
         className="sr-only"
         onChange={(e) => {
           const file = e.target.files?.[0];
@@ -671,7 +687,7 @@ function ProductEditor({
       <input
         ref={fileInputRef}
         type="file"
-        accept=".pdf,.doc,.docx,.xls,.xlsx,image/png,image/jpeg,image/webp,image/gif,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        accept={CATALOG_FILE_ACCEPT}
         className="sr-only"
         onChange={(e) => {
           const file = e.target.files?.[0];
@@ -717,6 +733,10 @@ function CategoriesEditor({
   }
 
   async function uploadCategoryFile(index: number, file: File) {
+    if (!fileMatchesAccept(file, CATALOG_FILE_ACCEPT)) {
+      setUploadError(UPLOAD_NOT_ALLOWED_MESSAGE);
+      return;
+    }
     const category = items[index];
     setUploadError("");
     setUploadingId(category.id);
@@ -902,7 +922,7 @@ function CategoriesEditor({
                     fileInputRefs.current[item.id] = el;
                   }}
                   type="file"
-                  accept=".pdf,.doc,.docx,.xls,.xlsx,image/png,image/jpeg,image/webp,image/gif,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                  accept={CATALOG_FILE_ACCEPT}
                   className="sr-only"
                   onChange={(e) => {
                     const file = e.target.files?.[0];
