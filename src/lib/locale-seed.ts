@@ -29,40 +29,47 @@ function fillBlank(a: string | undefined, b: string | undefined): [string, strin
   return [left, right];
 }
 
+/** Which locale controls list membership (deletes / order). */
+export type LocaleListMembership = "union" | "ko" | "en";
+
 function syncIdLists<T extends { id: string }>(
   koList: T[] | undefined,
   enList: T[] | undefined,
   syncItem: (ko: T | undefined, en: T | undefined, id: string) => { ko: T; en: T },
+  membership: LocaleListMembership = "union",
 ): { ko: T[]; en: T[] } {
   const koItems = koList || [];
   const enItems = enList || [];
   const koMap = new Map(koItems.map((item) => [item.id, item]));
   const enMap = new Map(enItems.map((item) => [item.id, item]));
-  const allIds = new Set<string>([...koMap.keys(), ...enMap.keys()]);
 
-  const pairs = new Map<string, { ko: T; en: T }>();
-  for (const id of allIds) {
-    pairs.set(id, syncItem(koMap.get(id), enMap.get(id), id));
-  }
+  const orderedIds =
+    membership === "ko"
+      ? koItems.map((item) => item.id)
+      : membership === "en"
+        ? enItems.map((item) => item.id)
+        : (() => {
+            const ids: string[] = [];
+            const seen = new Set<string>();
+            for (const item of koItems) {
+              if (seen.has(item.id)) continue;
+              seen.add(item.id);
+              ids.push(item.id);
+            }
+            for (const item of enItems) {
+              if (seen.has(item.id)) continue;
+              seen.add(item.id);
+              ids.push(item.id);
+            }
+            return ids;
+          })();
 
   const koOut: T[] = [];
-  const seenKo = new Set<string>();
-  for (const item of koItems) {
-    koOut.push(pairs.get(item.id)!.ko);
-    seenKo.add(item.id);
-  }
-  for (const id of allIds) {
-    if (!seenKo.has(id)) koOut.push(pairs.get(id)!.ko);
-  }
-
   const enOut: T[] = [];
-  const seenEn = new Set<string>();
-  for (const item of enItems) {
-    enOut.push(pairs.get(item.id)!.en);
-    seenEn.add(item.id);
-  }
-  for (const id of allIds) {
-    if (!seenEn.has(id)) enOut.push(pairs.get(id)!.en);
+  for (const id of orderedIds) {
+    const pair = syncItem(koMap.get(id), enMap.get(id), id);
+    koOut.push(pair.ko);
+    enOut.push(pair.en);
   }
 
   return { ko: koOut, en: enOut };
@@ -73,10 +80,16 @@ function syncAlignedLists<T extends object>(
   koList: T[] | undefined,
   enList: T[] | undefined,
   syncItem: (ko: T | undefined, en: T | undefined) => { ko: T; en: T },
+  membership: LocaleListMembership = "union",
 ): { ko: T[]; en: T[] } {
   const koItems = koList || [];
   const enItems = enList || [];
-  const len = Math.max(koItems.length, enItems.length);
+  const len =
+    membership === "ko"
+      ? koItems.length
+      : membership === "en"
+        ? enItems.length
+        : Math.max(koItems.length, enItems.length);
   const koOut: T[] = [];
   const enOut: T[] = [];
 
@@ -91,26 +104,32 @@ function syncAlignedLists<T extends object>(
       .filter((item) => item.id)
       .map((item) => [item.id as string, item as T]),
   );
-  const usedKo = new Set<string>();
-  const usedEn = new Set<string>();
 
   for (let i = 0; i < len; i += 1) {
-    let koItem: T | undefined = koItems[i];
-    let enItem: T | undefined = enItems[i];
+    let koItem: T | undefined =
+      membership === "en" ? undefined : koItems[i];
+    let enItem: T | undefined =
+      membership === "ko" ? undefined : enItems[i];
+
+    if (membership === "en") {
+      enItem = enItems[i];
+    } else if (membership === "ko") {
+      koItem = koItems[i];
+    }
+
     const koId = (koItem as WithOptionalId | undefined)?.id;
     const enId = (enItem as WithOptionalId | undefined)?.id;
 
     if (koId && enById.has(koId)) {
       enItem = enById.get(koId);
-      usedEn.add(koId);
-      usedKo.add(koId);
     } else if (enId && koById.has(enId)) {
       koItem = koById.get(enId);
-      usedKo.add(enId);
-      usedEn.add(enId);
-    } else {
-      if (koId) usedKo.add(koId);
-      if (enId) usedEn.add(enId);
+    } else if (membership === "union") {
+      // index pairing already set above
+    } else if (membership === "ko" && koId) {
+      enItem = enById.get(koId);
+    } else if (membership === "en" && enId) {
+      koItem = koById.get(enId);
     }
 
     const pair = syncItem(koItem, enItem);
@@ -195,12 +214,18 @@ function syncBrand(
   ko: ServiceBrandItem | undefined,
   en: ServiceBrandItem | undefined,
   id: string,
+  membership: LocaleListMembership = "union",
 ): { ko: ServiceBrandItem; en: ServiceBrandItem } {
   const [slugKo, slugEn] = fillBlank(ko?.slug, en?.slug);
   const [brandKo, brandEn] = fillBlank(ko?.brand, en?.brand);
   const [folderKo, folderEn] = fillBlank(ko?.folder, en?.folder);
   const [leadKo, leadEn] = fillBlank(ko?.lead, en?.lead);
-  const products = syncIdLists(ko?.products, en?.products, syncProduct);
+  const products = syncIdLists(
+    ko?.products,
+    en?.products,
+    syncProduct,
+    membership,
+  );
   const slug = slugKo || slugEn || id;
   return {
     ko: {
@@ -238,6 +263,7 @@ function syncOffering(
 function syncCategoryLinks(
   koLinks: ServiceCategoryLink[] | undefined,
   enLinks: ServiceCategoryLink[] | undefined,
+  membership: LocaleListMembership = "union",
 ): { ko: ServiceCategoryLink[]; en: ServiceCategoryLink[] } {
   const koItems = koLinks || [];
   const enItems = enLinks || [];
@@ -251,23 +277,27 @@ function syncCategoryLinks(
     bySlug.set(link.slug, { ...(bySlug.get(link.slug) || {}), en: link });
   }
 
+  const source =
+    membership === "en" ? enItems : membership === "ko" ? koItems : null;
+  const ordered =
+    source ||
+    (() => {
+      const links: ServiceCategoryLink[] = [];
+      const seen = new Set<string>();
+      for (const link of [...koItems, ...enItems]) {
+        if (!link.slug || seen.has(link.slug)) continue;
+        seen.add(link.slug);
+        links.push(link);
+      }
+      return links;
+    })();
+
   const koOut: ServiceCategoryLink[] = [];
   const enOut: ServiceCategoryLink[] = [];
-  const seen = new Set<string>();
-
-  for (const link of koItems) {
-    const pair = bySlug.get(link.slug) || { ko: link };
+  for (const link of ordered) {
+    const pair = bySlug.get(link.slug) || { ko: link, en: link };
     const [labelKo, labelEn] = fillBlank(pair.ko?.label, pair.en?.label);
     const slug = pair.ko?.slug || pair.en?.slug || link.slug;
-    koOut.push({ label: labelKo, slug });
-    enOut.push({ label: labelEn, slug });
-    seen.add(slug);
-  }
-  for (const link of enItems) {
-    if (seen.has(link.slug)) continue;
-    const pair = bySlug.get(link.slug) || { en: link };
-    const [labelKo, labelEn] = fillBlank(pair.ko?.label, pair.en?.label);
-    const slug = pair.en?.slug || pair.ko?.slug || link.slug;
     koOut.push({ label: labelKo, slug });
     enOut.push({ label: labelEn, slug });
   }
@@ -278,12 +308,13 @@ function syncCategory(
   ko: ServiceCategoryItem | undefined,
   en: ServiceCategoryItem | undefined,
   id: string,
+  membership: LocaleListMembership = "union",
 ): { ko: ServiceCategoryItem; en: ServiceCategoryItem } {
   const [titleKo, titleEn] = fillBlank(ko?.title, en?.title);
   const [descKo, descEn] = fillBlank(ko?.description, en?.description);
   const [fileKo, fileEn] = fillBlank(ko?.file, en?.file);
   const [fileNameKo, fileNameEn] = fillBlank(ko?.fileName, en?.fileName);
-  const links = syncCategoryLinks(ko?.items, en?.items);
+  const links = syncCategoryLinks(ko?.items, en?.items, membership);
   return {
     ko: {
       id,
@@ -307,6 +338,7 @@ function syncCategory(
 function syncServices(
   ko: ServicesContent | undefined,
   en: ServicesContent | undefined,
+  membership: LocaleListMembership = "union",
 ): { ko: ServicesContent; en: ServicesContent } {
   const keys = [
     "label",
@@ -332,9 +364,24 @@ function syncServices(
     enOut[key] = right;
   }
 
-  const offerings = syncIdLists(ko?.offerings, en?.offerings, syncOffering);
-  const brands = syncIdLists(ko?.brands, en?.brands, syncBrand);
-  const categories = syncIdLists(ko?.categories, en?.categories, syncCategory);
+  const offerings = syncIdLists(
+    ko?.offerings,
+    en?.offerings,
+    syncOffering,
+    membership,
+  );
+  const brands = syncIdLists(
+    ko?.brands,
+    en?.brands,
+    (a, b, id) => syncBrand(a, b, id, membership),
+    membership,
+  );
+  const categories = syncIdLists(
+    ko?.categories,
+    en?.categories,
+    (a, b, id) => syncCategory(a, b, id, membership),
+    membership,
+  );
 
   koOut.offerings = offerings.ko;
   enOut.offerings = offerings.en;
@@ -418,18 +465,26 @@ function syncClientItem(
  * Bidirectional locale sync:
  * - empty side inherits the filled side
  * - when both sides already have values, keep each as-is
+ * - membership: which locale owns list deletes/order ("ko" | "en" | "union")
  */
 export function syncLocalePair(
   ko: LocaleContent,
   en: LocaleContent,
+  options?: { membership?: LocaleListMembership },
 ): { ko: LocaleContent; en: LocaleContent } {
+  const membership = options?.membership || "union";
   const [heroBrandKo, heroBrandEn] = fillBlank(ko.hero?.brand, en.hero?.brand);
   const [heroHeadlineKo, heroHeadlineEn] = fillBlank(ko.hero?.headline, en.hero?.headline);
   const [heroSubKo, heroSubEn] = fillBlank(ko.hero?.subheadline, en.hero?.subheadline);
   const [heroCtaKo, heroCtaEn] = fillBlank(ko.hero?.ctaLabel, en.hero?.ctaLabel);
   const [heroHrefKo, heroHrefEn] = fillBlank(ko.hero?.ctaHref, en.hero?.ctaHref);
   const [heroVideoKo, heroVideoEn] = fillBlank(ko.hero?.videoUrl, en.hero?.videoUrl);
-  const slides = syncIdLists(ko.hero?.slides, en.hero?.slides, syncHeroSlide);
+  const slides = syncIdLists(
+    ko.hero?.slides,
+    en.hero?.slides,
+    syncHeroSlide,
+    membership,
+  );
 
   const [greetTitleKo, greetTitleEn] = fillBlank(ko.greeting?.title, en.greeting?.title);
   const [greetBodyKo, greetBodyEn] = fillBlank(ko.greeting?.body, en.greeting?.body);
@@ -459,30 +514,55 @@ export function syncLocalePair(
     companyEn[key] = right;
   }
 
-  const history = syncAlignedLists(ko.history, en.history, syncHistory);
-  const performances = syncAlignedLists(ko.performances, en.performances, syncPerformance);
-  const clients = syncIdLists(ko.clients?.items, en.clients?.items, syncClientItem);
+  const history = syncAlignedLists(ko.history, en.history, syncHistory, membership);
+  const performances = syncAlignedLists(
+    ko.performances,
+    en.performances,
+    syncPerformance,
+    membership,
+  );
+  const clients = syncIdLists(
+    ko.clients?.items,
+    en.clients?.items,
+    syncClientItem,
+    membership,
+  );
   const [clientsTitleKo, clientsTitleEn] = fillBlank(ko.clients?.title, en.clients?.title);
   const [clientsLeadKo, clientsLeadEn] = fillBlank(ko.clients?.lead, en.clients?.lead);
 
   const [teamTitleKo, teamTitleEn] = fillBlank(ko.team?.title, en.team?.title);
   const [teamLeadKo, teamLeadEn] = fillBlank(ko.team?.lead, en.team?.lead);
   const ceo = syncTeamMember(ko.team?.ceo, en.team?.ceo);
-  const members = syncAlignedLists(ko.team?.members, en.team?.members, syncTeamMember);
+  const members = syncAlignedLists(
+    ko.team?.members,
+    en.team?.members,
+    syncTeamMember,
+    membership,
+  );
 
   const [mediaTitleKo, mediaTitleEn] = fillBlank(ko.media?.title, en.media?.title);
   const [mediaLeadKo, mediaLeadEn] = fillBlank(ko.media?.lead, en.media?.lead);
-  const mediaItems = syncAlignedLists(ko.media?.items, en.media?.items, (a, b) => {
-    const [titleKo, titleEn] = fillBlank(a?.title, b?.title);
-    const [descKo, descEn] = fillBlank(a?.description, b?.description);
-    const [urlKo, urlEn] = fillBlank(a?.videoUrl, b?.videoUrl);
-    return {
-      ko: { title: titleKo, description: descKo, videoUrl: urlKo },
-      en: { title: titleEn, description: descEn, videoUrl: urlEn },
-    };
-  });
+  const mediaItems = syncAlignedLists(
+    ko.media?.items,
+    en.media?.items,
+    (a, b) => {
+      const [titleKo, titleEn] = fillBlank(a?.title, b?.title);
+      const [descKo, descEn] = fillBlank(a?.description, b?.description);
+      const [urlKo, urlEn] = fillBlank(a?.videoUrl, b?.videoUrl);
+      return {
+        ko: { title: titleKo, description: descKo, videoUrl: urlKo },
+        en: { title: titleEn, description: descEn, videoUrl: urlEn },
+      };
+    },
+    membership,
+  );
 
-  const gallery = syncIdLists(ko.gallery?.items, en.gallery?.items, syncGalleryItem);
+  const gallery = syncIdLists(
+    ko.gallery?.items,
+    en.gallery?.items,
+    syncGalleryItem,
+    membership,
+  );
   const [galleryTitleKo, galleryTitleEn] = fillBlank(ko.gallery?.title, en.gallery?.title);
   const [galleryLeadKo, galleryLeadEn] = fillBlank(ko.gallery?.lead, en.gallery?.lead);
 
@@ -495,16 +575,21 @@ export function syncLocalePair(
     affiliateEn[key] = right;
   }
 
-  const certificates = syncAlignedLists(ko.certificates, en.certificates, (a, b) => {
-    const [titleKo, titleEn] = fillBlank(a?.title, b?.title);
-    const [imageKo, imageEn] = fillBlank(a?.image, b?.image);
-    return {
-      ko: { title: titleKo, image: imageKo },
-      en: { title: titleEn, image: imageEn },
-    };
-  });
+  const certificates = syncAlignedLists(
+    ko.certificates,
+    en.certificates,
+    (a, b) => {
+      const [titleKo, titleEn] = fillBlank(a?.title, b?.title);
+      const [imageKo, imageEn] = fillBlank(a?.image, b?.image);
+      return {
+        ko: { title: titleKo, image: imageKo },
+        en: { title: titleEn, image: imageEn },
+      };
+    },
+    membership,
+  );
 
-  const services = syncServices(ko.services, en.services);
+  const services = syncServices(ko.services, en.services, membership);
 
   return {
     ko: {

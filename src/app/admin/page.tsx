@@ -150,10 +150,11 @@ export default function AdminPage() {
   function buildNextContent(next: LocaleContent): SiteContent | null {
     const current = contentRef.current;
     if (!current) return null;
+    // Edited locale owns list membership so deletes are not restored from the other locale.
     const pair =
       editLocale === "en"
-        ? syncLocalePair(current.ko, next)
-        : syncLocalePair(next, current.en);
+        ? syncLocalePair(current.ko, next, { membership: "en" })
+        : syncLocalePair(next, current.en, { membership: "ko" });
     return { ...current, ko: pair.ko, en: pair.en };
   }
 
